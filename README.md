@@ -3,6 +3,12 @@
 RediPal gives you the ability to read and write dotnet objects in and out of redis
 
 
+## Getting Started
+
+- [Basic Usage](##Basic-Usage)
+- [Creating the instance](##Creating-the-RediPal-instance)
+
+
 ## Basic Usage
 
 
@@ -31,6 +37,45 @@ redi.Write.Object(obj, "keyspace", "objectid");
  if (testObj != null)
     Console.WriteLine($"ID: {testObj.ID}   NestID: {testObj.NestedObject.ID}");
 ```
+
+
+
+
+## Creating the RediPal instance
+
+Create using an anonymous connection
+```c#
+var redi = new Redipal("Redis-Address");
+```
+Create using an existing connection
+```c#
+var existingRedis =  ConnectionMultiplexer.Connect("Redis-Addres");
+var redi = new Redipal(existingRedis);
+```
+Create using configuration options
+```c#
+var redisConfig = new ConfigurationOptions
+{
+    Password = "Example",
+    User = "Example"
+};
+redisConfig.EndPoints.Add("Redis-Address");
+
+var redi = new Redipal(redisConfig);
+```
+
+
+
+
+
+## Creating the RediPal instance
+
+Create using an anonymous connection
+```c#
+var redi = new Redipal("Redis-Address");
+```
+
+
 
 
 ## Contributing
