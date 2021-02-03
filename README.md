@@ -7,7 +7,11 @@ RediPal gives you the ability to read and write dotnet objects in and out of red
 
 - [Basic Usage](#Basic-Usage)
 - [Creating the instance](#Creating-the-RediPal-instance)
-
+- [Writing Objects](#Writing-objects)
+    - [Dictionaries](#Dictionaries)
+    - [Lists](#Lists)
+    - [Objects](#Objects)
+    - [Updating Properties](#Updating-Properties)
 
 ## Basic Usage
 
@@ -68,12 +72,49 @@ var redi = new Redipal(redisConfig);
 
 
 
-## Creating the RediPal instance
 
-Create using an anonymous connection
+
+
+## Writing objects
+
+
+
+### Dictionaries
 ```c#
-var redi = new Redipal("Redis-Address");
+var dictionary = new Dictionary<string, TestObject>()
+{
+    {"test1", new TestObject() },
+    {"test2", new TestObject() },
+    {"test3", new TestObject() }
+};
+
+redi.Write.Dictionary(dictionary, "testobjects");
 ```
+This will write all the keys in the dictionary as a set to "testobjects" and write each object under the key of "testobject".
+
+
+
+
+
+### Lists
+```c#
+var list = new List<TestObject>()
+{
+    new TestObject(),
+    new TestObject(),
+    new TestObject()
+};
+
+redi.Write.List(list, "testobjects");
+```
+This will write each object under the key of "testobject" and add an index to the set of "testobjects".
+
+
+
+
+
+
+
 
 
 
