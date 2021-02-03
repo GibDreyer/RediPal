@@ -5,8 +5,8 @@ RediPal gives you the ability to read and write dotnet objects in and out of red
 
 ## Getting Started
 
-- [Basic Usage](##Basic-Usage)
-- [Creating the instance](##Creating-the-RediPal-instance)
+- [Basic Usage](#Basic-Usage)
+- [Creating the instance](#Creating-the-RediPal-instance)
 
 
 ## Basic Usage
