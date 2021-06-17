@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RediPal</name>
+    </assembly>
+    <members>
+        <member name="T:RedipalCore.Attributes.RediIgnore">
+            <summary>
+            When set on a property it will NOT be serialized
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediWriteAsJson">
+            <summary>
+            Will tell the serializer to send the list to redis as json
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediExpire">
+            <summary>
+            Expires the Object After the specified amount of time. This applies to every nested object under the applied class
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediKeySpace">
+            <summary>
+            Sets the default KeySpace that the object will be wrote to
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediSearchSet">
+            <summary>
+            Sets the default KeySpace that the object will be wrote to
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediSearchScore">
+            <summary>
+            Sets the default KeySpace that the object will be wrote to
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediIncrementalID">
+            <summary>
+            Sets the default KeySpace that the object will be wrote to
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediDefaultSet">
+            <summary>
+            Will Automatically add to this set when wrote
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediWriteName">
+            <summary>
+            Sets the property as the name of the object when writen or read
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.RediReName">
+            <summary>
+            Used to override the Field that is used when saving the data to redis
+            </summary>
+        </member>
+        <member name="T:RedipalCore.Attributes.PropertyType">
+            <summary>
+            allows an attribute to be aplied to a specific type
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_LoadAs``1(``0,``0@,System.String)">
+            <summary>
+            Reloads the object from the given ID
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_CreateNewAs``1(``0,System.String)">
+            <summary>
+            Returns a new instance from the ID given
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Eradicate``1(``0)">
+            <summary>
+            Deletes the object and all its children permanently
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Reload``1(``0)">
+            <summary>
+            returns the most recent version of the current object
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Reload``1(``0,``0@)">
+            <summary>
+            Reloads the object to the most recent version
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Subscribe``1(``0)">
+            <summary>
+            returns a subscription to the current object
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Subscribe``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            returns a subscription to the property of the object
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Write``1(``0)">
+            <summary>
+            Writes the object 
+            </summary>
+        </member>
+        <member name="M:RedipalCore.RediExtensions.Redi_Write``2(``0,System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Writes only the property given 
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IReaderAsync.Object``1(System.String,System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IReaderAsync.List``1(System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IReaderAsync.List``1(System.String,System.String[])">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IReaderAsync.Dictionary``2(System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IReaderAsync.Dictionary``2(System.String,System.String[])">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.GetIncrementedID(System.String)">
+            <summary>
+                Increments the number stored at key by increment. If the key does not exist,
+                it is set to 0 before performing the operation. An error is returned if the key
+                contains a value of the wrong type or contains a string that is not representable
+                as integer. This operation is limited to 64 bit signed integers.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Object``1(System.String,System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Field``1(System.String,System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified field
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Value``1(System.String)">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified field
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.List``1">
+            <summary>
+            Creates a list of the given object for each of members in the set specified on the object classes atribute "RediSet".
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.List``1(System.String)">
+            <summary>
+            Creates a List of the given object for each of members in the specified set using the default keyspace.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.List``1(System.String,System.String[])">
+            <summary>
+            Creates a list of the given object for the key space for each of the specified ids or set.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Dictionary``2(RedipalCore.Objects.RediReadOptions)">
+            <summary>
+            Creates a Dictionary of the given object for each of members in the set specified on the object classes atribute "RediSet".
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Dictionary``2(System.String,RedipalCore.Objects.RediReadOptions)">
+            <summary>
+            Creates a Dictionary of the given object for each of members in the specified set using the default keyspace.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediReader.Dictionary``2(System.String[],RedipalCore.Objects.RediReadOptions)">
+            <summary>
+            Creates a Dictionary of the given object for the key space for each of the specified ids or set. 
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToObject``1(System.String,System.String)">
+            <summary>
+            Create a subscription the as an object from the given key
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToDictionary``2(System.String,System.String,RedipalCore.Objects.RediSubscriberOptions)">
+            <summary>
+             Create a subscription the as a dictionary from the entire set given
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToDictionary``2(System.String,RedipalCore.Objects.RediSubscriberOptions,System.String[])">
+            <summary>
+            Create a subscription the as a dictionary to the given hash Ids
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediSubscription`1.Read">
+            <summary>
+            Builds the object that is subscribed to
+            </summary>
+            <returns>An object or value</returns>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediWriter.Value(System.IConvertible,System.String,RedipalCore.Objects.RediWriteOptions)">
+            <summary>
+            Will write the given object and save it to the specified key space. If an IBatch is given it will add the database calls to que and Batch.ExucuteAll must to called to save the data.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediWriter.List(System.Collections.IList,System.Action{RedipalCore.Objects.RediWriteOptions}[])">
+            <summary>
+            This will add the objects in the list to
+            </summary>
+            Parameters:
+              list:
+                The list to be wrote.
+              setKey:
+                The key of the set where the index of the values will be wrote.
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediWriter.Object``1(``0,RedipalCore.Objects.RediWriteOptions)">
+            <summary>
+            Will write the given object and save it to the specified key space. If an IBatch is given it will add the database calls to que and Batch.ExucuteAll must to called to save the data.
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Interfaces.IRediWriter.Dictionary(System.Collections.IDictionary,System.Action{RedipalCore.Objects.RediWriteOptions}[])">
+            <summary>
+            Write a dictionary to redis. The keys will be added the the set given and the value will be hashed
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediConfig.UnThrottleCPU">
+            <summary>
+            If true it allows RediPal to use up to 100% of the available CPU. false is default
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.MaxMembers">
+            <summary>
+            Default:  500
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.SubscribeToSetMembers">
+            <summary>
+            Default:  True
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.SubscribeToSubObjects">
+            <summary>
+            Default:  False
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.WatchForRemove">
+            <summary>
+            Default:  True
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.WatchForAdd">
+            <summary>
+            Default:  True
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.DeleteUnloadable">
+            <summary>
+            Default:  True
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediSubscriberOptions.MaxPublishingInterval">
+            <summary>
+            Default:  0
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.KeySpace">
+            <summary>
+            This is the Key space the the object will be wrote under in redis
+            this is not necessary to set if the attribute "RediKeySpace" is applied to the object class
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.ID">
+            <summary>
+            This is the id the the object will be wrote under in redis the will be located at   {KeySpace}:{ID}.
+            this is not necessary to set if the attribute "RediWriteName" is applied to a property on the object
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.DeleteExisting">
+            <summary>
+            If true then the existing object(s) in the given space will be deleted and replaced
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.Expiration">
+            <summary>
+            The object being wrote will expire in the given time 
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.SetsToAppend">
+            <summary>
+            The writer will append the object ID to the sets in this list
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.SearchableSetsToAppend">
+            <summary>
+            The writer will append the object ID to the sets in this list
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.SetsToRemove">
+            <summary>
+            The writer will remove the id from the given sets 
+            </summary>
+        </member>
+        <member name="P:RedipalCore.Objects.RediWriteOptions.RediBatch">
+            <summary>
+            The batch that the redis calls will be added to, if not set it will be controlled interanlly
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Redipal.#ctor(StackExchange.Redis.ConnectionMultiplexer,RedipalCore.Objects.RediConfig)">
+            <summary>
+            Uses an existing redis connection
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Redipal.#ctor(System.String,RedipalCore.Objects.RediConfig,System.Int32)">
+            <summary>
+            Creates a connection to the redis server internally
+            </summary>
+        </member>
+        <member name="M:RedipalCore.Redipal.#ctor(StackExchange.Redis.ConfigurationOptions,RedipalCore.Objects.RediConfig)">
+            <summary>
+            Creates a connection to the redis server internally with the given configuration
+            </summary>
+        </member>
+    </members>
+</doc>

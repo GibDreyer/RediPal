@@ -1,0 +1,13 @@
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.deps.json
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\ref\RediPal.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.pdb
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.xml
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.AssemblyInfoInputs.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.AssemblyInfo.cs
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.csproj.CoreCompileInputs.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\ref\RediPal.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.pdb
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.csproj.AssemblyReference.cache

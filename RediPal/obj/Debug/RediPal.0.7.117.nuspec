@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>RediPal</id>
+    <version>0.7.117</version>
+    <authors>Gib Dreyer</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>RediPalIcon.png</icon>
+    <projectUrl>https://github.com/Gibd669/RediPal</projectUrl>
+    <description>Writer / Reader   for dotnet objects in and out of a redis database</description>
+    <releaseNotes>Improved Set Subscriptions</releaseNotes>
+    <tags>Redis, redipal, json, serializer, deserializer, writer, reader</tags>
+    <dependencies>
+      <group targetFramework="net5.0">
+        <dependency id="Pluralize.NET" version="1.0.2" exclude="Build,Analyzers" />
+        <dependency id="StackExchange.Redis" version="2.2.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.dll" target="lib\net5.0\RediPal.dll" />
+    <file src="C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.xml" target="lib\net5.0\RediPal.xml" />
+    <file src="C:\Users\gdreyer.PEERDOM\Pictures\RediPalIcon.png" target="RediPalIcon.png" />
+  </files>
+</package>

@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Authors>Gib Dreyer</Authors>
+    <PackageIcon>RediPalIcon.png</PackageIcon>
+    <PackageReleaseNotes>Improved Subscriptions and added new extension methods for RediBase</PackageReleaseNotes>
+    <Description>Writer / Reader   for dotnet objects in and out of a redis database</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageId>RediPal</PackageId>
+    <Version>0.7.158</Version>
+    <RootNamespace>RediPal</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pluralize.NET" Version="1.0.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Pictures\RediPalIcon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <OutputType>Library</OutputType>
+    <SignAssembly>false</SignAssembly>
+    <PackageTags>Redis, redipal, json, serializer, deserializer, writer, reader</PackageTags>
+    <PackageProjectUrl>https://github.com/Gibd669/RediPal</PackageProjectUrl>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\RediPal.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591;</NoWarn>
+  </PropertyGroup>
+
+</Project>

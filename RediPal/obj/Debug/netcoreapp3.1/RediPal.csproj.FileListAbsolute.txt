@@ -1,0 +1,4 @@
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\netcoreapp3.1\RediPal.csprojAssemblyReference.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\netcoreapp3.1\RediPal.AssemblyInfoInputs.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\netcoreapp3.1\RediPal.AssemblyInfo.cs
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\netcoreapp3.1\RediPal.csproj.CoreCompileInputs.cache

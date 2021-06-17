@@ -1,0 +1,78 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj": {
+      "version": "0.7.158",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj",
+        "projectName": "RediPal",
+        "projectPath": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj",
+        "packagesPath": "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\gdreyer.PEERDOM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "D:\\Nuget Pkgs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Pluralize.NET": {
+              "target": "Package",
+              "version": "[1.0.2, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.2.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.4.21255.9\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>RediPal.Serializer</id>
+    <version>1.0.6</version>
+    <authors>Gib Dreyer</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>BotIcon.jpg</icon>
+    <description>Serializer / Deserializer for dotnet objects in and out of a redis database</description>
+    <releaseNotes>Dont judge the bugs</releaseNotes>
+    <dependencies>
+      <group targetFramework="net5.0">
+        <dependency id="StackExchange.Redis" version="2.2.4" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\bin\Debug\net5.0\RediPal.dll" target="lib\net5.0\RediPal.dll" />
+    <file src="C:\Users\gdreyer.PEERDOM\Pictures\BotIcon.jpg" target="BotIcon.jpg" />
+  </files>
+</package>
