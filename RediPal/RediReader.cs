@@ -1400,8 +1400,14 @@ namespace RedipalCore
                                         {
                                             var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value);
                                             ///// accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
-
-                                            property.PropertyInfo.SetValue(instance, Convert.ChangeType(redisConvert, property.PropertyType));
+                                            try
+                                            {
+                                                property.PropertyInfo.SetValue(instance, Convert.ChangeType(redisConvert, property.PropertyType), null);
+                                            }
+                                            catch
+                                            {
+                                                property.PropertyInfo.SetValue(instance, redisConvert, null);
+                                            }
                                         }
                                     }
                                 }
@@ -1610,6 +1616,18 @@ namespace RedipalCore
                     if (s != null)
                     {
                         return s;
+                    }
+                }
+                else
+                {
+                    var nullable = Nullable.GetUnderlyingType(t);
+                    if (nullable is not null)
+                    {
+                        var s = Convert.ChangeType(obj, nullable);
+                        if (s != null)
+                        {
+                            return s;
+                        }
                     }
                 }
             }

@@ -36,7 +36,241 @@
 //            //};
 //            //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
 
-//            //var redi = new Redipal(redisConfig, new RediConfig { UnThrottleCPU = true });
+//            //var redi = new Redipal(redisConfig, new RediConfig());
+//            var redi = new Redipal("ag-redis.ag");
+
+
+//            var geos = new Dictionary<string, GeoLocation>
+//            {
+//                {
+//                    "fort_scott",
+//                    new("Fort Scott")
+//                    {
+//                        Longitude = -94.7040076,
+//                        Latitude = 37.8101345,
+//                        Type = GeoLocationType.Facility,
+//                        Items = new()
+//                        {
+//                            {
+//                                "roc_1",
+//                                new("Roc 1")
+//                                {
+//                                    Type = GeoLocationType.Equipment,
+//                                    Items = new()
+//                                    {
+//                                        {
+//                                            "saw_1",
+//                                            new("Saw 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "bdm_1",
+//                                            new("BDM 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "btm_1_strip1",
+//                                            new("BTM 1 Strip 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            },
+//                            {
+//                                "roc_2",
+//                                new("Roc 2")
+//                                {
+//                                    Type = GeoLocationType.Equipment,
+//                                }
+//                            },
+//                            {
+//                                "warehouse_paint",
+//                                new("Paint Warehouse")
+//                            }
+//                        }
+//                    }
+//                },
+//                {
+//                    "nevada",
+//                    new("Nevada ISG")
+//                    {
+//                        Longitude = -94.342674,
+//                        Latitude = 37.855694,
+//                        Type = GeoLocationType.Facility,
+//                        Items = new()
+//                        {
+//                            {
+//                                "roc_7",
+//                                new("Roc 7")
+//                                {
+//                                    Type = GeoLocationType.Equipment,
+//                                    Items = new()
+//                                    {
+//                                        {
+//                                            "saw_1",
+//                                            new("Saw 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "bdm_1",
+//                                            new("BDM 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "btm_1_strip1",
+//                                            new("BTM 1 Strip 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            },
+//                            {
+//                                "roc_12",
+//                                new("Roc 12")
+//                                {
+//                                    Type = GeoLocationType.Equipment,
+//                                    Items = new()
+//                                    {
+//                                        {
+//                                            "paint_1",
+//                                            new("Paint 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "con_1",
+//                                            new("Consolidation 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "con_2",
+//                                            new("Consolidation 2")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            },
+//                            {
+//                                "warehouse_paint",
+//                                new("Paint Warehouse")
+//                                {
+//                                    Type = GeoLocationType.Warehouse
+//                                }
+//                            },
+//                            {
+//                                "warehouse_cage",
+//                                new("Cage Warehouse")
+//                                {
+//                                   Type = GeoLocationType.Warehouse,
+//                                   Items= new(){
+//                                        {
+//                                            "north_1",
+//                                            new("North 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "south_1",
+//                                            new("South 1")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        },
+//                                        {
+//                                            "south_2",
+//                                            new("South 2")
+//                                            {
+//                                                  Type = GeoLocationType.Operator
+//                                            }
+//                                        }
+//                                   }
+//                                }
+//                            }
+//                        }
+//                    }
+//                },
+//                {
+//                     "truck_1",
+//                     new("Truck 1")
+//                     {
+//                          Type= GeoLocationType.Transport
+//                     }
+//                }
+//            };
+
+
+
+//            var geos2 = new Dictionary<string, GeoLocation>
+//            {
+//                {
+//                    "fort_scott",
+//                    new("Fort Scott")
+//                    {
+//                        Items = new()
+//                        {
+//                            {
+//                                "roc_1",
+//                                new("Roc 1")
+//                                {
+//                                    Items = new()
+//                                    {
+//                                        {
+//                                            "saw_1",
+//                                            new("Saw 1")
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            };
+
+
+
+//            //redi.Eradicate.Key("geos");
+
+//           // redi.Write.Dictionary(geos, "locations");
+
+//            var stopwatch = Stopwatch.StartNew();
+//            var list = redi.Read.Dictionary<string, GeoLocation>("locations");
+//            stopwatch.Stop();
+//            Console.WriteLine("Write Time:  " + stopwatch.ElapsedMilliseconds);
+//            stopwatch.Restart();
+
+
+//            //"geo:fort_scott"
+//            //"geo:fort_scott[]"
+//            //"geo:fort_scott[roc_1]"
+//            //"geo:fort_scott[roc_1][]"
+
+
+//            // var x = new GeoLocation();
+
+//            // var test = x[""][""];
+
+
+
+//            // var ft = redi.Read.List<GeoLocation>("geo:fort_scott:child", "roc_1", "roc_2");
+
 
 //            // var redi = new Redipal("roc-redis");
 //            //var count = -1;
@@ -68,7 +302,7 @@
 
 
 //            // Create the Redis Connection
-//            var redi = new Redipal("roc-redis");
+//            //var redi = new Redipal("roc-redis");
 
 //            //var opsID = new List<string>
 //            //{
@@ -105,36 +339,36 @@
 //            //redi.Write.List(opsID, "operatorlocations");
 
 
-//            redi.SetTypeDefaults<OperatorConfig>(config =>
-//            {
-//                config.DefaultSet = "operators";
-//                config.KeySpace = "operator";
-//                config.AddParameterModifier((x, a) => a.AppendPostID($"config"));
-//            });
-            
-
-//            // Reading Works
-//            var opConfigs = redi.Read.Dictionary<string, OperatorConfig>();
-
-//            var bulb_1a = opConfigs!["bulb-1a"];
-//            // Writing Works
-//            bulb_1a.Redi_Write(action => action.EmptyDollyTimer++, x => x.EmptyDollyTimer);
-
-//            // Subscribing Works
-//            var sub = redi.Subscribe.ToDictionary<string, OperatorConfig>();
-//            if (sub is not null)
-//            {
-//                var opconfigs = sub.Read().Task.Result;
-//                sub.OnValueUpdate += (key, value) =>
-//                {
-//                    Console.WriteLine($"{key} updated");
-//                };
-//            }
+//            //redi.SetTypeDefaults<OperatorConfig>(config =>
+//            //{
+//            //    config.DefaultSet = "operators";
+//            //    config.KeySpace = "operator";
+//            //    config.AddParameterModifier((x, a) => a.AppendPostID($"config"));
+//            //});
 
 
+//            //// Reading Works
+//            //var opConfigs = redi.Read.Dictionary<string, OperatorConfig>();
+
+//            //var bulb_1a = opConfigs!["bulb-1a"];
+//            //// Writing Works
+//            //bulb_1a.Redi_Write(action => action.EmptyDollyTimer++, x => x.EmptyDollyTimer);
+
+//            //// Subscribing Works
+//            //var sub = redi.Subscribe.ToDictionary<string, OperatorConfig>();
+//            //if (sub is not null)
+//            //{
+//            //    var opconfigs = sub.Read().Task.Result;
+//            //    sub.OnValueUpdate += (key, value) =>
+//            //    {
+//            //        Console.WriteLine($"{key} updated");
+//            //    };
+//            //}
 
 
-//            Console.WriteLine();
+
+
+//            //Console.WriteLine();
 
 
 

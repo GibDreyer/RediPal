@@ -13,7 +13,10 @@ namespace RedipalCore
     internal class RediDescriptor : ITypeDiscriptor
     {
         private readonly Pluralize.NET.Pluralizer Pluralizer = new();
+        private static List<Type> _pendingTypes = new();
+
         public static ConcurrentDictionary<Type, RediTypeProccessor> Descriptors { get; } = new ConcurrentDictionary<Type, RediTypeProccessor>();
+
 
         private bool TryGetDescriptor(Type type, out RediTypeProccessor typeProccessor, TimeSpan? timeSpan)
         {
@@ -155,8 +158,9 @@ namespace RedipalCore
 
         private RediTypeProccessor? TypeProccesssor(Type objType, TimeSpan? experation = null)
         {
-            if (objType != null)
+            if (objType != null && !_pendingTypes.Contains(objType))
             {
+                _pendingTypes.Add(objType);
                 var inheretExpiration = false;
 
                 if (Descriptors.TryGetValue(objType, out var value))
@@ -359,29 +363,30 @@ namespace RedipalCore
                                                     rediType.Name = property.Name;
                                                 }
 
-
-                                                if (inheretExpiration)
+                                                if (property.PropertyType != objType)
                                                 {
-                                                    if (TryGetDescriptor(property.PropertyType, out var subProccesor, rediTypeProccessor.Expiration))
+                                                    if (inheretExpiration)
                                                     {
-                                                        if (subProccesor.AsJson)
+                                                        if (TryGetDescriptor(property.PropertyType, out var subProccesor, rediTypeProccessor.Expiration))
                                                         {
-                                                            rediType.AsJson = true;
+                                                            if (subProccesor.AsJson)
+                                                            {
+                                                                rediType.AsJson = true;
+                                                            }
                                                         }
                                                     }
-                                                }
-                                                else
-                                                {
-                                                    if (TryGetDescriptor(property.PropertyType, out var subProccesor))
+                                                    else
                                                     {
-                                                        if (subProccesor.AsJson)
+                                                        if (TryGetDescriptor(property.PropertyType, out var subProccesor))
                                                         {
-                                                            rediType.AsJson = true;
+                                                            if (subProccesor.AsJson)
+                                                            {
+                                                                rediType.AsJson = true;
+                                                            }
                                                         }
                                                     }
+                                                    TypeProccesssor(property.PropertyType);
                                                 }
-
-                                                TypeProccesssor(property.PropertyType);
 
                                                 if (rediTypeProccessor.SubTypes == null)
                                                     rediTypeProccessor.SubTypes = new List<Type> { property.PropertyType };
@@ -442,6 +447,7 @@ namespace RedipalCore
                     Descriptors.TryAdd(objType, rediTypeProccessor);
                 }
 
+                _pendingTypes.Remove(objType);
                 return rediTypeProccessor;
             }
             return null;
