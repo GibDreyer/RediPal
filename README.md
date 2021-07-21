@@ -3,6 +3,9 @@
 RediPal gives you the ability to read and write dotnet objects in and out of redis
 
 
+### Nuget package
+https://www.nuget.org/packages/RediPal/
+
 ## Getting Started
 
 - [Basic Usage](#Basic-Usage)

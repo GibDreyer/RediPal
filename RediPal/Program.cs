@@ -31,10 +31,10 @@
 //        {
 //            //var redisConfig = new ConfigurationOptions
 //            //{
-//            //    Password = "Itunes96",
+//            //    Password = "*******",
 //            //    User = ""
 //            //};
-//            //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
+//            //redisConfig.EndPoints.Add("redis-******************.cloud.redislabs.com");
 
 //            //var redi = new Redipal(redisConfig, new RediConfig());
 //            var redi = new Redipal("ag-redis.ag");
