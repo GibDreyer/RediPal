@@ -287,6 +287,16 @@ namespace RedipalCore
             return null;
         }
 
+        public RediWriteResult? Object<T>(T obj, string id, params Action<RediWriteOptions>[] writeOptions) where T : notnull
+        {
+            var writer = new RediWriteOptions();
+            foreach (var option in writeOptions)
+            {
+                option.Invoke(writer);
+            }
+            writer.ID = id;
+            return Object(obj, writer);
+        }
 
         public RediWriteResult? Object<T>(T obj, params Action<RediWriteOptions>[] writeOptions) where T : notnull
         {

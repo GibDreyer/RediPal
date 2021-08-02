@@ -116,13 +116,13 @@
           }
         }
       },
-      "System.Drawing.Common/5.0.0": {
+      "System.Drawing.Common/5.0.2": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "5.0.0"
         },
         "compile": {
-          "ref/netcoreapp3.0/_._": {}
+          "ref/netcoreapp3.0/System.Drawing.Common.dll": {}
         },
         "runtime": {
           "lib/netcoreapp3.0/System.Drawing.Common.dll": {}
@@ -446,10 +446,10 @@
         "version.txt"
       ]
     },
-    "System.Drawing.Common/5.0.0": {
-      "sha512": "SztFwAnpfKC8+sEKXAFxCBWhKQaEd97EiOL7oZJZP56zbqnLpmxACWA8aGseaUExciuEAUuR9dY8f7HkTRAdnw==",
+    "System.Drawing.Common/5.0.2": {
+      "sha512": "rvr/M1WPf24ljpvvrVd74+NdjRUJu1bBkspkZcnzSZnmAUQWSvanlQ0k/hVHk+cHufZbZfu7vOh/vYc0q5Uu/A==",
       "type": "package",
-      "path": "system.drawing.common/5.0.0",
+      "path": "system.drawing.common/5.0.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -482,7 +482,7 @@
         "runtimes/win/lib/netcoreapp2.0/System.Drawing.Common.dll",
         "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll",
         "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.xml",
-        "system.drawing.common.5.0.0.nupkg.sha512",
+        "system.drawing.common.5.0.2.nupkg.sha512",
         "system.drawing.common.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -720,7 +720,8 @@
   "projectFileDependencyGroups": {
     "net5.0": [
       "Pluralize.NET >= 1.0.2",
-      "StackExchange.Redis >= 2.2.4"
+      "StackExchange.Redis >= 2.2.4",
+      "System.Drawing.Common >= 5.0.2"
     ]
   },
   "packageFolders": {
@@ -729,7 +730,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "0.7.159",
+    "version": "0.7.160",
     "restore": {
       "projectUniqueName": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj",
       "projectName": "RediPal",
@@ -777,6 +778,10 @@
           "StackExchange.Redis": {
             "target": "Package",
             "version": "[2.2.4, )"
+          },
+          "System.Drawing.Common": {
+            "target": "Package",
+            "version": "[5.0.2, )"
           }
         },
         "imports": [

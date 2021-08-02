@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "7emq4E1JCnqlYP/06kyCR1aI/bb84MVL+Nmd7nUgf2LkJlIuQJSDj14zIKm/ckpfljQHovbSw0AFACozoff2mQ==",
+  "dgSpecHash": "1sqr1D+dRknzVm1W7UIaKY0BQeYGt3R2LlI1IfEYQDVyLlnPNTvomcnqBGERub6EPLKrWsWXK7hGt4CCDR/fRA==",
   "success": true,
   "projectFilePath": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj",
   "expectedPackageFiles": [
@@ -12,7 +12,7 @@
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\stackexchange.redis\\2.2.4\\stackexchange.redis.2.2.4.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0\\system.configuration.configurationmanager.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.diagnostics.performancecounter\\5.0.0\\system.diagnostics.performancecounter.5.0.0.nupkg.sha512",
-    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512",
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.drawing.common\\5.0.2\\system.drawing.common.5.0.2.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.io.pipelines\\5.0.0\\system.io.pipelines.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.accesscontrol\\5.0.0\\system.security.accesscontrol.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.cryptography.protecteddata\\5.0.0\\system.security.cryptography.protecteddata.5.0.0.nupkg.sha512",

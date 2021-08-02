@@ -10,13 +10,14 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>RediPal</PackageId>
-    <Version>0.7.159</Version>
+    <Version>0.7.160</Version>
     <RootNamespace>RediPal</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Pluralize.NET" Version="1.0.2" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -39,7 +39,7 @@ namespace RedipalCore.Objects
         }
 
 
-        public event Action<T>? OnChange;
+        public event Action<T?>? OnChange;
 
 
         public List<Delegate>? Conditions { get; set; }
@@ -80,7 +80,7 @@ namespace RedipalCore.Objects
                 LastUpdated = DateTime.Now;
                 if (Reader != null && Key != null)
                 {
-                    var obj = Reader.Object<T>(KeySpace +":"+ Key);
+                    var obj = Reader.Object<T>(KeySpace + ":" + Key);
                     if (obj != null)
                     {
                         if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
@@ -88,6 +88,10 @@ namespace RedipalCore.Objects
                             InvokeOnChanged(obj);
                             return true;
                         }
+                    }
+                    else
+                    {
+                        InvokeOnChanged(obj);
                     }
                 }
                 return false;
@@ -98,12 +102,9 @@ namespace RedipalCore.Objects
             }
         }
 
-        private void InvokeOnChanged(T obj)
+        private void InvokeOnChanged(T? obj)
         {
-            if (OnChange != null)
-            {
-                OnChange.Invoke(obj);
-            }
+            OnChange?.Invoke(obj);
         }
 
         public void Dispose()
@@ -145,7 +146,7 @@ namespace RedipalCore.Objects
         public DateTime LastUpdated { get; set; } = DateTime.Now;
 
         internal Delegate Invoker { get; set; }
-        public event Action<T>? OnChange;
+        public event Action<T?>? OnChange;
 
         public List<Delegate>? Conditions { get; set; }
 
@@ -193,7 +194,7 @@ namespace RedipalCore.Objects
             RediSubscriber.Subscriptions.Remove(SubscriptionID);
         }
 
-        internal bool InvokeReloadObject(object obj)
+        internal bool InvokeReloadObject(object? obj)
         {
             LastUpdated = DateTime.Now;
             if (obj is not null && Invoker is not null)
@@ -209,15 +210,16 @@ namespace RedipalCore.Objects
                     }
                 }
             }
+            else
+            {
+                InvokeOnChanged(default);
+            }
             return false;
         }
 
-        private void InvokeOnChanged(T obj)
+        private void InvokeOnChanged(T? obj)
         {
-            if (OnChange != null)
-            {
-                OnChange.Invoke(obj);
-            }
+                OnChange?.Invoke(obj);
         }
     }
 }

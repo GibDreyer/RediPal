@@ -86,35 +86,51 @@ namespace RedipalCore
 
         public IRediSubscription<T>? ToObject<T>(string key) where T : notnull
         {
-            if (Subscriptions.ContainsKey(key))
-            {
-                if (Subscriptions[key] is RediObjectSubscription<T> value)
-                {
-                    return value;
-                }
-            }
-
             if (db != null)
             {
-                var objID = key.Split(":").LastOrDefault();
-                var keySpace = key.Replace(":" + objID, "");
-
-                if (Subscriber != null && objID is not null && !string.IsNullOrEmpty(keySpace))
+                if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(T), out var discriptor))
                 {
-                    var subscriptionID = $"__keyspace@{db.Database}__:" + key;
-
-                    var rediSubbed = new RediObjectSubscription<T>(Reader, keySpace, objID, subscriptionID, new RediSubscriberOptions());
-                    var createResult = rediSubbed.InvokeReloadObject();
-
-                    ActiveRedisConnections.Add(subscriptionID);
-                    Subscriber.Subscribe(subscriptionID, (s, e) =>
+                    if (!string.IsNullOrEmpty(discriptor.KeySpace))
                     {
-                        rediSubbed.InvokeReloadObject();
-                    });
+                        if (Subscriber != null)
+                        {
+                            var appendToKey = "";
 
-                    Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                            if (discriptor.AppendToKey != null)
+                            {
+                                for (int i = 0; i < discriptor.AppendToKey.Count; i++)
+                                {
+                                    var last = key.ToString().Split(":").LastOrDefault();
+                                    var keyToAppend = discriptor.AppendToKey[i].ToLower();
+                                    if (last is not null && last.ToLower() != keyToAppend && key != keyToAppend)
+                                    {
+                                        appendToKey += ":" + keyToAppend;
+                                    }
+                                }
+                            }
 
-                    return rediSubbed;
+                            var subscriptionID = $"__keyspace@{db.Database}__:" + discriptor.KeySpace + ":" + key + appendToKey;
+                            if (Subscriptions.ContainsKey(subscriptionID))
+                            {
+                                if (Subscriptions[subscriptionID] is RediObjectSubscription<T> value)
+                                {
+                                    return value;
+                                }
+                            }
+
+                            var rediSubbed = new RediObjectSubscription<T>(Reader, discriptor.KeySpace, key, subscriptionID, new RediSubscriberOptions());
+                            var createResult = rediSubbed.InvokeReloadObject();
+
+                            ActiveRedisConnections.Add(subscriptionID);
+                            _ = Subscriber.SubscribeAsync(subscriptionID, (s, e) =>
+                            {
+                                rediSubbed.InvokeReloadObject();
+                            });
+                            Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+
+                            return rediSubbed;
+                        }
+                    }
                 }
             }
             return default;

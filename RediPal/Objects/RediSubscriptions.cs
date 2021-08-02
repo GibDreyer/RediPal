@@ -79,7 +79,7 @@ namespace RedipalCore.Objects
 
         public DateTime LastUpdated { get; private set; }
 
-        public event Action<TKey, TValue>? OnValueUpdate;
+        public event Action<TKey, TValue?>? OnValueUpdate;
         public event Action<TKey>? OnRemoved;
         public event Action<TKey, TValue?>? OnAdded;
 
@@ -111,7 +111,7 @@ namespace RedipalCore.Objects
             }
         }
 
-        internal void InvokeOnChanged(TKey key, TValue value)
+        internal void InvokeOnChanged(TKey key, TValue? value)
         {
             if (OnValueUpdate != null)
             {

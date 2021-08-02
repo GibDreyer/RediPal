@@ -11,7 +11,7 @@ namespace RedipalCore.Interfaces
         public string Key { get; }
         public DateTime LastUpdated { get; }
 
-        public event Action<T>? OnChange;
+        public event Action<T?>? OnChange;
 
         public new void Dispose();
 
@@ -33,7 +33,7 @@ namespace RedipalCore.Interfaces
 
         public string SubscriptionID { get; }
         public DateTime LastUpdated { get; }
-        public event Action<TKey, TValue>? OnValueUpdate;
+        public event Action<TKey, TValue?>? OnValueUpdate;
         public event Action<TKey>? OnRemoved;
         public event Action<TKey, TValue?>? OnAdded;
 

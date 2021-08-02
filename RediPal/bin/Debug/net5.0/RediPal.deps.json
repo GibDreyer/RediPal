@@ -6,10 +6,11 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "RediPal/0.7.159": {
+      "RediPal/0.7.160": {
         "dependencies": {
           "Pluralize.NET": "1.0.2",
-          "StackExchange.Redis": "2.2.4"
+          "StackExchange.Redis": "2.2.4",
+          "System.Drawing.Common": "5.0.2"
         },
         "runtime": {
           "RediPal.dll": {}
@@ -106,28 +107,28 @@
           }
         }
       },
-      "System.Drawing.Common/5.0.0": {
+      "System.Drawing.Common/5.0.2": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "5.0.0"
         },
         "runtime": {
           "lib/netcoreapp3.0/System.Drawing.Common.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
+            "assemblyVersion": "5.0.0.2",
+            "fileVersion": "5.0.421.11614"
           }
         },
         "runtimeTargets": {
           "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll": {
             "rid": "unix",
             "assetType": "runtime",
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
+            "assemblyVersion": "5.0.0.2",
+            "fileVersion": "5.0.421.11614"
           },
           "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll": {
             "rid": "win",
             "assetType": "runtime",
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.51904"
+            "assemblyVersion": "5.0.0.2",
+            "fileVersion": "5.0.421.11614"
           }
         }
       },
@@ -176,7 +177,7 @@
       "System.Security.Principal.Windows/5.0.0": {},
       "System.Windows.Extensions/5.0.0": {
         "dependencies": {
-          "System.Drawing.Common": "5.0.0"
+          "System.Drawing.Common": "5.0.2"
         },
         "runtime": {
           "lib/netcoreapp3.0/System.Windows.Extensions.dll": {
@@ -196,7 +197,7 @@
     }
   },
   "libraries": {
-    "RediPal/0.7.159": {
+    "RediPal/0.7.160": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -257,12 +258,12 @@
       "path": "system.diagnostics.performancecounter/5.0.0",
       "hashPath": "system.diagnostics.performancecounter.5.0.0.nupkg.sha512"
     },
-    "System.Drawing.Common/5.0.0": {
+    "System.Drawing.Common/5.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-SztFwAnpfKC8+sEKXAFxCBWhKQaEd97EiOL7oZJZP56zbqnLpmxACWA8aGseaUExciuEAUuR9dY8f7HkTRAdnw==",
-      "path": "system.drawing.common/5.0.0",
-      "hashPath": "system.drawing.common.5.0.0.nupkg.sha512"
+      "sha512": "sha512-rvr/M1WPf24ljpvvrVd74+NdjRUJu1bBkspkZcnzSZnmAUQWSvanlQ0k/hVHk+cHufZbZfu7vOh/vYc0q5Uu/A==",
+      "path": "system.drawing.common/5.0.2",
+      "hashPath": "system.drawing.common.5.0.2.nupkg.sha512"
     },
     "System.IO.Pipelines/5.0.0": {
       "type": "package",

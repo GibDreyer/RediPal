@@ -1,10 +1,12 @@
-﻿//using RedipalCore.Attributes;
+﻿//using RediPal.TestObjects;
+//using RedipalCore.Attributes;
 //using RedipalCore.Objects;
 //using RedipalCore.TestObjects;
 //using StackExchange.Redis;
 //using System;
 //using System.Collections.Generic;
 //using System.Diagnostics;
+//using System.Drawing;
 //using System.Linq;
 //using System.Threading;
 //using System.Threading.Tasks;
@@ -31,14 +33,43 @@
 //        {
 //            //var redisConfig = new ConfigurationOptions
 //            //{
-//            //    Password = "*******",
+//            //    Password = "Itunes96",
 //            //    User = ""
 //            //};
-//            //redisConfig.EndPoints.Add("redis-******************.cloud.redislabs.com");
+//            //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
+//            //var redi = new Redipal(redisConfig);
+//            var redi = new Redipal("roc-redis.ag");
 
-//            //var redi = new Redipal(redisConfig, new RediConfig());
-//            var redi = new Redipal("ag-redis.ag");
+//            Bitmap? bitmap = new(@"C:\Temp\Section_8_LightCurtain__637635049833672911.bmp");
 
+//            StatusMessage message = new(bitmap)
+//            {
+//                Status = "This is a test message",
+//                Type = StatusMessageType.Warning
+//            };
+
+//            // redi.Write.Object(message, x => x.ID = "saw-1");
+//            var subs = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
+
+//            subs.OnValueUpdate += (key, value) =>
+//            {
+//                if (value is null)
+//                {
+//                    Console.WriteLine($"{key} was deleted");
+//                }
+//                else
+//                {
+//                    Console.WriteLine(value.Status);
+//                }
+//            };
+
+//            redi.Write.Object(message, x => x.ID = "saw-1");
+
+
+//            while (true)
+//            {
+//                Thread.Sleep(100);
+//            }
 
 //            var geos = new Dictionary<string, GeoLocation>
 //            {
@@ -216,8 +247,6 @@
 //                }
 //            };
 
-
-
 //            var geos2 = new Dictionary<string, GeoLocation>
 //            {
 //                {
@@ -248,13 +277,16 @@
 
 //            //redi.Eradicate.Key("geos");
 
-//           // redi.Write.Dictionary(geos, "locations");
+//            // redi.Write.Dictionary(geos, "locations");
 
 //            var stopwatch = Stopwatch.StartNew();
 //            var list = redi.Read.Dictionary<string, GeoLocation>("locations");
 //            stopwatch.Stop();
 //            Console.WriteLine("Write Time:  " + stopwatch.ElapsedMilliseconds);
 //            stopwatch.Restart();
+
+
+
 
 
 //            //"geo:fort_scott"
@@ -368,13 +400,13 @@
 
 
 
+
 //            //Console.WriteLine();
 
 
 
 //            //// Operator Locaitons
 //            //Dictionary<string, Location>? operatorLocations;
-
 
 //            //// Create the Subscription To Operator Locations
 //            //var operatorSub = redi.Subscribe.ToDictionary<string, Location>("operatorlocations", x =>
@@ -406,11 +438,9 @@
 
 
 
-//            //// Task Stuff
+//            ////// Task Stuff
 
 //            //Dictionary<string, TaskPlan>? activeTasks;
-
-
 
 //            //// Get Active Tasks
 //            //var activeTaskSub = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");

@@ -62,6 +62,7 @@ namespace RedipalCore.Interfaces
         /// </summary>
         public RediWriteResult? Object<T>(T obj, RediWriteOptions? writeOptions = null) where T : notnull;
         public RediWriteResult? Object<T>(T obj, params Action<RediWriteOptions>[] writeOptions) where T : notnull;
+        public RediWriteResult? Object<T>(T obj, string id, params Action<RediWriteOptions>[] writeOptions) where T : notnull;
 
 
 
