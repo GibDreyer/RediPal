@@ -35,6 +35,6 @@ namespace RedipalCore.Objects
         /// <summary>
         /// Default:  0
         /// </summary>
-        public int MaxPublishingInterval { get; set; } = 0;
+        public int MaxPublishingInterval { get; set; } = 10;
     }
 }

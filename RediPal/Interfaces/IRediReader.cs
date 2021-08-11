@@ -1,4 +1,5 @@
-﻿using RedipalCore.Objects;
+﻿using RediPal.Messages;
+using RedipalCore.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -28,6 +29,8 @@ namespace RedipalCore.Interfaces
 
         public T? Object<T>(string id) where T : notnull;
 
+        public string? Message(string key);
+        public string? Message(string keySpace, string id);
 
 
         // Value 
@@ -95,5 +98,8 @@ namespace RedipalCore.Interfaces
         public Dictionary<TKey, TValue>? Dictionary<TKey, TValue>(string[] hashIDs, RediReadOptions? readOptions = default) where TKey : IConvertible;
         public Dictionary<TKey, TValue>? Dictionary<TKey, TValue>(string keySpace, string[] hashIDs, RediReadOptions? readOptions = default) where TKey : IConvertible;
         public Dictionary<TKey, TValue>? Dictionary<TKey, TValue>(string keySpace, string fromSet, RediReadOptions? readOptions = default) where TKey : IConvertible;
+
+        public Dictionary<string, string>? Messages(string set);
+        public Dictionary<string, string>? Messages(params string[] hashIDs);
     }
 }

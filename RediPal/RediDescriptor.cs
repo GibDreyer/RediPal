@@ -1,10 +1,12 @@
-﻿using RedipalCore.Attributes;
+﻿using RediPal.Messages;
+using RedipalCore.Attributes;
 using RedipalCore.Interfaces;
 using RedipalCore.Objects;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 
@@ -155,7 +157,6 @@ namespace RedipalCore
             return keys;
         }
 
-
         private RediTypeProccessor? TypeProccesssor(Type objType, TimeSpan? experation = null)
         {
             if (objType != null && !_pendingTypes.Contains(objType))
@@ -254,19 +255,24 @@ namespace RedipalCore
                         }
                         else
                         {
-
                             IEnumerable<PropertyInfo>? properties = null;
 
-                            if (objType.BaseType != null && objType.BaseType == typeof(RediBase))
+                            if (objType.BaseType != null && (objType.BaseType == typeof(RediBase)))
                             {
                                 properties = objType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
                                                         .Where(x => x.PropertyType != typeof(PropertyInfo));
+                            }
+                            else if (objType.BaseType != null && objType.BaseType == typeof(RediMessageBase))
+                            {
+                                properties = objType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+                                                       .Where(x => x.PropertyType != typeof(PropertyInfo) && x.DeclaringType == typeof(RediMessageBase));
                             }
                             else
                             {
                                 properties = objType.GetProperties()
                                                    .Where(x => x.PropertyType != typeof(PropertyInfo));
                             }
+
 
                             if (properties is not null)
                             {
@@ -284,6 +290,17 @@ namespace RedipalCore
                                                 CanSet = property.CanWrite,
                                                 IsList = objType.IsGenericType
                                             };
+
+                                            if (Attribute.IsDefined(property, typeof(RediWriteAsImage), true))
+                                            {
+                                                var attribute = Attribute.GetCustomAttribute(property, typeof(RediWriteAsImage), true);
+                                                if (attribute != null)
+                                                {
+                                                    var att = (RediWriteAsImage)attribute;
+                                                    rediType.ImageFormat = att.ImageFormat;
+                                                    rediType.CompressionLevel = att.CompressionLevel;
+                                                }
+                                            }
 
                                             if (Attribute.IsDefined(property, typeof(RediSearchScore)))
                                             {
@@ -336,7 +353,6 @@ namespace RedipalCore
                                                 PropertyType = property.PropertyType,
                                                 PropertyInfo = property,
                                                 CanSet = property.CanWrite,
-
                                             };
 
                                             if (Attribute.IsDefined(property, typeof(RediIgnore)))
@@ -468,7 +484,7 @@ namespace RedipalCore
                 else
                     type = obj.GetType();
 
-                if (type.IsPrimitive || type.IsValueType || type == typeof(string) || type == typeof(decimal) || type == typeof(DateTime) || type == typeof(TimeSpan) || type == typeof(DateTimeOffset) || type == typeof(Guid))
+                if (type.IsPrimitive || type.IsValueType || type == typeof(string) || type == typeof(decimal) || type == typeof(Bitmap) || type == typeof(DateTime) || type == typeof(TimeSpan) || type == typeof(DateTimeOffset) || type == typeof(Guid))
                 {
                     return true;
                 }

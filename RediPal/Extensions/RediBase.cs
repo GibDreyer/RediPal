@@ -7,6 +7,10 @@ namespace RedipalCore
 {
     public abstract class RediBase : IRediExtensions
     {
+        //public virtual string Redi_DefaultLayer { get; set; } = "";
+
+
+
         public static long? Redi_GetObjectID(string key)
         {
             if (Redipal.IFactory != null)
@@ -52,6 +56,12 @@ namespace RedipalCore
                 }
             }
             return false;
+        }
+
+        public bool Redi_Write(string id)
+        {
+            this.Redi_WriteName = id;
+            return this.Redi_Write();
         }
 
         public void FirePropertyChanged<T>(T obj, Expression<Func<T, IConvertible>> propertySelector)

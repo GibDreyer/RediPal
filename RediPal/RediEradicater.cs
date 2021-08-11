@@ -26,7 +26,7 @@ namespace RedipalCore
         {
             try
             {
-                return db.SetRemove(key, member);
+                return db.SetRemove(key.ToLower(), member);
             }
             catch
             {
@@ -38,7 +38,7 @@ namespace RedipalCore
         {
             try
             {
-                return db.HashDelete(key, field);
+                return db.HashDelete(key.ToLower(), field);
             }
             catch
             {
@@ -50,7 +50,7 @@ namespace RedipalCore
         {
             try
             {
-                return db.KeyDelete(key);
+                return db.KeyDelete(key.ToLower());
             }
             catch
             {

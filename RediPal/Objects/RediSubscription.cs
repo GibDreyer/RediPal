@@ -21,6 +21,8 @@ namespace RedipalCore.Objects
             SubscriptionID = subscriptionID;
         }
 
+        internal bool IsMessage { get; set; }
+
         public string SubscriptionID { get; }
         public string Key { get; }
         public string KeySpace { get; }
@@ -62,14 +64,29 @@ namespace RedipalCore.Objects
 
         public T? Read()
         {
-            var obj = Reader.Object<T>(Key);
-            if (obj != null)
+            if (IsMessage)
             {
-                return obj;
+                var obj = Reader.Message(Key);
+                if (obj is T t)
+                {
+                    return t;
+                }
+                else
+                {
+                    return default;
+                }
             }
             else
             {
-                return default;
+                var obj = Reader.Object<T>(Key);
+                if (obj != null)
+                {
+                    return obj;
+                }
+                else
+                {
+                    return default;
+                }
             }
         }
 
@@ -80,18 +97,37 @@ namespace RedipalCore.Objects
                 LastUpdated = DateTime.Now;
                 if (Reader != null && Key != null)
                 {
-                    var obj = Reader.Object<T>(KeySpace + ":" + Key);
-                    if (obj != null)
+                    if (!IsMessage)
                     {
-                        if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
+                        var obj = Reader.Object<T>(KeySpace + ":" + Key);
+                        if (obj != null)
+                        {
+                            if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
+                            {
+                                InvokeOnChanged(obj);
+                                return true;
+                            }
+                        }
+                        else
                         {
                             InvokeOnChanged(obj);
-                            return true;
                         }
                     }
                     else
                     {
-                        InvokeOnChanged(obj);
+                        var obj = Reader.Message(Key);
+                        if (obj != null)
+                        {
+                            if (obj is T t && (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition)))
+                            {
+                                InvokeOnChanged(t);
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            InvokeOnChanged(default);
+                        }
                     }
                 }
                 return false;
@@ -219,7 +255,7 @@ namespace RedipalCore.Objects
 
         private void InvokeOnChanged(T? obj)
         {
-                OnChange?.Invoke(obj);
+            OnChange?.Invoke(obj);
         }
     }
 }

@@ -62,5 +62,11 @@ namespace RedipalCore.Interfaces
         /// </summary>
         public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(string key, RediSubscriberOptions options, params string[] names) where TKey : IConvertible where TValue : notnull;
         public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(string key, params string[] names) where TKey : IConvertible where TValue : notnull;
+
+        /// <summary>
+        /// Create a subscription the as a dictionary to the given hash Ids is the form of a message
+        /// </summary>
+        public IRediSubscriptions<string, string>? ToMessages(string key);
+        public IRediSubscriptions<string, string>? ToMessages(string name, params string[] names);
     }
 }

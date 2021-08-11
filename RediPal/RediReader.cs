@@ -7,11 +7,15 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO.Compression;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Drawing.Imaging;
 
 namespace RedipalCore
 {
@@ -125,6 +129,86 @@ namespace RedipalCore
             var outInstance = Get_AsObject(instance, keySpace.ToLower(), keySpace.Split(":").LastOrDefault());
             return (T?)outInstance;
         }
+
+
+        public string? Message(string keySpace, string key)
+        {
+            var keys = key.Split(':');
+            if (keys.Length > 1)
+            {
+                var id = keys.Last();
+                return Message(key.Replace(id, "") + ":" + id); ;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public string? Message(string id)
+        {
+            if (db is not null)
+            {
+                var x = db.HashGetAll("status-message:" + id);
+                if (x.Length > 0)
+                {
+                    string? templateID = null;
+                    string[]? p = null;
+
+                    for (int i = 0; i < x.Length; i++)
+                    {
+                        var hash = x[i];
+                        if (hash.Name == "templatename")
+                        {
+                            templateID = hash.Value;
+                        }
+                        else if (hash.Name == "params")
+                        {
+                            p = JsonSerializer.Deserialize<string[]>(hash.Value);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(templateID) && p is not null)
+                    {
+                        var template = db.StringGet("status-message:" + templateID);
+                        if (!template.IsNull)
+                        {
+                            return string.Format(template.ToString(), p);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public Dictionary<string, string>? Messages(string key)
+        {
+            if (db is not null)
+            {
+                var ids = db.SetMembers(key);
+                if (ids is not null)
+                {
+                    return Messages(ids.ToStringArray());
+                }
+            }
+            return null;
+        }
+
+        public Dictionary<string, string> Messages(string[] hashIDs)
+        {
+            var dictionary = new ConcurrentDictionary<string, string>();
+
+            Parallel.ForEach(hashIDs, id =>
+            {
+                var message = Message(id);
+                if (message is not null && !dictionary.ContainsKey(id))
+                {
+                    dictionary.TryAdd(id, message);
+                }
+            });
+            return dictionary.ToDictionary(x=> x.Key, x=> x.Value);
+        }
+
 
 
         public T? Field<T>(string keySpace, string field) where T : notnull
@@ -1398,8 +1482,8 @@ namespace RedipalCore
                                         var property = primitiveProperties.FirstOrDefault(x => x.Name.ToLower() == hash.Name.ToString().ToLower());
                                         if (property != null && property.PropertyInfo != null && property.PropertyType != null)
                                         {
-                                            var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value);
-                                            ///// accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
+                                            var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value, property);
+                                            // accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
                                             try
                                             {
                                                 property.PropertyInfo.SetValue(instance, Convert.ChangeType(redisConvert, property.PropertyType), null);
@@ -1583,7 +1667,7 @@ namespace RedipalCore
             return list;
         }
 
-        internal static object? ConvertFromRedisType(Type t, object? obj)
+        internal static object? ConvertFromRedisType(Type t, object? obj, RediType? rediType = null)
         {
             if (obj != null)
             {
@@ -1616,6 +1700,28 @@ namespace RedipalCore
                     if (s != null)
                     {
                         return s;
+                    }
+                }
+                else if (t == typeof(Bitmap))
+                {
+                    var base64 = obj.ToString();
+                    if (base64 is not null)
+                    {
+                        byte[]? buffer = DoDecompress(Convert.FromBase64String(base64));
+                        MemoryStream? ms = new(buffer);
+                        return new Bitmap(ms);
+
+                        static byte[] DoDecompress(byte[] b)
+                        {
+                            using MemoryStream? ms = new();
+                            using (MemoryStream? bs = new(b))
+                            using (GZipStream? z = new(bs, CompressionMode.Decompress))
+                            {
+                                z.CopyTo(ms);
+                            }
+
+                            return ms.ToArray();
+                        }
                     }
                 }
                 else

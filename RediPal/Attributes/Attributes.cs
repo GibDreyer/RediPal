@@ -1,6 +1,9 @@
 ﻿using RedipalCore.Objects;
 using System;
 using System.Collections;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO.Compression;
 
 namespace RedipalCore.Attributes
 {
@@ -21,6 +24,71 @@ namespace RedipalCore.Attributes
     [PropertyType(typeof(IList), typeof(IDictionary))]
     public class RediWriteAsJson : Attribute
     {
+    }
+
+    [AttributeUsage(AttributeTargets.Property)]
+    [PropertyType(typeof(Bitmap))]
+    public class RediWriteAsImage : Attribute
+    {
+        public ImageFormat ImageFormat { get; private set; }
+        public long CompressionLevel { get; private set; }
+
+        public RediWriteAsImage(Redi_ImageFormat imageFormat, int compressionLevel = 100)
+        {
+            CompressionLevel = Math.Min(100, Math.Max(compressionLevel, 0));
+
+            ImageFormat = imageFormat switch
+            {
+                Redi_ImageFormat.Bmp => ImageFormat.Bmp,
+                Redi_ImageFormat.Emf => ImageFormat.Emf,
+                Redi_ImageFormat.Exif => ImageFormat.Exif,
+                Redi_ImageFormat.Gif => ImageFormat.Gif,
+                Redi_ImageFormat.Icon => ImageFormat.Icon,
+                Redi_ImageFormat.Jpeg => ImageFormat.Jpeg,
+                Redi_ImageFormat.MemoryBmp => ImageFormat.MemoryBmp,
+                Redi_ImageFormat.Png => ImageFormat.Png,
+                Redi_ImageFormat.Tiff => ImageFormat.Tiff,
+                Redi_ImageFormat.Wmf => ImageFormat.Wmf,
+                _ => ImageFormat.Png,
+            };
+        }
+    }
+
+    public enum Redi_ImageFormat
+    {
+        Bmp,
+        Emf,
+        Exif,
+        Gif,
+        Icon,
+        Jpeg,
+        MemoryBmp,
+        Png,
+        Tiff,
+        Wmf
+    }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class RediLayer : Attribute
+    {
+        public string[] Layers { get; private set; }
+
+        public RediLayer(params string[] layers)
+        {
+            Layers = layers;
+        }
+    }
+    
+    [AttributeUsage(AttributeTargets.Property)]
+    public class RediMessageIndex : Attribute
+    {
+        internal ushort Index { get; private set; }
+
+        public RediMessageIndex(ushort index)
+        {
+            Index = index;
+        }
     }
 
 
@@ -104,7 +172,7 @@ namespace RedipalCore.Attributes
         }
     }
 
-  
+
     /// <summary>
     /// Will Automatically add to this set when wrote
     /// </summary>
@@ -125,7 +193,7 @@ namespace RedipalCore.Attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class RediWriteName : Attribute
-    {  }
+    { }
 
 
     /// <summary>

@@ -25,8 +25,6 @@ namespace RedipalCore
             this.reader = reader;
         }
 
-
-
         public Dictionary<TKey, TValue>? AsDictionary<TKey, TValue>(string fromSet, DateTime start, DateTime? end = null) where TKey : IConvertible where TValue : notnull
         {
             if (db != null)

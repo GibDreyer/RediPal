@@ -1,6 +1,7 @@
 ﻿using RedipalCore.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RedipalCore.Objects
@@ -75,6 +76,7 @@ namespace RedipalCore.Objects
 
         public Dictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; internal set; }
 
+        internal bool IsMessages { get; set; }
         public string SubscriptionID { get; }
 
         public DateTime LastUpdated { get; private set; }
@@ -92,12 +94,45 @@ namespace RedipalCore.Objects
                 Progress = progressIndicator,
             };
 
-            RediReadTask<TKey, TValue>? reader = new(Task.Run(() => Redipal.IFactory!.RediPalInstance.Read.Dictionary<TKey, TValue>(SetKeys.ToArray(), readOptions)), progressIndicator)
+            if (IsMessages)
             {
-                TotalItems = Subscriptions.Count
-            };
+                RediReadTask<TKey, TValue>? reader = new(Task.Run(() => GetMessages()), progressIndicator)
+                {
+                    TotalItems = Subscriptions.Count
+                };
 
-            return reader;
+                return reader;
+
+                Dictionary<TKey, TValue>? GetMessages()
+                {
+                    var result = Redipal.IFactory!.RediPalInstance.Read.Messages(SetKeys.ToArray());
+                    if (result is not null)
+                    {
+                        var d = new Dictionary<TKey, TValue>();
+                        foreach (var item in result)
+                        {
+                            if (item.Key is TKey key && item.Value is TValue value)
+                            {
+                                d.Add(key, value);
+                            }
+                        }
+                        return d;
+                    }
+                    else
+                    {
+                        return default;
+                    }
+                }
+            }
+            else
+            {
+                RediReadTask<TKey, TValue>? reader = new(Task.Run(() => Redipal.IFactory!.RediPalInstance.Read.Dictionary<TKey, TValue>(SetKeys.ToArray(), readOptions)), progressIndicator)
+                {
+                    TotalItems = Subscriptions.Count
+                };
+
+                return reader;
+            }
         }
 
         public void UnsubscribeMembers()

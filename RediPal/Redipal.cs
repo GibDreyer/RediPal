@@ -4,6 +4,7 @@ using RedipalCore.Objects;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace RedipalCore
@@ -76,9 +77,9 @@ namespace RedipalCore
 
             Eradicate = new RediEradicater(db, IFactory);
             Read = new RediReader(db, IFactory.TypeDescriptor);
-         //   ReadAsync = new ReaderAsync(db, options, IFactory.TypeDescriptor);
+            //   ReadAsync = new ReaderAsync(db, options, IFactory.TypeDescriptor);
             Subscribe = new RediSubscriber(redis, db, Read, IFactory);
-            Write = new RediWriter(db,IFactory);
+            Write = new RediWriter(db, IFactory);
             Search = new RediSearch(db, IFactory.TypeDescriptor, Read);
         }
 
@@ -105,7 +106,7 @@ namespace RedipalCore
 
             IFactory = new RediFactory(db, redis, this);
 
-            Read = new RediReader(db,  IFactory.TypeDescriptor);
+            Read = new RediReader(db, IFactory.TypeDescriptor);
             Eradicate = new RediEradicater(db, IFactory);
             //ReadAsync = new ReaderAsync(db, options, IFactory.TypeDescriptor);
             Subscribe = new RediSubscriber(redis, db, Read, IFactory);
@@ -119,20 +120,39 @@ namespace RedipalCore
         {
             if (IFactory != null && IFactory.TypeDescriptor.TryGetDescriptor(typeof(T), out var proccessor, false))
             {
-                proccessor.WriteNameProperty = rediDefaults.Redi_WriteName;
-                proccessor.keySpace = rediDefaults.KeySpace;
-                proccessor.KeySpace = rediDefaults.KeySpace;
-                proccessor.Conditionals = rediDefaults.Redi_Conditionals;
-                proccessor.ParameterModifiers = rediDefaults.Redi_ParameterModifier;
-                proccessor.ScoreProperty = rediDefaults.Redi_SearchScore;
-                proccessor.defaultSet = rediDefaults.DefaultSet;
-                proccessor.DefaultSet = rediDefaults.DefaultSet;
-                proccessor.expiration = rediDefaults.Expiration;
-                proccessor.Expiration = rediDefaults.Expiration;
-                proccessor.asJson = rediDefaults.WriteAsJson;
-                proccessor.AsJson = rediDefaults.WriteAsJson;
-                proccessor.ignore = rediDefaults.Ignore;
-                proccessor.Ignore = rediDefaults.Ignore;
+                if (rediDefaults.Redi_WriteName is not null)
+                    proccessor.WriteNameProperty = rediDefaults.Redi_WriteName;
+                if (rediDefaults.KeySpace is not null)
+                    proccessor.keySpace = rediDefaults.KeySpace;
+                if (rediDefaults.Redi_Conditionals is not null)
+                    proccessor.Conditionals = rediDefaults.Redi_Conditionals;
+                if (rediDefaults.Redi_Modifier is not null)
+                    proccessor.Modifiers = rediDefaults.Redi_Modifier;
+                if (rediDefaults.Redi_SearchScore is not null)
+                    proccessor.ScoreProperty = rediDefaults.Redi_SearchScore;
+                if (rediDefaults.DefaultSet is not null)
+                    proccessor.defaultSet = rediDefaults.DefaultSet;
+                if (rediDefaults.Expiration is not null)
+                    proccessor.expiration = rediDefaults.Expiration;
+                if (rediDefaults.WriteAsJson is not null)
+                    proccessor.asJson = rediDefaults.WriteAsJson;
+                if (rediDefaults.Ignore is not null)
+                    proccessor.ignore = rediDefaults.Ignore;
+
+                if (rediDefaults.Redi_ParameterModifier is not null && proccessor.Properties is not null)
+                {
+                    foreach (var modifier in rediDefaults.Redi_ParameterModifier)
+                    {
+                        var property = proccessor.Properties.FirstOrDefault(x => x.PropertyInfo is not null && x.PropertyInfo.Name == modifier.Item1.Name);
+                        if (property is not null)
+                        {
+                            if (proccessor.ParameterModifiers is null)
+                                proccessor.ParameterModifiers = new();
+
+                            proccessor.ParameterModifiers.Add((property, modifier.Item2));
+                        }
+                    }
+                }
 
                 var type = typeof(T);
                 if (TypeDefaults.ContainsKey(type))
@@ -224,7 +244,7 @@ namespace RedipalCore
         public IRediSearch Search { get; set; }
         public IRediEradicater Eradicate { get; set; }
 
-       // private IReaderAsync ReadAsync { get; set; }
+        // private IReaderAsync ReadAsync { get; set; }
 
         public event Action<RediError, string>? OnError;
 

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Nuget Pkg test app\AG.RocCore.Objects\AG.RocCore.Objects.csproj" />
+    <ProjectReference Include="..\RediPal\RediPal.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -11,6 +11,12 @@ using Pluralize.NET;
 using System.Linq.Expressions;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO.Compression;
+using System.IO;
+using System.Reflection.Emit;
+using RediPal.Messages;
 
 namespace RedipalCore
 {
@@ -1164,105 +1170,110 @@ namespace RedipalCore
                     {
                         if (discriptor.Properties != null)
                         {
+                            if (obj is RediMessageBase redimessage)
+                            {
+                               redimessage.Compile();
+                            }
+
                             foreach (var property in discriptor.Properties)
                             {
                                 if (property != null && property.PropertyInfo != null && !property.Ignore)
                                 {
                                     var propValue = property.PropertyInfo.GetValue(obj);
-
-                                    if (propValue is IList elems)
+                                    if (propValue != null)
                                     {
                                         if (property.AsJson)
                                         {
-                                            var nestedJson = new RediWriteResult(options.Expiration)
-                                            {
-                                                KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
-                                                ID = hash,
-                                                RediWrite = RediWriteMethods.AsString
-                                            };
+                                            //var nest = new RediWriteResult(options.Expiration)
+                                            //{
+                                            //    RediWrite = RediWriteMethods.AsString,
+                                            //    DeleteExisting = true,
+                                            //    KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
+                                            //    ID = property.Name.ToLower()
+                                            //};
+                                            // nest.Fields.Add(new HashEntry(property.Name.ToLower(), JsonSerializer.Serialize(propValue)));
+                                            master.Fields.Add(new HashEntry(property.Name.ToLower(), JsonSerializer.Serialize(propValue)));
 
-                                            nestedJson.Fields.Add(new HashEntry(0, JsonSerializer.Serialize(elems)));
-
-                                            if (master.Nested != null)
-                                                master.Nested.Add(nestedJson);
-                                            else
-                                                master.Nested = new List<RediWriteResult> { nestedJson };
+                                            //if (master.Nested != null)
+                                            //    master.Nested.Add(nest);
+                                            //else
+                                            //    master.Nested = new List<RediWriteResult> { nest };
                                         }
                                         else
                                         {
-                                            options.DeleteExisting = true;
-                                            var result = Build_List(elems, master.KeySpace + ":" + property.Name.ToLower(), options);
-                                            if (result != null)
+                                            if (propValue is IList elems)
                                             {
-                                                if (master.Nested != null)
-                                                    master.Nested.Add(result);
-                                                else
-                                                    master.Nested = new List<RediWriteResult> { result };
-                                            }
-                                        }
-                                    }
-                                    else if (propValue is IDictionary dicts)
-                                    {
-                                        if (property.AsJson)
-                                        {
-                                            var nestedJson = new RediWriteResult(options.Expiration)
-                                            {
-                                                KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
-                                                ID = hash,
-                                                RediWrite = RediWriteMethods.AsString
-                                            };
-
-                                            nestedJson.Fields.Add(new HashEntry(0, JsonSerializer.Serialize(dicts)));
-
-                                            if (master.Nested != null)
-                                                master.Nested.Add(nestedJson);
-                                            else
-                                                master.Nested = new List<RediWriteResult> { nestedJson };
-                                        }
-                                        else
-                                        {
-                                            options.DeleteExisting = true;
-                                            var result = Build_Dictionary(dicts, master.KeySpace + ":" + property.Name.ToLower(), options);
-                                            if (result != null)
-                                            {
-                                                if (master.Nested != null)
-                                                    master.Nested.Add(result);
-                                                else
-                                                    master.Nested = new List<RediWriteResult> { result };
-                                            }
-                                        }
-                                    }
-                                    else if (IsPrimitive(propValue))
-                                    {
-                                        var value = GetStringValue(propValue);
-                                        if (value != null)
-                                        {
-                                            master.Fields.Add(new HashEntry(property.Name.ToLower(), value));
-                                        }
-                                        else
-                                        {
-                                            master.Fields.Add(new HashEntry(property.Name.ToLower(), ""));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (propValue != null)
-                                        {
-                                            if (property.AsJson)
-                                            {
-                                                var nest = new RediWriteResult(options.Expiration)
+                                                if (property.AsJson)
                                                 {
-                                                    RediWrite = RediWriteMethods.AsString,
-                                                    DeleteExisting = true,
-                                                    KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
-                                                    ID = property.Name.ToLower()
-                                                };
-                                                nest.Fields.Add(new HashEntry(property.Name.ToLower(), JsonSerializer.Serialize(propValue)));
+                                                    var nestedJson = new RediWriteResult(options.Expiration)
+                                                    {
+                                                        KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
+                                                        ID = hash,
+                                                        RediWrite = RediWriteMethods.AsString
+                                                    };
 
-                                                if (master.Nested != null)
-                                                    master.Nested.Add(nest);
+                                                    nestedJson.Fields.Add(new HashEntry(0, JsonSerializer.Serialize(elems)));
+
+                                                    if (master.Nested != null)
+                                                        master.Nested.Add(nestedJson);
+                                                    else
+                                                        master.Nested = new List<RediWriteResult> { nestedJson };
+                                                }
                                                 else
-                                                    master.Nested = new List<RediWriteResult> { nest };
+                                                {
+                                                    options.DeleteExisting = true;
+                                                    var result = Build_List(elems, master.KeySpace + ":" + property.Name.ToLower(), options);
+                                                    if (result != null)
+                                                    {
+                                                        if (master.Nested != null)
+                                                            master.Nested.Add(result);
+                                                        else
+                                                            master.Nested = new List<RediWriteResult> { result };
+                                                    }
+                                                }
+                                            }
+                                            else if (propValue is IDictionary dicts)
+                                            {
+                                                if (property.AsJson)
+                                                {
+                                                    var nestedJson = new RediWriteResult(options.Expiration)
+                                                    {
+                                                        KeySpace = master.KeySpace + ":" + property.Name.ToLower(),
+                                                        ID = hash,
+                                                        RediWrite = RediWriteMethods.AsString
+                                                    };
+
+                                                    nestedJson.Fields.Add(new HashEntry(0, JsonSerializer.Serialize(dicts)));
+
+                                                    if (master.Nested != null)
+                                                        master.Nested.Add(nestedJson);
+                                                    else
+                                                        master.Nested = new List<RediWriteResult> { nestedJson };
+                                                }
+                                                else
+                                                {
+                                                    options.DeleteExisting = true;
+                                                    var result = Build_Dictionary(dicts, master.KeySpace + ":" + property.Name.ToLower(), options);
+                                                    if (result != null)
+                                                    {
+                                                        if (master.Nested != null)
+                                                            master.Nested.Add(result);
+                                                        else
+                                                            master.Nested = new List<RediWriteResult> { result };
+                                                    }
+                                                }
+                                            }
+                                            else if (IsPrimitive(propValue))
+                                            {
+                                                var value = GetStringValue(propValue, property);
+                                                if (value != null)
+                                                {
+                                                    master.Fields.Add(new HashEntry(property.Name.ToLower(), value));
+                                                }
+                                                else
+                                                {
+                                                    master.Fields.Add(new HashEntry(property.Name.ToLower(), ""));
+                                                }
                                             }
                                             else
                                             {
@@ -1475,7 +1486,7 @@ namespace RedipalCore
                 else
                     type = obj.GetType();
 
-                if (type.IsPrimitive || type.IsValueType || type == typeof(string) || type == typeof(decimal) || type == typeof(DateTime) || type == typeof(TimeSpan) || type == typeof(DateTimeOffset) || type == typeof(Guid))
+                if (type.IsPrimitive || type.IsValueType || type == typeof(string) || type == typeof(decimal) || type == typeof(DateTime) || type == typeof(Bitmap) || type == typeof(TimeSpan) || type == typeof(DateTimeOffset) || type == typeof(Guid))
                 {
                     return true;
                 }
@@ -1490,7 +1501,7 @@ namespace RedipalCore
             }
         }
 
-        internal static string? GetStringValue(object? t)
+        internal static string? GetStringValue(object? t, RediType? rediType = null)
         {
             if (t != null)
             {
@@ -1510,6 +1521,53 @@ namespace RedipalCore
                 {
                     return dateTimeOffset.ToUnixTimeSeconds().ToString();
                 }
+                else if (t is Bitmap bitmap)
+                {
+                    if (rediType is not null)
+                    {
+                        ImageCodecInfo? jgpEncoder = GetEncoder(rediType.ImageFormat ?? ImageFormat.Png);
+                        if (jgpEncoder is not null)
+                        {
+                            EncoderParameters myEncoderParameters = new(1);
+                            EncoderParameter myEncoderParameter = new(Encoder.Quality, rediType.CompressionLevel ?? 100);
+                            myEncoderParameters.Param[0] = myEncoderParameter;
+
+                            MemoryStream ms = new();
+                            bitmap.Save(ms, jgpEncoder, myEncoderParameters);
+                            var buffer = ms.ToArray();
+
+                            return Convert.ToBase64String(DoCompress(buffer));
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                        byte[] DoCompress(byte[] b)
+                        {
+                            using MemoryStream ms = new();
+                            using (GZipStream z = new(ms, CompressionMode.Compress, true))
+                            {
+                                z.Write(b, 0, b.Length);
+                            }
+
+                            return ms.ToArray();
+                        }
+
+                        ImageCodecInfo? GetEncoder(ImageFormat format)
+                        {
+                            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+                            foreach (ImageCodecInfo codec in codecs)
+                            {
+                                if (codec.FormatID == format.Guid)
+                                {
+                                    return codec;
+                                }
+                            }
+                            return null;
+                        }
+                    }
+                }
                 else
                 {
                     var value = t.ToString();
@@ -1523,10 +1581,8 @@ namespace RedipalCore
                     }
                 }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
 

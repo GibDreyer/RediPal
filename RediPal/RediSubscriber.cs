@@ -409,115 +409,131 @@ namespace RedipalCore
                     }
                     result.Subscriptions = new Dictionary<TKey, IRediSubscription<TValue>>();
 
-                    ActiveRedisConnections.Add(setSubscriptionID);
-                    Subscriber.Subscribe(setSubscriptionID, (s, e) =>
+                    if (options.WatchForRemove || options.WatchForAdd)
                     {
-                        try
+                        if (Subscriptions.TryGetValue(setSubscriptionID, out var existingSub))
                         {
-                            RedisValue[]? keys;
-                            try
+                            if (existingSub is RediDictionarySubscription<TKey, TValue> existing)
                             {
-                                keys = db.SetMembers(set);
+                                if (options.WatchForRemove)
+                                    existing.OnRemoved += (s) => result.InvokeOnRemoved(s);
+                                if (options.WatchForAdd)
+                                    existing.OnValueUpdate += (s, e) => result.InvokeOnAdded(s, e);
                             }
-                            catch
+                        }
+                        else
+                        {
+                            ActiveRedisConnections.Add(setSubscriptionID);
+                            Subscriber.Subscribe(setSubscriptionID, (s, e) =>
                             {
-                                keys = db.SortedSetRangeByScore(set);
-                            }
-
-                            if (keys != null)
-                            {
-                                var listOfKeys = keys.Select(x => x.ToString()).ToList();
-
-                                var needsAdded = listOfKeys.Where(x => !result.SetKeys.Contains(x)).ToList();
-                                var removed = result.SetKeys.Where(x => x != null && !listOfKeys.Contains(x)).ToList();
-
-                                if (removed.Any())
+                                try
                                 {
-                                    foreach (var key in removed.ToList())
+                                    RedisValue[]? keys;
+                                    try
                                     {
-                                        var subscription = result.Subscriptions.FirstOrDefault(x => x.Key.ToString() == key);
-                                        if (subscription.Value != null)
-                                        {
-                                            result.InvokeOnRemoved(subscription.Key);
-                                            result.Subscriptions.Remove(subscription.Key);
-                                            try
-                                            {
-                                                result.SetKeys.Remove(key);
-                                            }
-                                            catch { }
-                                            subscription.Value.Dispose();
-                                        }
+                                        keys = db.SetMembers(set);
                                     }
-                                }
-
-                                if (needsAdded.Any())
-                                {
-                                    foreach (var key in needsAdded.ToList())
+                                    catch
                                     {
-                                        result.SetKeys.Add(key);
+                                        keys = db.SortedSetRangeByScore(set);
+                                    }
 
-                                        var keyConvert = (TKey)Convert.ChangeType(key, typeof(TKey));
+                                    if (keys != null)
+                                    {
+                                        var listOfKeys = keys.Select(x => x.ToString()).ToList();
 
-                                        var obj = Reader.Object<TValue>(key);
-                                        if (obj != null)
+                                        var needsAdded = listOfKeys.Where(x => !result.SetKeys.Contains(x)).ToList();
+                                        var removed = result.SetKeys.Where(x => x != null && !listOfKeys.Contains(x)).ToList();
+
+                                        if (removed.Any())
                                         {
-                                            result.InvokeOnAdded(keyConvert, obj);
-                                        }
-                                        else
-                                        {
-                                            result.InvokeOnAdded(keyConvert, default);
-                                        }
-
-                                        var subscriptionID = $"__keyspace@{db.Database}__:" + singleized + ":" + key;
-
-                                        RediObjectSubscription<TValue>? rediSubbed = null;
-
-                                        if (Subscriptions.ContainsKey(subscriptionID) && Subscriptions[subscriptionID] is RediObjectSubscription<TValue> value)
-                                        {
-                                            rediSubbed = value;
-                                        }
-                                        else
-                                        {
-                                            rediSubbed = new RediObjectSubscription<TValue>(Reader, singleized, key, subscriptionID, options);
-                                        }
-
-                                        if (options.SubscribeToSetMembers)
-                                        {
-                                            if (rediSubbed != null)
+                                            foreach (var key in removed.ToList())
                                             {
-                                                ActiveRedisConnections.Add(subscriptionID);
-                                                _ = Subscriber.SubscribeAsync(subscriptionID, (s, e) =>
+                                                var subscription = result.Subscriptions.FirstOrDefault(x => x.Key.ToString() == key);
+                                                if (subscription.Value != null)
                                                 {
-                                                    rediSubbed.InvokeReloadObject();
-                                                });
-
-                                                rediSubbed.OnChange += (v) =>
-                                                {
-                                                    result.InvokeOnChanged(keyConvert, v);
-                                                };
-
-
-                                                if (!Subscriptions.ContainsKey(rediSubbed.SubscriptionID))
-                                                {
-                                                    Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                                    result.InvokeOnRemoved(subscription.Key);
+                                                    result.Subscriptions.Remove(subscription.Key);
+                                                    try
+                                                    {
+                                                        result.SetKeys.Remove(key);
+                                                    }
+                                                    catch { }
+                                                    subscription.Value.Dispose();
                                                 }
                                             }
                                         }
-                                        if (rediSubbed is not null && !result.Subscriptions.ContainsKey(keyConvert))
+
+                                        if (needsAdded.Any())
                                         {
-                                            result.Subscriptions.Add(keyConvert, rediSubbed);
+                                            foreach (var key in needsAdded.ToList())
+                                            {
+                                                result.SetKeys.Add(key);
+
+                                                var keyConvert = (TKey)Convert.ChangeType(key, typeof(TKey));
+
+                                                var obj = Reader.Object<TValue>(key);
+                                                if (obj != null)
+                                                {
+                                                    result.InvokeOnAdded(keyConvert, obj);
+                                                }
+                                                else
+                                                {
+                                                    result.InvokeOnAdded(keyConvert, default);
+                                                }
+
+                                                var subscriptionID = $"__keyspace@{db.Database}__:" + singleized + ":" + key;
+
+                                                RediObjectSubscription<TValue>? rediSubbed = null;
+
+                                                if (Subscriptions.ContainsKey(subscriptionID) && Subscriptions[subscriptionID] is RediObjectSubscription<TValue> value)
+                                                {
+                                                    rediSubbed = value;
+                                                }
+                                                else
+                                                {
+                                                    rediSubbed = new RediObjectSubscription<TValue>(Reader, singleized, key, subscriptionID, options);
+                                                }
+
+                                                if (options.SubscribeToSetMembers)
+                                                {
+                                                    if (rediSubbed != null)
+                                                    {
+                                                        ActiveRedisConnections.Add(subscriptionID);
+                                                        _ = Subscriber.SubscribeAsync(subscriptionID, (s, e) =>
+                                                        {
+                                                            rediSubbed.InvokeReloadObject();
+                                                        });
+
+                                                        rediSubbed.OnChange += (v) =>
+                                                        {
+                                                            result.InvokeOnChanged(keyConvert, v);
+                                                        };
+
+
+                                                        if (!Subscriptions.ContainsKey(rediSubbed.SubscriptionID))
+                                                        {
+                                                            Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                                        }
+                                                    }
+                                                }
+                                                if (rediSubbed is not null && !result.Subscriptions.ContainsKey(keyConvert))
+                                                {
+                                                    result.Subscriptions.Add(keyConvert, rediSubbed);
+                                                }
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        }
-                        catch (Exception ea)
-                        {
-                            Console.WriteLine(ea);
-                        }
-                    });
+                                catch (Exception ea)
+                                {
+                                    Console.WriteLine(ea);
+                                }
+                            });
 
-                    Subscriptions.Add(result.SubscriptionID, result);
+                            Subscriptions.Add(result.SubscriptionID, result);
+                        }
+                    }
 
                     if (subList.Count > 0)
                     {
@@ -751,6 +767,7 @@ namespace RedipalCore
 
                         foreach (var item in hashes)
                         {
+                            result.SetKeys.Add(item);
                             var subscriptionID = $"__keyspace@{db.Database}__:" + singulized + ":" + item;
 
                             if (Subscriptions.ContainsKey(subscriptionID))
@@ -778,6 +795,7 @@ namespace RedipalCore
                         subList.ForEach(x =>
                         {
                             var objKey = (TKey)Convert.ChangeType(x.Key, typeof(TKey));
+                            result.Subscriptions.Add(objKey, x);
                             x.OnChange += (v) =>
                             {
                                 result.InvokeOnChanged(objKey, v);
@@ -789,6 +807,90 @@ namespace RedipalCore
                 }
             }
             return null;
+        }
+
+
+
+        public IRediSubscriptions<string, string>? ToMessages(string key)
+        {
+            if (db is not null)
+            {
+                var ids = db.SetMembers(key);
+                if (ids is not null)
+                {
+                    return ToMessages(ids.ToStringArray());
+                }
+            }
+            return null;
+        }
+        public IRediSubscriptions<string, string>? ToMessages(string name, params string[] names)
+        {
+            return ToMessages(name, names);
+        }
+        private IRediSubscriptions<string, string>? ToMessages(params string[] names)
+        {
+            if (db != null)
+            {
+
+                if (Subscriber != null)
+                {
+                    var result = new RediDictionarySubscription<string, string>("")
+                    {
+                        IsMessages = true
+                    };
+
+                    var subList = new List<RediObjectSubscription<string>>();
+
+                    if (names.Length > 0)
+                    {
+                        var singulized = "status-message";
+
+                        foreach (var item in names)
+                        {
+                            result.SetKeys.Add(item);
+                            var subscriptionID = $"__keyspace@{db.Database}__:" + singulized + ":" + item;
+
+                            if (Subscriptions.ContainsKey(subscriptionID))
+                            {
+                                if (Subscriptions[subscriptionID] is RediObjectSubscription<string> value)
+                                {
+                                    subList.Add(value);
+                                }
+                            }
+                            else
+                            {
+                                var rediSubbed = new RediObjectSubscription<string>(Reader, singulized, item, subscriptionID, new RediSubscriberOptions() )
+                                {
+                                    IsMessage = true
+                                };
+
+                                ActiveRedisConnections.Add(subscriptionID);
+                                _ = Subscriber.SubscribeAsync(subscriptionID, (s, e) =>
+                                {
+                                    rediSubbed.InvokeReloadObject();
+                                });
+
+                                subList.Add(rediSubbed);
+                                Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                            }
+                        }
+
+                        subList.ForEach(x =>
+                        {
+                            var objKey = (string)Convert.ChangeType(x.Key, typeof(string));
+                            result.Subscriptions.Add(objKey, x);
+                            x.OnChange += (v) =>
+                            {
+                                result.InvokeOnChanged(objKey, v);
+                            };
+                        });
+
+                        return result;
+                    }
+                }
+            }
+            return null;
+
         }
 
 

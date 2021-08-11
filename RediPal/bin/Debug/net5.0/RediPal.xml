@@ -197,6 +197,11 @@
             Create a subscription the as a dictionary to the given hash Ids
             </summary>
         </member>
+        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToMessages(System.String)">
+            <summary>
+            Create a subscription the as a dictionary to the given hash Ids is the form of a message
+            </summary>
+        </member>
         <member name="M:RedipalCore.Interfaces.IRediSubscription`1.Read">
             <summary>
             Builds the object that is subscribed to

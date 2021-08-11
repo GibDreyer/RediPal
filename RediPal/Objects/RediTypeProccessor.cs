@@ -2,12 +2,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Reflection;
 
 namespace RedipalCore.Objects
 {
-    public class RediTypeProccessor : IRediType, ICloneable
+    public class RediTypeProccessor : IRediTypeProccessor, ICloneable
     {
         public RediTypeProccessor()
         {
@@ -54,13 +55,13 @@ namespace RedipalCore.Objects
             };
         }
 
-
-
         internal string? defaultSet = null;
         internal string? keySpace = null;
         internal TimeSpan? expiration = null;
         internal bool? ignore = null;
         internal bool? asJson = null;
+
+
 
 
         public string? DefaultSet { get; set; }
@@ -69,7 +70,6 @@ namespace RedipalCore.Objects
         public bool Ignore { get; set; }
         public bool AsJson { get; set; }
 
-
         internal double? Score { get; set; } = null;
         internal string Name { get; set; } = "";
         internal PropertyInfo? WriteNameProperty { get; set; }
@@ -77,7 +77,9 @@ namespace RedipalCore.Objects
         internal List<string>? AppendToKey { get; set; }
         internal Type? PropertyType { get; set; }
         internal List<RediConditional>? Conditionals { get; set; }
-        internal List<Delegate>? ParameterModifiers { get; set; }
+        internal List<Delegate>? Modifiers { get; set; }
+        internal List<(RediType, Delegate)>? ParameterModifiers { get; set; }
+
         internal List<Type>? SubTypes { get; set; }
         internal List<RediType>? Properties { get; set; }
 
@@ -105,9 +107,9 @@ namespace RedipalCore.Objects
                     }
                 }
             }
-            if (ParameterModifiers is not null)
+            if (Modifiers is not null)
             {
-                foreach (var modifier in ParameterModifiers)
+                foreach (var modifier in Modifiers)
                 {
                     if (modifier != null)
                     {
@@ -117,6 +119,14 @@ namespace RedipalCore.Objects
                         }
                         catch { }
                     }
+                }
+            }
+
+            if (ParameterModifiers is not null)
+            {
+                foreach (var modifiers in ParameterModifiers)
+                {
+                    modifiers.Item2.DynamicInvoke(obj, modifiers.Item1);
                 }
             }
         }
@@ -269,8 +279,15 @@ namespace RedipalCore.Objects
         }
     }
 
-    public class RediType
+    public class RediType : IRediType
     {
+        internal string? defaultSet = null;
+        internal string? keySpace = null;
+        internal TimeSpan? expiration = null;
+        internal bool? ignore = null;
+        internal bool? asJson = null;
+        internal List<(PropertyInfo, Delegate)>? ParameterModifiers { get; set; }
+
         public Type? PropertyType { get; set; }
         public PropertyInfo? PropertyInfo { get; set; }
 
@@ -282,6 +299,96 @@ namespace RedipalCore.Objects
         public bool AsJson { get; set; }
         public bool IsList { get; set; }
         public bool IsPrimitive { get; set; }
+        public TimeSpan? Expiration { get; set; }
+
+        public ImageFormat? ImageFormat { get; set; } = null;
+        public long? CompressionLevel { get; set; } = null;
+
+        internal List<string>? RemoveFromSets { get; set; }
+        internal List<string>? AppendToSets { get; set; }
+        internal List<string>? Append_ToSearchSets { get; set; }
+
+        public void IncrementKey(string key)
+        {
+            //TODO
+        }
+        public void DecrementKey(string key)
+        {
+            //TODO
+        }
+        public void DeleteKey(string key)
+        {
+            //TODO
+        }
+
+        public void AppendToSet(string set, bool isSearchable = false)
+        {
+            if (isSearchable)
+            {
+                if (Append_ToSearchSets == null)
+                {
+                    Append_ToSearchSets = new List<string> { set };
+                }
+                else
+                {
+                    if (!Append_ToSearchSets.Contains(set))
+                    {
+                        Append_ToSearchSets.Add(set);
+                    }
+                }
+            }
+            else
+            {
+                if (AppendToSets == null)
+                {
+                    AppendToSets = new List<string> { set };
+                }
+                else
+                {
+                    if (!AppendToSets.Contains(set))
+                    {
+                        AppendToSets.Add(set);
+                    }
+                }
+            }
+        }
+        public void RemoveFromSet(string set)
+        {
+            if (RemoveFromSets == null)
+            {
+                RemoveFromSets = new List<string> { set };
+            }
+            else
+            {
+                if (!RemoveFromSets.Contains(set))
+                {
+                    RemoveFromSets.Add(set);
+                }
+            }
+        }
+
+        internal void RestoreDefaults()
+        {
+            if (RemoveFromSets is not null)
+                RemoveFromSets.Clear();
+            if (AppendToSets is not null)
+                AppendToSets.Clear();
+
+            if (expiration is not null)
+                Expiration = expiration;
+            else
+                expiration = Expiration;
+
+            if (ignore.HasValue)
+                Ignore = ignore.Value;
+            else
+                ignore = Ignore;
+
+            if (asJson.HasValue)
+                AsJson = asJson.Value;
+            else
+                asJson = AsJson;
+        }
     }
 
 

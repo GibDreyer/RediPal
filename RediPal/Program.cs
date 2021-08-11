@@ -16,20 +16,7 @@
 //{
 //    class Program
 //    {
-//        private int myProp = 0;
-//        public int MyProperty
-//        {
-//            get => myProp; set
-//            {
-//                myProp = value;
-
-//            }
-//        }
-
-//        private Dictionary<string, Dolly> _dollies = new();
-
-
-//        static void Main()
+//        static async Task Main()
 //        {
 //            //var redisConfig = new ConfigurationOptions
 //            //{
@@ -40,30 +27,6 @@
 //            //var redi = new Redipal(redisConfig);
 //            var redi = new Redipal("roc-redis.ag");
 
-//            Bitmap? bitmap = new(@"C:\Temp\Section_8_LightCurtain__637635049833672911.bmp");
-
-//            StatusMessage message = new(bitmap)
-//            {
-//                Status = "This is a test message",
-//                Type = StatusMessageType.Warning
-//            };
-
-//            // redi.Write.Object(message, x => x.ID = "saw-1");
-//            var subs = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
-
-//            subs.OnValueUpdate += (key, value) =>
-//            {
-//                if (value is null)
-//                {
-//                    Console.WriteLine($"{key} was deleted");
-//                }
-//                else
-//                {
-//                    Console.WriteLine(value.Status);
-//                }
-//            };
-
-//            redi.Write.Object(message, x => x.ID = "saw-1");
 
 
 //            while (true)
@@ -71,263 +34,344 @@
 //                Thread.Sleep(100);
 //            }
 
-//            var geos = new Dictionary<string, GeoLocation>
-//            {
-//                {
-//                    "fort_scott",
-//                    new("Fort Scott")
-//                    {
-//                        Longitude = -94.7040076,
-//                        Latitude = 37.8101345,
-//                        Type = GeoLocationType.Facility,
-//                        Items = new()
-//                        {
-//                            {
-//                                "roc_1",
-//                                new("Roc 1")
-//                                {
-//                                    Type = GeoLocationType.Equipment,
-//                                    Items = new()
-//                                    {
-//                                        {
-//                                            "saw_1",
-//                                            new("Saw 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "bdm_1",
-//                                            new("BDM 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "btm_1_strip1",
-//                                            new("BTM 1 Strip 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            },
-//                            {
-//                                "roc_2",
-//                                new("Roc 2")
-//                                {
-//                                    Type = GeoLocationType.Equipment,
-//                                }
-//                            },
-//                            {
-//                                "warehouse_paint",
-//                                new("Paint Warehouse")
-//                            }
-//                        }
-//                    }
-//                },
-//                {
-//                    "nevada",
-//                    new("Nevada ISG")
-//                    {
-//                        Longitude = -94.342674,
-//                        Latitude = 37.855694,
-//                        Type = GeoLocationType.Facility,
-//                        Items = new()
-//                        {
-//                            {
-//                                "roc_7",
-//                                new("Roc 7")
-//                                {
-//                                    Type = GeoLocationType.Equipment,
-//                                    Items = new()
-//                                    {
-//                                        {
-//                                            "saw_1",
-//                                            new("Saw 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "bdm_1",
-//                                            new("BDM 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "btm_1_strip1",
-//                                            new("BTM 1 Strip 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            },
-//                            {
-//                                "roc_12",
-//                                new("Roc 12")
-//                                {
-//                                    Type = GeoLocationType.Equipment,
-//                                    Items = new()
-//                                    {
-//                                        {
-//                                            "paint_1",
-//                                            new("Paint 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "con_1",
-//                                            new("Consolidation 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "con_2",
-//                                            new("Consolidation 2")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            },
-//                            {
-//                                "warehouse_paint",
-//                                new("Paint Warehouse")
-//                                {
-//                                    Type = GeoLocationType.Warehouse
-//                                }
-//                            },
-//                            {
-//                                "warehouse_cage",
-//                                new("Cage Warehouse")
-//                                {
-//                                   Type = GeoLocationType.Warehouse,
-//                                   Items= new(){
-//                                        {
-//                                            "north_1",
-//                                            new("North 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "south_1",
-//                                            new("South 1")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        },
-//                                        {
-//                                            "south_2",
-//                                            new("South 2")
-//                                            {
-//                                                  Type = GeoLocationType.Operator
-//                                            }
-//                                        }
-//                                   }
-//                                }
-//                            }
-//                        }
-//                    }
-//                },
-//                {
-//                     "truck_1",
-//                     new("Truck 1")
-//                     {
-//                          Type= GeoLocationType.Transport
-//                     }
-//                }
-//            };
-
-//            var geos2 = new Dictionary<string, GeoLocation>
-//            {
-//                {
-//                    "fort_scott",
-//                    new("Fort Scott")
-//                    {
-//                        Items = new()
-//                        {
-//                            {
-//                                "roc_1",
-//                                new("Roc 1")
-//                                {
-//                                    Items = new()
-//                                    {
-//                                        {
-//                                            "saw_1",
-//                                            new("Saw 1")
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            };
-
-
-
-//            //redi.Eradicate.Key("geos");
-
-//            // redi.Write.Dictionary(geos, "locations");
-
-//            var stopwatch = Stopwatch.StartNew();
-//            var list = redi.Read.Dictionary<string, GeoLocation>("locations");
-//            stopwatch.Stop();
-//            Console.WriteLine("Write Time:  " + stopwatch.ElapsedMilliseconds);
-//            stopwatch.Restart();
 
 
 
 
 
-//            //"geo:fort_scott"
-//            //"geo:fort_scott[]"
-//            //"geo:fort_scott[roc_1]"
-//            //"geo:fort_scott[roc_1][]"
-
-
-//            // var x = new GeoLocation();
-
-//            // var test = x[""][""];
 
 
 
-//            // var ft = redi.Read.List<GeoLocation>("geo:fort_scott:child", "roc_1", "roc_2");
 
 
-//            // var redi = new Redipal("roc-redis");
-//            //var count = -1;
+//            //Bitmap? bitmap = new(@"C:\Temp\Section_8_LightCurtain__637635049833672911.bmp");
 
-//            // redi.Read.List<Location>("operatorlocations")!.OrderBy(x=> x.Position.X).ToList().ForEach(x => x.Redi_WriteAs<Dolly, int, Location>(x.ID, x => x.Index = count++, x => x.Index));
+//            //StatusMessage message = new(bitmap)
+//            //{
+//            //    Status = "This is a test message",
+//            //    Type = StatusMessageType.Warning
+//            //};
 
-//            //redi.Factory!.TypeDescriptor.TryGetDescriptor(typeof(Location));
+//            //// redi.Write.Object(message, x => x.ID = "saw-9");
+//            //var subs = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
+//            //var mesages = subs.Read().Task.Result;
 
-//            var stopWatch = new Stopwatch();
-//            stopWatch.Start();
+//            //subs.OnValueUpdate += (key, value) =>
+//            //{
+//            //    if (value is null)
+//            //    {
+//            //        Console.WriteLine($"{key} was deleted");
+//            //    }
+//            //    else
+//            //    {
+//            //        Console.WriteLine(key + ": " + value.Status);
+//            //    }
+//            //};
 
 
-//            //var tasks = redi.Read.List<TaskPlan, List<MotionPlan>>("activetasks", x=> x.MotionPlans);
-
-//            //var ops = redi.Read.List<string>("operatorlocations");
 
 
-//            // var opIDs = redi.Read.List<Location, string>("operatorlocations", x => x.ID!);
+//            //var batch = redi.CreateBatch();
+
+//            //redi.Write.Object(new StatusMessage(bitmap)
+//            //{
+//            //    Status = "This is a test message",
+//            //}, x => x.ID = "saw-9", x=> x.SetBatch(batch));
+
+//            //redi.Write.Object(new StatusMessage(bitmap)
+//            //{
+//            //    Status = "This is a test message",
+//            //}, x => x.ID = "saw-10", x => x.SetBatch(batch));
+
+//            //await batch.ExecuteAsync();
 
 
-//            //var locationSub = redi.Subscribe.ToDictionary<string, Location>(x =>
-//            //                       {
-//            //                           x.WatchForAdd = false;
-//            //                           x.WatchForRemove = false;
-//            //                       });
+
+//            //var opIDs = redi.Read.List<string>("operators");
+//            //var wallIDs = redi.Read.List<string>("config:wallsections");
+//            //var allMessageIDs = opIDs.Union(wallIDs);
+
+//            //// redi.Write.Object(message, x => x.ID = "saw-9");
+//            //var allMessageSubs = redi.Subscribe.ToDictionary<string, StatusMessage>();
+
+//            //var allMessages = subs.Read().Task.Result;
+
+//            //allMessageSubs.OnValueUpdate += (key, value) =>
+//            //{
+//            //    if (value is null)
+//            //    {
+//            //        Console.WriteLine($"{key} was deleted");
+//            //    }
+//            //    else
+//            //    {
+//            //        Console.WriteLine(key + ": " + value.Status);
+//            //    }
+//            //};
+
+
+
+//            //while (true)
+//            //{
+//            //    Thread.Sleep(100);
+//            //}
+
+//            //var geos = new Dictionary<string, GeoLocation>
+//            //{
+//            //    {
+//            //        "fort_scott",
+//            //        new("Fort Scott")
+//            //        {
+//            //            Longitude = -94.7040076,
+//            //            Latitude = 37.8101345,
+//            //            Type = GeoLocationType.Facility,
+//            //            Items = new()
+//            //            {
+//            //                {
+//            //                    "roc_1",
+//            //                    new("Roc 1")
+//            //                    {
+//            //                        Type = GeoLocationType.Equipment,
+//            //                        Items = new()
+//            //                        {
+//            //                            {
+//            //                                "saw_1",
+//            //                                new("Saw 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "bdm_1",
+//            //                                new("BDM 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "btm_1_strip1",
+//            //                                new("BTM 1 Strip 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            }
+//            //                        }
+//            //                    }
+//            //                },
+//            //                {
+//            //                    "roc_2",
+//            //                    new("Roc 2")
+//            //                    {
+//            //                        Type = GeoLocationType.Equipment,
+//            //                    }
+//            //                },
+//            //                {
+//            //                    "warehouse_paint",
+//            //                    new("Paint Warehouse")
+//            //                }
+//            //            }
+//            //        }
+//            //    },
+//            //    {
+//            //        "nevada",
+//            //        new("Nevada ISG")
+//            //        {
+//            //            Longitude = -94.342674,
+//            //            Latitude = 37.855694,
+//            //            Type = GeoLocationType.Facility,
+//            //            Items = new()
+//            //            {
+//            //                {
+//            //                    "roc_7",
+//            //                    new("Roc 7")
+//            //                    {
+//            //                        Type = GeoLocationType.Equipment,
+//            //                        Items = new()
+//            //                        {
+//            //                            {
+//            //                                "saw_1",
+//            //                                new("Saw 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "bdm_1",
+//            //                                new("BDM 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "btm_1_strip1",
+//            //                                new("BTM 1 Strip 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            }
+//            //                        }
+//            //                    }
+//            //                },
+//            //                {
+//            //                    "roc_12",
+//            //                    new("Roc 12")
+//            //                    {
+//            //                        Type = GeoLocationType.Equipment,
+//            //                        Items = new()
+//            //                        {
+//            //                            {
+//            //                                "paint_1",
+//            //                                new("Paint 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "con_1",
+//            //                                new("Consolidation 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "con_2",
+//            //                                new("Consolidation 2")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            }
+//            //                        }
+//            //                    }
+//            //                },
+//            //                {
+//            //                    "warehouse_paint",
+//            //                    new("Paint Warehouse")
+//            //                    {
+//            //                        Type = GeoLocationType.Warehouse
+//            //                    }
+//            //                },
+//            //                {
+//            //                    "warehouse_cage",
+//            //                    new("Cage Warehouse")
+//            //                    {
+//            //                       Type = GeoLocationType.Warehouse,
+//            //                       Items= new(){
+//            //                            {
+//            //                                "north_1",
+//            //                                new("North 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "south_1",
+//            //                                new("South 1")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            },
+//            //                            {
+//            //                                "south_2",
+//            //                                new("South 2")
+//            //                                {
+//            //                                      Type = GeoLocationType.Operator
+//            //                                }
+//            //                            }
+//            //                       }
+//            //                    }
+//            //                }
+//            //            }
+//            //        }
+//            //    },
+//            //    {
+//            //         "truck_1",
+//            //         new("Truck 1")
+//            //         {
+//            //              Type= GeoLocationType.Transport
+//            //         }
+//            //    }
+//            //};
+
+//            //var geos2 = new Dictionary<string, GeoLocation>
+//            //{
+//            //    {
+//            //        "fort_scott",
+//            //        new("Fort Scott")
+//            //        {
+//            //            Items = new()
+//            //            {
+//            //                {
+//            //                    "roc_1",
+//            //                    new("Roc 1")
+//            //                    {
+//            //                        Items = new()
+//            //                        {
+//            //                            {
+//            //                                "saw_1",
+//            //                                new("Saw 1")
+//            //                            }
+//            //                        }
+//            //                    }
+//            //                }
+//            //            }
+//            //        }
+//            //    }
+//            //};
+
+
+
+//            ////redi.Eradicate.Key("geos");
+
+//            //// redi.Write.Dictionary(geos, "locations");
+
+//            //var stopwatch = Stopwatch.StartNew();
+//            //var list = redi.Read.Dictionary<string, GeoLocation>("locations");
+//            //stopwatch.Stop();
+//            //Console.WriteLine("Write Time:  " + stopwatch.ElapsedMilliseconds);
+//            //stopwatch.Restart();
+
+
+
+
+
+//            ////"geo:fort_scott"
+//            ////"geo:fort_scott[]"
+//            ////"geo:fort_scott[roc_1]"
+//            ////"geo:fort_scott[roc_1][]"
+
+
+//            //// var x = new GeoLocation();
+
+//            //// var test = x[""][""];
+
+
+
+//            //// var ft = redi.Read.List<GeoLocation>("geo:fort_scott:child", "roc_1", "roc_2");
+
+
+//            //// var redi = new Redipal("roc-redis");
+//            ////var count = -1;
+
+//            //// redi.Read.List<Location>("operatorlocations")!.OrderBy(x=> x.Position.X).ToList().ForEach(x => x.Redi_WriteAs<Dolly, int, Location>(x.ID, x => x.Index = count++, x => x.Index));
+
+//            ////redi.Factory!.TypeDescriptor.TryGetDescriptor(typeof(Location));
+
+//            //var stopWatch = new Stopwatch();
+//            //stopWatch.Start();
+
+
+//            ////var tasks = redi.Read.List<TaskPlan, List<MotionPlan>>("activetasks", x=> x.MotionPlans);
+
+//            ////var ops = redi.Read.List<string>("operatorlocations");
+
+
+//            //// var opIDs = redi.Read.List<Location, string>("operatorlocations", x => x.ID!);
+
+
+//            ////var locationSub = redi.Subscribe.ToDictionary<string, Location>(x =>
+//            ////                       {
+//            ////                           x.WatchForAdd = false;
+//            ////                           x.WatchForRemove = false;
+//            ////                       });
 
 
 
@@ -527,21 +571,21 @@
 //            //    {
 //            //        Console.WriteLine($"Task: {key} was complete");
 //            //    };
+//            ////}
+
+
+//            //stopWatch.Stop();
+
+//            //// RediBase.Redi_Write<Dolly, int>("bdm-1", x => x.Index = 5, x => x.Index);
+
+//            ////RediBase.Redi_Write<Dolly, int>("test", x => x.Index = 6, x => x.Index);
+//            //Console.WriteLine("\n\n\n\n Time: " + stopWatch.ElapsedMilliseconds);
+
+//            //Console.WriteLine("done");
+//            //while (true)
+//            //{
+//            //    Thread.Sleep(100);
 //            //}
-
-
-//            stopWatch.Stop();
-
-//            // RediBase.Redi_Write<Dolly, int>("bdm-1", x => x.Index = 5, x => x.Index);
-
-//            //RediBase.Redi_Write<Dolly, int>("test", x => x.Index = 6, x => x.Index);
-//            Console.WriteLine("\n\n\n\n Time: " + stopWatch.ElapsedMilliseconds);
-
-//            Console.WriteLine("done");
-//            while (true)
-//            {
-//                Thread.Sleep(100);
-//            }
 //        }
 //    }
 //}
