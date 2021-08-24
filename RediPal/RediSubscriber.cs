@@ -1,7 +1,6 @@
 ﻿using RedipalCore.Attributes;
 using RedipalCore.Interfaces;
 using RedipalCore.Objects;
-using RedipalCore.TestObjects;
 using StackExchange.Redis;
 using System;
 using System.Collections;
@@ -359,11 +358,22 @@ namespace RedipalCore
                         {
                             if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(TValue), out var discriptor))
                             {
-                                if (!string.IsNullOrEmpty(discriptor.KeySpace))
+                                if (!string.IsNullOrEmpty(discriptor.KeySpace) || !string.IsNullOrEmpty(keySpace))
                                 {
+                                    if (string.IsNullOrEmpty(discriptor.KeySpace))
+                                    {
+                                        keySpace = singleized;
+                                    }
+                                    else
+                                    {
+                                        keySpace = discriptor.KeySpace;
+                                    }
+
+                                    result.MemberKeySpace = keySpace;
+
+                                    var subKey = $"__keyspace@{db.Database}__:{(discriptor.KeySpace ?? keySpace)}";
                                     foreach (var key in keys.Take(options.MaxMembers))
                                     {
-
                                         var appendToKey = "";
 
                                         if (discriptor.AppendToKey != null)
@@ -379,7 +389,7 @@ namespace RedipalCore
                                             }
                                         }
 
-                                        var subscriptionID = $"__keyspace@{db.Database}__:" + discriptor.KeySpace + ":" + key + appendToKey;
+                                        var subscriptionID = subKey + ":" + key.ToString() + appendToKey;
 
                                         if (Subscriptions.ContainsKey(subscriptionID))
                                         {
@@ -390,7 +400,7 @@ namespace RedipalCore
                                         }
                                         else
                                         {
-                                            var rediSubbed = new RediObjectSubscription<TValue>(Reader, discriptor.KeySpace, key, subscriptionID, options);
+                                            var rediSubbed = new RediObjectSubscription<TValue>(Reader, keySpace, key, subscriptionID, options);
 
                                             ActiveRedisConnections.Add(subscriptionID);
                                             _ = Subscriber.SubscribeAsync(subscriptionID, (s, e) =>
@@ -472,16 +482,6 @@ namespace RedipalCore
 
                                                 var keyConvert = (TKey)Convert.ChangeType(key, typeof(TKey));
 
-                                                var obj = Reader.Object<TValue>(key);
-                                                if (obj != null)
-                                                {
-                                                    result.InvokeOnAdded(keyConvert, obj);
-                                                }
-                                                else
-                                                {
-                                                    result.InvokeOnAdded(keyConvert, default);
-                                                }
-
                                                 var subscriptionID = $"__keyspace@{db.Database}__:" + singleized + ":" + key;
 
                                                 RediObjectSubscription<TValue>? rediSubbed = null;
@@ -494,6 +494,7 @@ namespace RedipalCore
                                                 {
                                                     rediSubbed = new RediObjectSubscription<TValue>(Reader, singleized, key, subscriptionID, options);
                                                 }
+                                                result.InvokeOnAdded(keyConvert, rediSubbed.Read());
 
                                                 if (options.SubscribeToSetMembers)
                                                 {
@@ -540,11 +541,14 @@ namespace RedipalCore
                         subList.ForEach(x =>
                         {
                             var objKey = (TKey)Convert.ChangeType(x.Key, typeof(TKey));
-                            result.Subscriptions.Add(objKey, x);
-                            x.OnChange += (v) =>
+                            if (!result.Subscriptions.ContainsKey(objKey))
                             {
-                                result.InvokeOnChanged(objKey, v);
-                            };
+                                result.Subscriptions.Add(objKey, x);
+                                x.OnChange += (v) =>
+                                {
+                                    result.InvokeOnChanged(objKey, v);
+                                };
+                            }
                         });
                     }
 
@@ -859,7 +863,7 @@ namespace RedipalCore
                             }
                             else
                             {
-                                var rediSubbed = new RediObjectSubscription<string>(Reader, singulized, item, subscriptionID, new RediSubscriberOptions() )
+                                var rediSubbed = new RediObjectSubscription<string>(Reader, singulized, item, subscriptionID, new RediSubscriberOptions())
                                 {
                                     IsMessage = true
                                 };

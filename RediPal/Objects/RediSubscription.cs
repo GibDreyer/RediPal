@@ -78,14 +78,13 @@ namespace RedipalCore.Objects
             }
             else
             {
-                var obj = Reader.Object<T>(Key);
-                if (obj != null)
+                if (RediReader.IsPrimitive(typeof(T)))
                 {
-                    return obj;
+                    return Reader.Value<T>((string.IsNullOrEmpty(KeySpace) ? "" : KeySpace + ":") + Key);
                 }
                 else
                 {
-                    return default;
+                    return Reader.Object<T>(Key);
                 }
             }
         }
@@ -99,18 +98,37 @@ namespace RedipalCore.Objects
                 {
                     if (!IsMessage)
                     {
-                        var obj = Reader.Object<T>(KeySpace + ":" + Key);
-                        if (obj != null)
+                        if (RediWriter.IsPrimitive(typeof(T)))
                         {
-                            if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
+                            var obj = Reader.Value<T>(KeySpace + ":" + Key);
+                            if (obj != null)
+                            {
+                                if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
+                                {
+                                    InvokeOnChanged(obj);
+                                    return true;
+                                }
+                            }
+                            else
                             {
                                 InvokeOnChanged(obj);
-                                return true;
                             }
                         }
                         else
                         {
-                            InvokeOnChanged(obj);
+                            var obj = Reader.Object<T>(KeySpace + ":" + Key);
+                            if (obj != null)
+                            {
+                                if (Conditions is null || Conditions.Any(x => x.DynamicInvoke(obj) is bool condition && condition))
+                                {
+                                    InvokeOnChanged(obj);
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                InvokeOnChanged(obj);
+                            }
                         }
                     }
                     else

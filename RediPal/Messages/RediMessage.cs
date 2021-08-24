@@ -63,6 +63,6 @@ namespace RediPal.Messages
         public RediMessage(string templateName, params string[] values) : base(templateName, values) { }
 
         [RediIgnore]
-        public new string[] Parameters { get => Params; set => Params = value; }
+        public string[] Parameters { get => Params; set => Params = value; }
     }
 }

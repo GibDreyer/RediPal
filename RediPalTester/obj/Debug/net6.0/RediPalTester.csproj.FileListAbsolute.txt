@@ -40,8 +40,8 @@ C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\Red
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfoInputs.cache
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfo.cs
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.ImplicitNamespaceImports.cs
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CoreCompileInputs.cache
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CopyComplete
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\ref\RediPalTester.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.pdb

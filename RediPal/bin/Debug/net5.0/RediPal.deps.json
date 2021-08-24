@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "RediPal/0.7.164": {
+      "RediPal/0.7.170": {
         "dependencies": {
           "Pluralize.NET": "1.0.2",
           "StackExchange.Redis": "2.2.4",
@@ -197,7 +197,7 @@
     }
   },
   "libraries": {
-    "RediPal/0.7.164": {
+    "RediPal/0.7.170": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

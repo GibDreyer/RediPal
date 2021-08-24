@@ -10,7 +10,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>RediPal</PackageId>
-    <Version>0.7.164</Version>
+    <Version>0.7.170</Version>
     <RootNamespace>RediPal</RootNamespace>
   </PropertyGroup>
 

@@ -12,5 +12,6 @@ namespace RedipalCore.TestObjects
         public int EmptyPriority { get; set; }
         public bool AutoStore { get; set; }
         public bool AutoStoreIfEmpty { get; set; }
+        public bool Disable { get; set; }
     }
 }

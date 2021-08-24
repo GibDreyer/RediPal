@@ -115,9 +115,13 @@ namespace RedipalCore
                         var last = keySpace.Split(":").LastOrDefault();
                         if (last is not null)
                         {
-                            //var result = Get_AsObject(instance, keySpace.ToLower(), "");
-                            var result = Get_AsObject(instance, keySpace.Substring(0, keySpace.Length - (last.Length + 1)).ToLower(), last.ToLower());
-                            return (T?)result;
+                            var index = keySpace.Length - (last.Length + 1);
+                            if (index > 0)
+                            {
+                                //var result = Get_AsObject(instance, keySpace.ToLower(), "");
+                                var result = Get_AsObject(instance, keySpace.Substring(0, index).ToLower(), last.ToLower());
+                                return (T?)result;
+                            }
                         }
                         else
                         {
@@ -173,7 +177,14 @@ namespace RedipalCore
                         var template = db.StringGet("status-message:" + templateID);
                         if (!template.IsNull)
                         {
-                            return string.Format(template.ToString(), p);
+                            try
+                            {
+                                return string.Format(template.ToString(), p);
+                            }
+                            catch
+                            {
+                                Console.WriteLine($"The parameter count in template: {templateID} was more then the Message Array contained");
+                            }
                         }
                     }
                 }
@@ -206,7 +217,7 @@ namespace RedipalCore
                     dictionary.TryAdd(id, message);
                 }
             });
-            return dictionary.ToDictionary(x=> x.Key, x=> x.Value);
+            return dictionary.ToDictionary(x => x.Key, x => x.Value);
         }
 
 
@@ -244,6 +255,10 @@ namespace RedipalCore
                 if (field is not null)
                 {
                     x = db.HashGet(keySpace.Substring(0, keySpace.Length - (field.Length + 1)), field);
+                }
+                if (!x.HasValue || !x.Value.HasValue)
+                {
+                    x = db.StringGet(keySpace);
                 }
             }
             catch
@@ -1008,7 +1023,7 @@ namespace RedipalCore
                                 {
                                     foreach (var id in hashIDs)
                                     {
-                                        var a = db.StringGet(singleSpace + ":" + id.ToLower());
+                                        var a = db.StringGet((string.IsNullOrEmpty(singleSpace) ? "" : singleSpace + ":") + id.ToLower());
                                         var key = Convert.ChangeType(ConvertFromRedisType(keyType, id), keyType);
                                         var value = Convert.ChangeType(ConvertFromRedisType(keyType, a), valueType);
                                         if (key != null && value != null)
@@ -1443,13 +1458,16 @@ namespace RedipalCore
                     {
                         for (int i = 0; i < typeProccessor.AppendToKey.Count; i++)
                         {
-                            //var last = keySpace.Split(":").LastOrDefault();
-                            var last = id.Split(":").LastOrDefault();
-                            var keyToAppend = typeProccessor.AppendToKey[i].ToLower();
-                            if (last is not null && last.ToLower() != keyToAppend && id != keyToAppend)
+                            if (id is not null)
                             {
-                                appendToKey += ":" + keyToAppend;
-                                //keySpace += ":" + keyToAppend;
+                                //var last = keySpace.Split(":").LastOrDefault();
+                                var last = id.Split(":").LastOrDefault();
+                                var keyToAppend = typeProccessor.AppendToKey[i].ToLower();
+                                if (last is not null && last.ToLower() != keyToAppend && id != keyToAppend)
+                                {
+                                    appendToKey += ":" + keyToAppend;
+                                    //keySpace += ":" + keyToAppend;
+                                }
                             }
                         }
                     }
@@ -1482,7 +1500,7 @@ namespace RedipalCore
                                         var property = primitiveProperties.FirstOrDefault(x => x.Name.ToLower() == hash.Name.ToString().ToLower());
                                         if (property != null && property.PropertyInfo != null && property.PropertyType != null)
                                         {
-                                            var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value, property);
+                                            var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value);
                                             // accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
                                             try
                                             {
@@ -1505,10 +1523,17 @@ namespace RedipalCore
                                 var x = db.StringGet(keySpace + ":" + id);
                                 if (!string.IsNullOrEmpty(x) && typeProccessor.PropertyType is not null)
                                 {
-                                    var jsonObj = JsonSerializer.Deserialize(x, typeProccessor.PropertyType);
-                                    if (jsonObj != null)
+                                    try
                                     {
-                                        return jsonObj;
+                                        var jsonObj = JsonSerializer.Deserialize(x, typeProccessor.PropertyType);
+                                        if (jsonObj != null)
+                                        {
+                                            return jsonObj;
+                                        }
+                                    }
+                                    catch
+                                    {
+                                        return x.ToString();
                                     }
                                 }
                             }
@@ -1667,7 +1692,7 @@ namespace RedipalCore
             return list;
         }
 
-        internal static object? ConvertFromRedisType(Type t, object? obj, RediType? rediType = null)
+        internal static object? ConvertFromRedisType(Type t, object? obj)
         {
             if (obj != null)
             {

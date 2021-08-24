@@ -77,7 +77,9 @@ namespace RedipalCore.Objects
         public Dictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; internal set; }
 
         internal bool IsMessages { get; set; }
+        internal bool IsUnsetKeySpace { get; set; }
         public string SubscriptionID { get; }
+        public string MemberKeySpace { get; internal set; } = "";
 
         public DateTime LastUpdated { get; private set; }
 
@@ -126,7 +128,7 @@ namespace RedipalCore.Objects
             }
             else
             {
-                RediReadTask<TKey, TValue>? reader = new(Task.Run(() => Redipal.IFactory!.RediPalInstance.Read.Dictionary<TKey, TValue>(SetKeys.ToArray(), readOptions)), progressIndicator)
+                RediReadTask<TKey, TValue>? reader = new(Task.Run(() => Redipal.IFactory!.RediPalInstance.Read.Dictionary<TKey, TValue>(MemberKeySpace, SetKeys.ToArray(), readOptions)), progressIndicator)
                 {
                     TotalItems = Subscriptions.Count
                 };

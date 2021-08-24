@@ -31,36 +31,7 @@ namespace RedipalCore.TestObjects
         public DateTime LastAccessed { get; set; }
         public DateTime LastUpdated { get; set; }
         public bool IsEmpty => State == CradleState.Empty;
-        public bool LastPlaced180
-        {
-            get
-            {
-                if (State == CradleState.Empty)
-                    lastPlaced180 = false;
-
-                return lastPlaced180;
-            }
-
-            set { lastPlaced180 = value; }
-        }
-        public bool Locked
-        {
-            get
-            {
-                return locked;
-            }
-            set
-            {
-                if (!locked && value)
-                {
-                    locked = true;
-                    new Timer(1000) { Enabled = true }.Elapsed += (s, e) =>
-                    {
-                        locked = false;
-                    };
-                }
-            }
-        }
+        public bool LastPlaced180 { get; set; }
         public bool NewInSystem { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();
