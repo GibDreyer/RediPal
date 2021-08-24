@@ -15,7 +15,6 @@ namespace RedipalCore
     internal class RediDescriptor : ITypeDiscriptor
     {
         private readonly Pluralize.NET.Pluralizer Pluralizer = new();
-        private static List<Type> _pendingTypes = new();
 
         public static ConcurrentDictionary<Type, RediTypeProccessor> Descriptors { get; } = new ConcurrentDictionary<Type, RediTypeProccessor>();
 
@@ -159,20 +158,22 @@ namespace RedipalCore
 
         private RediTypeProccessor? TypeProccesssor(Type objType, TimeSpan? experation = null)
         {
-            if (objType != null && !_pendingTypes.Contains(objType))
+            if (Descriptors.TryGetValue(objType, out var value))
             {
-                _pendingTypes.Add(objType);
-                var inheretExpiration = false;
+                return value;
+            }
 
-                if (Descriptors.TryGetValue(objType, out var value))
-                {
-                    return value;
-                }
-
+            if (objType != null)
+            {
                 var rediTypeProccessor = new RediTypeProccessor
                 {
                     PropertyType = objType
                 };
+
+                Descriptors.TryAdd(objType, rediTypeProccessor);
+
+
+                var inheretExpiration = false;
 
                 if (Attribute.IsDefined(objType, typeof(RediIgnore)))
                 {
@@ -463,7 +464,6 @@ namespace RedipalCore
                     Descriptors.TryAdd(objType, rediTypeProccessor);
                 }
 
-                _pendingTypes.Remove(objType);
                 return rediTypeProccessor;
             }
             return null;

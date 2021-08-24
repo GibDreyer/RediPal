@@ -32,7 +32,7 @@ namespace RediPalTester
 
             var count = 0;
             var stopwatch = Stopwatch.StartNew();
-            var locationSubs = redi.Subscribe.ToDictionary<string, TestLocation>("locations");
+            var locationSubs = redi.Subscribe.ToDictionary<string, Location>();
             while (true)
             {
                 stopwatch.Restart();
