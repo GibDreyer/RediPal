@@ -18,6 +18,7 @@ namespace RedipalCore
         internal static Dictionary<Type, List<Delegate>> TypeDefaults2 = new();
         internal static Dictionary<Type, dynamic> TypeDefaults = new();
         internal readonly RediConfig Options;
+        internal static int Default_MaxDegreeOfParallelism { get; private set; } = -1;
         // Constructors 
 
         /// <summary>
@@ -264,6 +265,8 @@ namespace RedipalCore
 
         private void SetTaskPool()
         {
+            Default_MaxDegreeOfParallelism = Options.Default_MaxDegreeOfParallelism;
+
             if (Options.UnThrottleCPU)
             {
                 ThreadPool.GetMaxThreads(out int worker, out int threads);

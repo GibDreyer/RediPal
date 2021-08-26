@@ -33,7 +33,7 @@ namespace RedipalCore.Objects
         /// </summary>
         public bool DeleteUnloadable { get; set; } = true;
         /// <summary>
-        /// Default:  0
+        /// Default:  10
         /// </summary>
         public int MaxPublishingInterval { get; set; } = 10;
     }

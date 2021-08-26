@@ -270,7 +270,7 @@
         </member>
         <member name="P:RedipalCore.Objects.RediSubscriberOptions.MaxPublishingInterval">
             <summary>
-            Default:  0
+            Default:  10
             </summary>
         </member>
         <member name="P:RedipalCore.Objects.RediWriteOptions.KeySpace">

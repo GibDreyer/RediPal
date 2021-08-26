@@ -209,7 +209,7 @@ namespace RedipalCore
         {
             var dictionary = new ConcurrentDictionary<string, string>();
 
-            Parallel.ForEach(hashIDs, id =>
+            Parallel.ForEach(hashIDs, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
             {
                 var message = Message(id);
                 if (message is not null && !dictionary.ContainsKey(id))
@@ -490,7 +490,7 @@ namespace RedipalCore
                         {
                             if (x.Length > 50)
                             {
-                                Parallel.ForEach(x, id =>
+                                Parallel.ForEach(x, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
                                 {
                                     var prop = Property(id, property);
                                     if (prop is not null)
@@ -967,15 +967,33 @@ namespace RedipalCore
                                 {
                                     if (typeProccessor.AsJson)
                                     {
-                                        var x = db.HashGetAll(fromSet);
-
-                                        foreach (var entry in x)
+                                        try
                                         {
-                                            var key = Convert.ChangeType(ConvertFromRedisType(keyType, entry.Name), keyType);
-                                            var value = JsonSerializer.Deserialize(entry.Value, valueType);
-                                            if (key != null && value != null)
+                                            var x = db.HashGetAll(fromSet);
+
+                                            foreach (var entry in x)
                                             {
-                                                dicts.TryAdd(key, value);
+                                                var key = Convert.ChangeType(ConvertFromRedisType(keyType, entry.Name), keyType);
+                                                var value = JsonSerializer.Deserialize(entry.Value, valueType);
+                                                if (key != null && value != null)
+                                                {
+                                                    dicts.TryAdd(key, value);
+                                                }
+                                            }
+                                        }
+                                        catch (Exception)
+                                        {
+                                            var x = db.ListRange(fromSet);
+                                            var index = 0;
+
+                                            foreach (var entry in x)
+                                            {
+                                                var key = Convert.ChangeType(ConvertFromRedisType(keyType, index++), keyType);
+                                                var value = JsonSerializer.Deserialize(entry, valueType);
+                                                if (key != null && value != null)
+                                                {
+                                                    dicts.TryAdd(key, value);
+                                                }
                                             }
                                         }
                                     }
@@ -1005,7 +1023,7 @@ namespace RedipalCore
                                                 array[i] = x[i].ToString();
                                             }
 
-                                            Parallel.ForEach(array, SetID);
+                                            Parallel.ForEach(array, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, SetID);
                                         }
                                         else
                                         {
@@ -1036,7 +1054,7 @@ namespace RedipalCore
                                 {
                                     if (hashIDs.Length > 3)
                                     {
-                                        Parallel.ForEach(hashIDs, id =>
+                                        Parallel.ForEach(hashIDs, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
                                         {
                                             SetID(id.ToLower());
                                         });
@@ -1267,7 +1285,7 @@ namespace RedipalCore
                                         }
                                         if (x.Length > 3)
                                         {
-                                            Parallel.ForEach(x, id =>
+                                            Parallel.ForEach(x, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
                                             {
                                                 SetID(id);
                                             });
@@ -1319,7 +1337,7 @@ namespace RedipalCore
                                 {
                                     if (hashIDs.Length > 3)
                                     {
-                                        Parallel.ForEach(hashIDs, id =>
+                                        Parallel.ForEach(hashIDs, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
                                         {
                                             SetID(id.ToLower());
                                         });
@@ -1547,7 +1565,7 @@ namespace RedipalCore
                             //    SetNest(item);
                             //}
 
-                            Parallel.ForEach(nestedProperties, SetNest);
+                            Parallel.ForEach(nestedProperties, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, SetNest);
 
 
                             void SetNest(RediType property)

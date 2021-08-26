@@ -4,9 +4,23 @@ using System.Collections.Generic;
 
 namespace RedipalCore.TestObjects
 {
-    [RediKeySpace("task")]
-    [RediSearchSet("completedtasks")]
-    [RediDefaultSet("completedtasks")]
+    //[RediKeySpace("task")]
+   // [RediSearchSet("completedtasks")]
+   // [RediDefaultSet("completedtasks")]
+   public class TaskPlanMin : RediBase
+   {
+        public string? Task_ID { get; set; }
+        public string? CradleID { get; set; }
+        public double Priority { get; set; }
+        public string? MoveFrom { get; set; }
+        public string? MoveTo { get; set; }
+        public string? RunningOn { get; set; }
+        public string? Motion_ID { get; set; }
+    }
+
+
+
+
     public class TaskPlan : RediBase
     {
         //Task information
@@ -74,11 +88,6 @@ namespace RedipalCore.TestObjects
     [RediKeySpace("taskstats")]
     public class Statistics
     {
-        public Statistics()
-        {
-            CompletedByBridge = "";
-        }
-
         public double TimeWatingOnOperator { get; set; }
         public string? CompletedByBridge { get; set; }
         public double ActualRunTime { get; set; }
@@ -93,18 +102,6 @@ namespace RedipalCore.TestObjects
 
     public class MotionPlan
     {
-        public MotionPlan()
-        {
-            Steps = new List<Step>();
-            PastCancelPoint = false;
-            CradleID = "";
-            PlanID = "";
-            MoveFrom = "";
-            MoveTo = "";
-            ReservedLocation = "";
-            OperatorID = "";
-        }
-
         public TaskType TaskType { get; set; }
         public string? PlanID { get; set; }
         public bool PastCancelPoint { get; set; }
@@ -187,11 +184,6 @@ namespace RedipalCore.TestObjects
     [RediWriteAsJson]
     public class Step
     {
-        public Step()
-        {
-            Description = "";
-        }
-
         public AxisToMove Axis { get; set; }
         public Profiles Profiles { get; set; } = new Profiles();
         public double EstSecondsToTake { get; set; }
@@ -280,5 +272,4 @@ namespace RedipalCore.TestObjects
         public Step? Step { get; set; }
         public string? Message { get; set; }
     }
-
 }

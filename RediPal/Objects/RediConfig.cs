@@ -14,5 +14,10 @@ namespace RedipalCore.Objects
         public bool UnThrottleCPU { get; set; } = false;
         public bool IgnoreReadOnlyProperties { get; set; } = false;
         public bool Default_ToLowerCase { get; set; } = true;
+        /// <summary>
+        /// Sets the Default Degree of parallelism.
+        /// Default is -1 which is no limit
+        /// </summary>
+        public int Default_MaxDegreeOfParallelism { get; set; } = -1;
     }
 }

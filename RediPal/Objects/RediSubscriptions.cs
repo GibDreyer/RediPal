@@ -150,26 +150,17 @@ namespace RedipalCore.Objects
 
         internal void InvokeOnChanged(TKey key, TValue? value)
         {
-            if (OnValueUpdate != null)
-            {
-                OnValueUpdate.Invoke(key, value);
-            }
+            OnValueUpdate?.Invoke(key, value);
         }
 
         internal void InvokeOnRemoved(TKey key)
         {
-            if (OnRemoved != null)
-            {
-                OnRemoved.Invoke(key);
-            }
+            OnRemoved?.Invoke(key);
         }
 
         internal void InvokeOnAdded(TKey key, TValue? value)
         {
-            if (OnAdded != null)
-            {
-                OnAdded.Invoke(key, value);
-            }
+            OnAdded?.Invoke(key, value);
         }
 
         public void Dispose()

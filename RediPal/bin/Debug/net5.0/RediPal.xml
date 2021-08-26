@@ -238,6 +238,12 @@
             If true it allows RediPal to use up to 100% of the available CPU. false is default
             </summary>
         </member>
+        <member name="P:RedipalCore.Objects.RediConfig.Default_MaxDegreeOfParallelism">
+            <summary>
+            Sets the Default Degree of parallelism.
+            Default is -1 which is no limit
+            </summary>
+        </member>
         <member name="P:RedipalCore.Objects.RediSubscriberOptions.MaxMembers">
             <summary>
             Default:  500
@@ -270,7 +276,7 @@
         </member>
         <member name="P:RedipalCore.Objects.RediSubscriberOptions.MaxPublishingInterval">
             <summary>
-            Default:  0
+            Default:  10
             </summary>
         </member>
         <member name="P:RedipalCore.Objects.RediWriteOptions.KeySpace">

@@ -8,8 +8,8 @@ using Newtonsoft.Json;
 using File = System.IO.File;
 using RediPal.Messages;
 using RocKer;
-using RedipalCore.TestObjects;
 using AG.ROC.Core;
+using AG.RocCore.Objects;
 
 namespace RediPalTester
 {
@@ -24,28 +24,75 @@ namespace RediPalTester
             //};
             //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
             //var redi = new Redipal(redisConfig);
-            var redi = new Redipal("roc-redis.ag:6379", new() { UnThrottleCPU = true });
+            var redi = new Redipal("roc-redis.ag:6379");
 
             //var temp = "<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>";
             //var p = new[] { "A test", "Right now !", "here", "987654321" };
             //var test = string.Format(temp, p);
+            redi.SetTypeDefaults<Location>(x =>
+            {
+                x.DefaultSet = "locations";
+                x.KeySpace = "location";
+            });
 
-            var count = 0;
-            var stopwatch = Stopwatch.StartNew();
-            var locationSubs = redi.Subscribe.ToDictionary<string, Location>();
+
+
+            redi.SetTypeDefaults<TaskPlan>(x =>
+            {
+                x.KeySpace = "task";
+            });
+
+            var runningTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            runningTasks.OnValueUpdate += (key, value) =>
+            {
+                if (!string.IsNullOrEmpty(value.RunningOn))
+                {
+                    Console.BackgroundColor = ConsoleColor.Green;
+                    Console.WriteLine("active Task Updated: " + value.MotionPlans?.OrderBy(x => x.Key)
+                        .FirstOrDefault(x => !x.Value.PlanComplete).Value.Steps?
+                        .LastOrDefault(x => !x.StepComplete).Description);
+                }
+            };
+
             while (true)
             {
-                stopwatch.Restart();
-                if (locationSubs is not null)
-                {
-                    var read = locationSubs.Read();
-                    if (read is not null && read.Task.Result is not null)
-                    {
-                        Console.WriteLine("Read: {0}    {1} Times   ReadTime: {2}", read.Task.Result.Count, count++, stopwatch.ElapsedMilliseconds);
-                    }
-                }
-                await Task.Delay(100);
+                await Task.Delay(500);
             }
+
+
+
+            //var json = new HttpClient().GetStringAsync("http://10.0.192.54:4264/api/server/locations");
+            //var actualLocations = JsonConvert.DeserializeObject<List<Location>>(json.Result).ToDictionary(x=> x.ID, x=> x);
+            //redi.Write.Dictionary(actualLocations, "locations");
+
+            //var locationsddd = redi.Read.Dictionary<string, Location>();
+
+
+
+            while (true)
+            {
+                redi.Read.Object<Location>("northbridge").Redi_Write(x => x.HMapped = !x.HMapped, x => x.HMapped);
+                await Task.Delay(500);
+            }
+
+
+
+            while (true)
+            {
+                await Task.Delay(500);
+            }
+
+
+
+            //var activeTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            //var dicardedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("dicardedtasks");
+            //var completedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("completedtasks");
+
+
+
+
+
+
 
             // Console.WriteLine("Read: {0}    {1} Times", (await locationSubs.Read().Task).Count, count++);
 
@@ -88,14 +135,6 @@ namespace RediPalTester
             var subfgfgf = redi.Subscribe.ToMessages("operators");
             var readgfg = subfgfgf.Read().Task.Result;
             Console.WriteLine();
-
-
-            var locations = redi.Subscribe.ToDictionary<string, Location>();
-
-            locations.OnValueUpdate += (key, value) =>
-            {
-                Console.WriteLine(key + "   Was updated   " + value.CradleID);
-            };
 
 
             var tasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
@@ -205,9 +244,6 @@ namespace RediPalTester
 
             //// Read all operator messages
 
-
-            var locationData = JsonConvert.DeserializeObject<LocationDataObect>(File.ReadAllText(@"C:\Users\gdreyer.PEERDOM\Desktop\LocationData.json"));
-            locationData.StorageLocations["bdm-2"].Redi_Write();
 
 
             //var bmp = new Bitmap(@"C:\Users\gdreyer.PEERDOM\Desktop\BandR-AutomationCON-2019-9512 copy.jpeg");
@@ -373,165 +409,6 @@ namespace RediPalTester
 
 
 
-            var geos = new Dictionary<string, GeoLocation>
-            {
-                {
-                    "fort_scott",
-                    new("Fort Scott")
-                    {
-                        Items = new()
-                        {
-                            {
-                                "roc_1",
-                                new("Roc 1")
-                                {
-                                    Items = new()
-                                    {
-                                        {
-                                            "saw_1",
-                                            new("Saw 1")
-                                        },
-                                        {
-                                            "bdm_1",
-                                            new("BDM 1")
-                                        },
-                                        {
-                                            "btm_1_strip1",
-                                            new("BTM 1 Strip 1")
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "roc_2",
-                                new("Roc 2")
-                                {
-                                    Items = new()
-                                    {
-                                        {
-                                            "paint_1",
-                                            new("Paint 1")
-                                        },
-                                        {
-                                            "con_1",
-                                            new("Consolidation 1")
-                                        },
-                                        {
-                                            "con_2",
-                                            new("Consolidation 2")
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "warehouse_paint",
-                                new("Paint Warehouse")
-                            },
-                            {
-                                "warehouse_cage",
-                                new("Cage Warehouse")
-                                {
-                                   Items= new(){
-                                        {
-                                            "north_1",
-                                            new("North 1")
-                                        },
-                                        {
-                                            "south_1",
-                                            new("South 1")
-                                        },
-                                        {
-                                            "south_2",
-                                            new("South 2")
-                                        }
-                                   }
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "nevada",
-                    new("Nevada ISG")
-                    {
-                        Items = new()
-                        {
-                            {
-                                "roc_7",
-                                new("Roc 7")
-                                {
-                                    Items = new()
-                                    {
-                                        {
-                                            "saw_1",
-                                            new("Saw 1")
-                                        },
-                                        {
-                                            "bdm_1",
-                                            new("BDM 1")
-                                        },
-                                        {
-                                            "btm_1_strip1",
-                                            new("BTM 1 Strip 1")
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "roc_12",
-                                new("Roc 12")
-                                {
-                                    Items = new()
-                                    {
-                                        {
-                                            "paint_1",
-                                            new("Paint 1")
-                                        },
-                                        {
-                                            "con_1",
-                                            new("Consolidation 1")
-                                        },
-                                        {
-                                            "con_2",
-                                            new("Consolidation 2")
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "warehouse_paint",
-                                new("Paint Warehouse")
-                            },
-                            {
-                                "warehouse_cage",
-                                new("Cage Warehouse")
-                                {
-                                   Items= new(){
-                                        {
-                                            "north_1",
-                                            new("North 1")
-                                        },
-                                        {
-                                            "south_1",
-                                            new("South 1")
-                                        },
-                                        {
-                                            "south_2",
-                                            new("South 2")
-                                        }
-                                   }
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                     "truck_1",
-                     new("Truck 1")
-                }
-            };
-
-
             //redi.Write.Object(new StatusMessage() { Status = "test" }, "saw-9");
 
             //var sub = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
@@ -642,7 +519,7 @@ namespace RediPalTester
         public bool Available { get; set; }
         public bool Reserved { get; set; }
         public bool Bespoken { get; set; }
-       // public Cradle Cradle { get; set; }
+        // public Cradle Cradle { get; set; }
         public string CradleID { get; set; }
         public string ID { get; set; }
         public int Level { get; set; }

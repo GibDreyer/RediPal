@@ -84,7 +84,7 @@ namespace RedipalCore.Objects
                 }
                 else
                 {
-                    return Reader.Object<T>(Key);
+                    return Reader.Object<T>(KeySpace + ":" + Key);
                 }
             }
         }

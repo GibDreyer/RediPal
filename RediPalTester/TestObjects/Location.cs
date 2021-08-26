@@ -6,8 +6,6 @@ using System.Linq;
 
 namespace RedipalCore.TestObjects
 {
-    [RediDefaultSet("locations")]
-    [RediKeySpace("location")]
     public class Location : RediBase
     {
         public Location()
@@ -43,7 +41,7 @@ namespace RedipalCore.TestObjects
         public string? BaseID { get; set; }
         public int Level { get; set; }
         public Position Position { get; set; }
-        public bool HMapped => Position.Z_History.Count(x => x != 0) > 3 && Position.ZB_History.Count(x => x != 0) > 3;
+        public bool HMapped { get; set; }
      
         public List<string> Tags { get; set; }
     }
