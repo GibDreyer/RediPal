@@ -212,7 +212,6 @@ namespace RedipalCore
         }
 
 
-
         public bool SetTypeDefaults<T>(Action<RediTypeDefaults<T>> action) where T : notnull
         {
             return ISetTypeDefaults(action);

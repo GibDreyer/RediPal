@@ -17,42 +17,166 @@ namespace RediPalTester
     {
         static async Task Main()
         {
-            //var redisConfig = new ConfigurationOptions
+            //var redi.ValuesConfig = new ConfigurationOptions
             //{
             //    Password = "Itunes96",
             //    User = ""
             //};
-            //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
-            //var redi = new Redipal(redisConfig);
-            var redi = new Redipal("roc-redis.ag:6379");
+            //redi.ValuesConfig.EndPoints.Add("redi.Values-19940.c100.us-east-1-4.ec2.cloud.redi.Valueslabs.com:19940");
+            //var redi.Value = new Redipal(redi.ValuesConfig);
+
+            var redi = new Lazy<Redipal>(new Redipal("roc-redis.ag:6379"));
 
             //var temp = "<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>";
             //var p = new[] { "A test", "Right now !", "here", "987654321" };
             //var test = string.Format(temp, p);
-            redi.SetTypeDefaults<Location>(x =>
+
+            redi.Value.SetTypeDefaults<TaskPlan>(x =>
+            {
+                x.KeySpace = "task";
+            });
+            redi.Value.SetTypeDefaults<Location>(x =>
             {
                 x.DefaultSet = "locations";
                 x.KeySpace = "location";
             });
-
-
-
-            redi.SetTypeDefaults<TaskPlan>(x =>
+            redi.Value.SetTypeDefaults<Cradle>(x =>
             {
-                x.KeySpace = "task";
+                x.DefaultSet = "cradles";
+                x.KeySpace = "cradle";
             });
 
-            var runningTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
-            runningTasks.OnValueUpdate += (key, value) =>
+            var readActive = Task.Run(() => redi.Value.Read.Dictionary<string, TaskPlan>("activetasks"));
+            Console.WriteLine("Reading ActiveTasks");
+            var readrunning = Task.Run(() => redi.Value.Read.Dictionary<string, TaskPlan>("runningtasks"));
+            Console.WriteLine("Reading RunningTasks");
+            var readcradles = Task.Run(() => redi.Value.Read.Dictionary<string, Cradle>());
+            Console.WriteLine("Reading Cradles");
+            var readlocations = Task.Run(() => redi.Value.Read.Dictionary<string, Location>());
+            Console.WriteLine("Reading Locations");
+
+            await Task.WhenAll(readActive, readrunning, readcradles, readlocations);
+            Console.WriteLine($"Active: {readActive.Result.Count}  Running: {readrunning.Result.Count}  Cradles: {readcradles.Result.Count}  Locations: {readlocations.Result.Count}");
+
+            Console.WriteLine();
+
+            Dictionary<string, Location>? locations;
+
+            var updateCount = 0;
+
+            void AddCount()
             {
-                if (!string.IsNullOrEmpty(value.RunningOn))
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine("Update Count: " + updateCount++);
+            }
+
+            var locationSub = redi.Value.Subscribe.ToDictionary<string, Location>();
+            if (locationSub is not null)
+            {
+                locations = await locationSub.Read().Task ?? new();
+                locationSub.OnValueUpdate += (key, value) =>
+                {
+                    if (value is not null && locations.ContainsKey(key))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("Location Updated: " + value.ID);
+                        locations[key] = value;
+                        AddCount();
+                    }
+                };
+                locationSub.OnAdded += (key, value) =>
+                {
+                    if (value is not null && !locations.ContainsKey(key))
+                    {
+                        locations.Add(key, value);
+                        AddCount();
+                    }
+                };
+                locationSub.OnRemoved += (key) => locations.Remove(key);
+            }
+
+
+            Dictionary<string, TaskPlan>? activeTasks;
+
+            var activeTasksSub = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            if (activeTasksSub is not null)
+            {
+                activeTasks = await activeTasksSub.Read().Task ?? new();
+                activeTasksSub.OnValueUpdate += (key, value) =>
+                {
+                    if (value is not null && activeTasks.ContainsKey(key))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Active Task Updated: " + value.Motion_ID);
+                        activeTasks[key] = value;
+                        AddCount();
+                    }
+                };
+                activeTasksSub.OnAdded += (key, value) =>
                 {
                     Console.BackgroundColor = ConsoleColor.Green;
-                    Console.WriteLine("active Task Updated: " + value.MotionPlans?.OrderBy(x => x.Key)
-                        .FirstOrDefault(x => !x.Value.PlanComplete).Value.Steps?
-                        .LastOrDefault(x => !x.StepComplete).Description);
-                }
-            };
+                    Console.WriteLine("Active Task Added: " + value.Motion_ID);
+                    AddCount();
+                    if (value is not null && !activeTasks.ContainsKey(key))
+                    {
+                        activeTasks.Add(key, value);
+                    }
+                };
+                activeTasksSub.OnRemoved += (key) =>
+                {
+                    Console.BackgroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Active Task Removed: " + key);
+                    activeTasks.Remove(key);
+                    AddCount();
+                };
+            }
+
+
+
+
+
+
+
+
+
+
+
+            Dictionary<string, TaskPlan>? runningTasks;
+
+            var runningTasksSub = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("runningtasks");
+            if (runningTasksSub is not null)
+            {
+                runningTasks = await runningTasksSub.Read().Task ?? new();
+                runningTasksSub.OnValueUpdate += (key, value) =>
+                {
+                    if (value is not null && runningTasks.ContainsKey(key))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine("Running Task Updated: " + value.Motion_ID);
+                        runningTasks[key] = value;
+                        AddCount();
+                    }
+                };
+                runningTasksSub.OnAdded += (key, value) =>
+                {
+                    if (value is not null && !runningTasks.ContainsKey(key))
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine("Running Task Added: " + value.Motion_ID);
+                        runningTasks.Add(key, value);
+                        AddCount();
+                    }
+                };
+                runningTasksSub.OnRemoved += (key) =>
+                {
+                    runningTasks.Remove(key);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.WriteLine("Running Task Running: " + key);
+                    AddCount();
+                };
+            }
+
+
 
             while (true)
             {
@@ -63,15 +187,15 @@ namespace RediPalTester
 
             //var json = new HttpClient().GetStringAsync("http://10.0.192.54:4264/api/server/locations");
             //var actualLocations = JsonConvert.DeserializeObject<List<Location>>(json.Result).ToDictionary(x=> x.ID, x=> x);
-            //redi.Write.Dictionary(actualLocations, "locations");
+            //redi.Value.Write.Dictionary(actualLocations, "locations");
 
-            //var locationsddd = redi.Read.Dictionary<string, Location>();
+            //var locationsddd = redi.Value.Read.Dictionary<string, Location>();
 
 
 
             while (true)
             {
-                redi.Read.Object<Location>("northbridge").Redi_Write(x => x.HMapped = !x.HMapped, x => x.HMapped);
+                redi.Value.Read.Object<Location>("northbridge").Redi_Write(x => x.HMapped = !x.HMapped, x => x.HMapped);
                 await Task.Delay(500);
             }
 
@@ -84,9 +208,9 @@ namespace RediPalTester
 
 
 
-            //var activeTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
-            //var dicardedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("dicardedtasks");
-            //var completedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("completedtasks");
+            //var activeTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            //var dicardedTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("dicardedtasks");
+            //var completedTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("completedtasks");
 
 
 
@@ -102,7 +226,7 @@ namespace RediPalTester
                 Thread.Sleep(5000);
             }
 
-            var subscription = redi.Subscribe.ToDictionary<string, OperatorConfig>("operators");
+            var subscription = redi.Value.Subscribe.ToDictionary<string, OperatorConfig>("operators");
             if (subscription != null)
             {
                 subscription.OnValueUpdate += (key, value) =>
@@ -117,10 +241,10 @@ namespace RediPalTester
 
 
 
-            var opConfig = redi.Read.Object<OperatorConfig>("saw-5");
+            var opConfig = redi.Value.Read.Object<OperatorConfig>("saw-5");
             opConfig.Redi_Write(x => x.AutoStore = true, x => x.AutoStore);
 
-            //var subscription = redi.Subscribe.ToObject<OperatorConfig>("saw-5");
+            //var subscription = redi.Value.Subscribe.ToObject<OperatorConfig>("saw-5");
             //if (subscription != null)
             //{
             //    subscription.OnChange += (s) =>
@@ -132,12 +256,12 @@ namespace RediPalTester
 
 
 
-            var subfgfgf = redi.Subscribe.ToMessages("operators");
+            var subfgfgf = redi.Value.Subscribe.ToMessages("operators");
             var readgfg = subfgfgf.Read().Task.Result;
             Console.WriteLine();
 
 
-            var tasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            var tasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
 
             tasks.OnValueUpdate += (key, value) =>
             {
@@ -152,14 +276,14 @@ namespace RediPalTester
 
 
             var watch = Stopwatch.StartNew();
-            //   var tasks = redi.Search.AsDictionary<string, TaskPlan>(DateTime.Now.AddDays(-100), DateTime.Now);
+            //   var tasks = redi.Value.Search.AsDictionary<string, TaskPlan>(DateTime.Now.AddDays(-100), DateTime.Now);
             watch.Stop();
             Console.WriteLine(watch.Elapsed.TotalMilliseconds);
             Console.WriteLine();
 
 
 
-            var sub = redi.Subscribe.ToDictionary<string, string>("status-message:templates");
+            var sub = redi.Value.Subscribe.ToDictionary<string, string>("status-message:templates");
 
             if (sub.Subscriptions.TryGetValue("test-message", out var template))
             {
@@ -183,7 +307,7 @@ namespace RediPalTester
                 Console.WriteLine(key + " Was Removed");
             };
 
-            var messageSub = redi.Subscribe.ToMessages("operators");
+            var messageSub = redi.Value.Subscribe.ToMessages("operators");
             messageSub.OnValueUpdate += (key, value) =>
             {
                 Console.WriteLine(key + "   |   " + value);
@@ -193,21 +317,21 @@ namespace RediPalTester
 
             Console.WriteLine();
 
-            var disarmSub = redi.Subscribe.ToDictionary<string, DisarmState>();
+            var disarmSub = redi.Value.Subscribe.ToDictionary<string, DisarmState>();
 
 
 
             //// This
-            //redi.SetTypeDefaults<RediMessage>(x => x.Expiration = null);
+            //redi.Value.SetTypeDefaults<RediMessage>(x => x.Expiration = null);
 
             //// or this way
             //var message = new RediMessage("test-message", "A test", "Right now !", "here", "987654321");
-            //redi.Write.Object(message, "saw-5", x => x.Expiration = TimeSpan.FromMinutes(120));
+            //redi.Value.Write.Object(message, "saw-5", x => x.Expiration = TimeSpan.FromMinutes(120));
 
 
-            //redi.Write.Value("<div><div>Cradle: {0} </div><div>Operator: {1} </div></div>", "status-message:template:task-store");
+            //redi.Value.Write.Value("<div><div>Cradle: {0} </div><div>Operator: {1} </div></div>", "status-message:template:task-store");
 
-            //var messageSub = redi.Subscribe.ToMessages("operators");
+            //var messageSub = redi.Value.Subscribe.ToMessages("operators");
             //messageSub.OnValueUpdate += (key, value) =>
             //{
             //    Console.WriteLine(key + "   |   " + value);
@@ -215,12 +339,12 @@ namespace RediPalTester
             //// var test = await messageSub.Read().Task;
 
 
-            //redi.Write.Value("<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>", "status-message:template:test-message");
-            //redi.Write.Value("<div><div>{0} | {1} | {2} | {3}</div></div>", "status-message:template:test-message-2");
+            //redi.Value.Write.Value("<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>", "status-message:template:test-message");
+            //redi.Value.Write.Value("<div><div>{0} | {1} | {2} | {3}</div></div>", "status-message:template:test-message-2");
 
 
             //new Task_Store_Message() { CradleID = "1120", OperatorID = "saw-5" }.Redi_Write("saw-5");
-            //// var messages = redi.Read.Messages("operators");
+            //// var messages = redi.Value.Read.Messages("operators");
 
             //new RediMessage("test-message", "A test", "Right now !", "here", "987654321").Redi_Write("saw-11");
 
@@ -236,7 +360,7 @@ namespace RediPalTester
             //await Task.Delay(150);
 
             //var watch = Stopwatch.StartNew();
-            //var messagess = redi.Read.Messages("operators");
+            //var messagess = redi.Value.Read.Messages("operators");
             //watch.Stop();
             //Console.WriteLine(watch.Elapsed.TotalMilliseconds);
             //new Task_Store_Message() { CradleID = "1120", OperatorID = "saw-1" }.Redi_Write("saw-1");
@@ -259,10 +383,10 @@ namespace RediPalTester
             //    Type = StatusMessageType.Error
             //}.Redi_Write("saw-5");
 
-            //var test = redi.Read.Object<StatusMessage>("saw-5");
+            //var test = redi.Value.Read.Object<StatusMessage>("saw-5");
 
 
-            var ssuub = redi.Subscribe.ToDictionary<string, StatusMessage>("config:wallsections");
+            var ssuub = redi.Value.Subscribe.ToDictionary<string, StatusMessage>("config:wallsections");
 
             ssuub.OnValueUpdate += (key, value) =>
                 {
@@ -276,7 +400,7 @@ namespace RediPalTester
                     }
                 };
 
-            redi.Eradicate.Key("statusmessage:section_10");
+            redi.Value.Eradicate.Key("statusmessage:section_10");
 
 
             while (true)
@@ -303,7 +427,7 @@ namespace RediPalTester
             //    Console.WriteLine("BitMap: " + s.Length / 1000000);
             //}
 
-            var dsdssdsd = redi.Subscribe.ToObject<OperatorConfig>("saw-5");
+            var dsdssdsd = redi.Value.Subscribe.ToObject<OperatorConfig>("saw-5");
 
             if (dsdssdsd != null)
             {
@@ -314,7 +438,7 @@ namespace RediPalTester
             }
 
 
-            redi.SetTypeDefaults<StatusMessage>(StatusMessage =>
+            redi.Value.SetTypeDefaults<StatusMessage>(StatusMessage =>
             {
                 StatusMessage.Expiration = TimeSpan.FromSeconds(45);
                 StatusMessage.AddConditional(x => x.Status.Contains("10"), x => x.Expiration = TimeSpan.FromSeconds(10));
@@ -344,14 +468,14 @@ namespace RediPalTester
             //    Type = StatusMessageType.Error,
             //    Image = bmp
             //}.Redi_Write("saw-1");
-            //var saw1Status = redi.Read.Object<StatusMessage>("saw-1");
+            //var saw1Status = redi.Value.Read.Object<StatusMessage>("saw-1");
 
 
 
             //var watch = Stopwatch.StartNew();
 
 
-            //redi.Write.Object(new StatusMessage()
+            //redi.Value.Write.Object(new StatusMessage()
             //{
             //    Status = "This is a test",
             //    Type = StatusMessageType.Error,
@@ -360,7 +484,7 @@ namespace RediPalTester
 
 
 
-            //var subs = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
+            //var subs = redi.Value.Subscribe.ToDictionary<string, StatusMessage>("operators");
             //var all = await subs.Read().Task;
 
             //subs.OnValueUpdate += (key, value) =>
@@ -371,7 +495,7 @@ namespace RediPalTester
             //    }
             //};
 
-            //redi.Write.Object(new StatusMessage()
+            //redi.Value.Write.Object(new StatusMessage()
             //{
             //    Status = "This is a test",
             //    Type = StatusMessageType.Error,
@@ -409,9 +533,9 @@ namespace RediPalTester
 
 
 
-            //redi.Write.Object(new StatusMessage() { Status = "test" }, "saw-9");
+            //redi.Value.Write.Object(new StatusMessage() { Status = "test" }, "saw-9");
 
-            //var sub = redi.Subscribe.ToDictionary<string, StatusMessage>("operators");
+            //var sub = redi.Value.Subscribe.ToDictionary<string, StatusMessage>("operators");
 
             //var mesages = sub.Read().Task.Result;
 
@@ -434,20 +558,20 @@ namespace RediPalTester
             //}
 
             //var stopwatch = Stopwatch.StartNew();
-            //redi.Write.Dictionary(geos);
-            //var list = redi.Read.Dictionary<string, GeoLocation>();
+            //redi.Value.Write.Dictionary(geos);
+            //var list = redi.Value.Read.Dictionary<string, GeoLocation>();
             //stopwatch.Stop();
             //Console.WriteLine("Write Time:  " + stopwatch.ElapsedMilliseconds);
             //stopwatch.Restart();
 
-            ////var list = redi.Read.Dictionary<int, string>("mylists");
+            ////var list = redi.Value.Read.Dictionary<int, string>("mylists");
 
             ////stopwatch.Stop();
             ////Console.WriteLine("Read Time:  " + stopwatch.ElapsedMilliseconds);
 
             //Console.WriteLine();
 
-            ////var sub = redi.Subscribe.ToDictionary<string, Dolly>();
+            ////var sub = redi.Value.Subscribe.ToDictionary<string, Dolly>();
 
 
             //if (sub is not null)
