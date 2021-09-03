@@ -343,7 +343,7 @@
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
           "Opc.UaFx.Client": "2.14.0",
-          "RediPal": "0.7.173"
+          "RediPal": "0.7.174"
         },
         "compile": {
           "bin/placeholder/AG.RocCore.Objects.dll": {}
@@ -352,7 +352,7 @@
           "bin/placeholder/AG.RocCore.Objects.dll": {}
         }
       },
-      "RediPal/0.7.173": {
+      "RediPal/0.7.174": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
@@ -1097,7 +1097,7 @@
       "path": "../../Nuget Pkg test app/AG.RocCore.Objects/AG.RocCore.Objects.csproj",
       "msbuildProject": "../../Nuget Pkg test app/AG.RocCore.Objects/AG.RocCore.Objects.csproj"
     },
-    "RediPal/0.7.173": {
+    "RediPal/0.7.174": {
       "type": "project",
       "path": "../RediPal/RediPal.csproj",
       "msbuildProject": "../RediPal/RediPal.csproj"
@@ -1106,7 +1106,7 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "AG.RocCore.Objects >= 1.0.0",
-      "RediPal >= 0.7.173"
+      "RediPal >= 0.7.174"
     ]
   },
   "packageFolders": {

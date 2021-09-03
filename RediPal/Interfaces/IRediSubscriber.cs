@@ -23,9 +23,9 @@ namespace RedipalCore.Interfaces
         /// <summary>
         /// Create a subscription the as an object from the given key
         /// </summary>
-        public IRediSubscription<T>? ToObject<T>(string key, string name) where T : notnull;
+        public IRediSubscription<T>? ToObject<T>(string name, string key = null) where T : notnull;
 
-        public IRediSubscription<T>? ToObject<T>(string name) where T : notnull;
+       // public IRediSubscription<T>? ToObject<T>(string name) where T : notnull;
 
 
 
@@ -54,6 +54,7 @@ namespace RedipalCore.Interfaces
         public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(Action<RediSubscriberOptions>? options = default) where TKey : IConvertible where TValue : notnull;
         //public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull;
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(Expression<Func<TValue, P>> property, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull;
+        public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(Expression<Func<TValue, P>> property, string[] keys, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull;
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(string key, Expression<Func<TValue, P>> property, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull;
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(string key, Expression<Func<TValue, P>> property, string set, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull;
 

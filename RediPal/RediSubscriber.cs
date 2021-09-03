@@ -78,18 +78,13 @@ namespace RedipalCore
 
 
 
-        public IRediSubscription<T>? ToObject<T>(string key, string hash) where T : notnull
-        {
-            return ToObject<T>(key + ":" + hash);
-        }
-
-        public IRediSubscription<T>? ToObject<T>(string key) where T : notnull
+        public IRediSubscription<T>? ToObject<T>(string hash, string? key = null) where T : notnull
         {
             if (db != null)
             {
                 if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(T), out var discriptor))
                 {
-                    if (!string.IsNullOrEmpty(discriptor.KeySpace))
+                    if (!string.IsNullOrEmpty(discriptor.KeySpace) || key != null)
                     {
                         if (Subscriber != null)
                         {
@@ -99,16 +94,16 @@ namespace RedipalCore
                             {
                                 for (int i = 0; i < discriptor.AppendToKey.Count; i++)
                                 {
-                                    var last = key.ToString().Split(":").LastOrDefault();
+                                    var last = hash.ToString().Split(":").LastOrDefault();
                                     var keyToAppend = discriptor.AppendToKey[i].ToLower();
-                                    if (last is not null && last.ToLower() != keyToAppend && key != keyToAppend)
+                                    if (last is not null && last.ToLower() != keyToAppend && hash != keyToAppend)
                                     {
                                         appendToKey += ":" + keyToAppend;
                                     }
                                 }
                             }
 
-                            var subscriptionID = $"__keyspace@{db.Database}__:" + discriptor.KeySpace + ":" + key + appendToKey;
+                            var subscriptionID = $"__keyspace@{db.Database}__:" + (discriptor.KeySpace ?? key) + ":" + hash + appendToKey;
                             if (Subscriptions.ContainsKey(subscriptionID))
                             {
                                 if (Subscriptions[subscriptionID] is RediObjectSubscription<T> value)
@@ -117,7 +112,7 @@ namespace RedipalCore
                                 }
                             }
 
-                            var rediSubbed = new RediObjectSubscription<T>(Reader, discriptor.KeySpace, key, subscriptionID, new RediSubscriberOptions());
+                            var rediSubbed = new RediObjectSubscription<T>(Reader, (discriptor.KeySpace ?? key), hash, subscriptionID, new RediSubscriberOptions());
                             var createResult = rediSubbed.InvokeReloadObject();
 
                             ActiveRedisConnections.Add(subscriptionID);
@@ -571,6 +566,18 @@ namespace RedipalCore
                 }
             }
             return null;
+        }  
+        
+        public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(Expression<Func<TValue, P>> property, string[] keys, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull
+        {
+            if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(TValue), out var proccessor))
+            {
+                if (proccessor.DefaultSet is not null && proccessor.KeySpace is not null)
+                {
+                    return ToDictionary<TKey, TValue, P>(proccessor.KeySpace, property, proccessor.DefaultSet, options);
+                }
+            }
+            return null;
         }
 
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(string keySpace, Expression<Func<TValue, P>> property, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull
@@ -637,6 +644,7 @@ namespace RedipalCore
                                 var rediSubbed = ToProperty(key, property, options);
                                 if (rediSubbed is not null)
                                 {
+                                    rediSubbed.Name = key;
                                     subList.Add(rediSubbed);
                                 }
                             }
@@ -736,7 +744,7 @@ namespace RedipalCore
                     {
                         subList.ForEach(x =>
                         {
-                            var objKey = (TKey)Convert.ChangeType(x.Key, typeof(TKey));
+                            var objKey = (TKey)Convert.ChangeType(x.Name, typeof(TKey));
                             result.Subscriptions.Add(objKey, x);
                             x.OnChange += (v) =>
                             {
@@ -963,13 +971,13 @@ namespace RedipalCore
                         }
                         else
                         {
-                            return ToObject<P>(key.Replace(":" + propName, ""), propName);
+                            return ToObject<P>(propName, key.Replace(":" + propName, ""));
                         }
                     }
                 }
                 else
                 {
-                    throw new ArgumentException("To use the read method without supplying a keyspace you must set the 'RediKeySpace('')' Attribute on the object class");
+                    throw new ArgumentException("To use the read method without supplying a key space you must set the 'RediKeySpace('')' Attribute on the object class");
                 }
             }
             return default;

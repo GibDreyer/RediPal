@@ -25,6 +25,7 @@ namespace RedipalCore.Objects
 
         public string SubscriptionID { get; }
         public string Key { get; }
+        public string Name { get; set; }
         public string KeySpace { get; }
         public DateTime LastUpdated { get; set; } = DateTime.Now;
 
@@ -198,6 +199,8 @@ namespace RedipalCore.Objects
         public string KeySpace { get; set; }
         public string Key { get; set; }
         public DateTime LastUpdated { get; set; } = DateTime.Now;
+
+        public string Name { get; set; }
 
         internal Delegate Invoker { get; set; }
         public event Action<T?>? OnChange;

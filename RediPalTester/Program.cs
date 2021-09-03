@@ -17,6 +17,74 @@ namespace RediPalTester
     {
         static async Task Main()
         {
+
+
+
+            //var newFile = new List<string>();
+
+
+            //ProcessDirectory(@"C:\Temp\three\src");
+            //// Process all files in the directory passed in, recurse on any directories
+            //// that are found, and process the files they contain.
+            //void ProcessDirectory(string targetDirectory)
+            //{
+            //    // Process the list of files found in the directory.
+            //    string[] fileEntries = Directory.GetFiles(targetDirectory);
+            //    foreach (string fileName in fileEntries)
+            //        ProcessFile(fileName);
+
+            //    // Recurse into subdirectories of this directory.
+            //    string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
+            //    foreach (string subdirectory in subdirectoryEntries)
+            //        ProcessDirectory(subdirectory);
+            //}
+
+            //// Insert logic for processing found files here.
+            //void ProcessFile(string path)
+            //{
+            //    Console.WriteLine("Processing: " + path);
+
+            //    var contents = File.ReadAllLines(path);
+            //    var newLines = contents.Where(line => !line.Contains("import"));
+
+            //    foreach (var line in contents)
+            //    {
+            //        if (line.Contains("import")) continue;
+            //        if (line.Contains("export {")) continue;
+            //        if (line.Contains("export *")) continue;
+
+            //        var l = line.Replace("export", "declare");
+
+            //        newFile.Add(l);
+            //    }
+
+            //    newFile.Add("");
+            //    newFile.Add("");
+            //    newFile.Add("");
+            //}
+
+            //File.WriteAllLines("c:/Temp/three/src/Three.d.ts", newFile);
+
+
+            Console.WriteLine();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             //var redi.ValuesConfig = new ConfigurationOptions
             //{
             //    Password = "Itunes96",
@@ -35,16 +103,41 @@ namespace RediPalTester
             {
                 x.KeySpace = "task";
             });
-            redi.Value.SetTypeDefaults<Location>(x =>
-            {
-                x.DefaultSet = "locations";
-                x.KeySpace = "location";
-            });
+          
             redi.Value.SetTypeDefaults<Cradle>(x =>
             {
                 x.DefaultSet = "cradles";
                 x.KeySpace = "cradle";
             });
+
+
+            redi.Value.SetTypeDefaults<Location>(x =>
+            {
+                x.DefaultSet = "locations";
+                x.KeySpace = "location";
+            });
+            var northPos = redi.Value.Read.Property<Location, double>("northbridge", x=> x.Position.X);
+            var southPos = redi.Value.Read.Property<Location, Position>("southbridge", x=> x.Position);
+
+
+
+
+
+            var bridges = redi.Value.Subscribe.ToDictionary<string, Location, Position>("location", x => x.Position, "bridges");
+            bridges.OnValueUpdate += (key, value) =>
+            {
+                Console.WriteLine(key + "   " + value.X);
+            };
+
+
+            while (true)
+            {
+                await Task.Delay(500);
+            }
+
+
+
+
 
             var readActive = Task.Run(() => redi.Value.Read.Dictionary<string, TaskPlan>("activetasks"));
             Console.WriteLine("Reading ActiveTasks");

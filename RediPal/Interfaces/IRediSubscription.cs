@@ -9,6 +9,7 @@ namespace RedipalCore.Interfaces
         public string SubscriptionID { get; }
         public string KeySpace { get; }
         public string Key { get; }
+        public string Name { get; set; }
         public DateTime LastUpdated { get; }
 
         public event Action<T?>? OnChange;
