@@ -10,3 +10,4 @@ C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.c
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\ref\RediPal.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.pdb
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPal\obj\Debug\net5.0\RediPal.csproj.AssemblyReference.cache

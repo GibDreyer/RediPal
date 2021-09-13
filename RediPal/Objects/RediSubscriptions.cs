@@ -1,5 +1,6 @@
 ﻿using RedipalCore.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -69,12 +70,12 @@ namespace RedipalCore.Objects
         internal RediDictionarySubscription(string subscriptionID)
         {
             SubscriptionID = subscriptionID;
-            Subscriptions = new Dictionary<TKey, IRediSubscription<TValue>>();
+            Subscriptions = new();
         }
 
         internal List<string> SetKeys { get; } = new List<string>();
 
-        public Dictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; internal set; }
+        public ConcurrentDictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; internal set; }
 
         internal bool IsMessages { get; set; }
         internal bool IsUnsetKeySpace { get; set; }
@@ -181,7 +182,7 @@ namespace RedipalCore.Objects
             {
                 RediSubscriber.Subscriber.Unsubscribe(SubscriptionID);
             }
-            RediSubscriber.Subscriptions.Remove(SubscriptionID);
+            RediSubscriber.Subscriptions.Remove(SubscriptionID, out _ );
         }
     }
 }

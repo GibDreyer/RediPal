@@ -174,7 +174,7 @@ namespace RedipalCore.Objects
             {
                 Redipal.IFactory.RediPalInstance.Subscribe.ActiveRedisConnections.Remove(SubscriptionID);
             }
-            RediSubscriber.Subscriptions.Remove(SubscriptionID);
+            RediSubscriber.Subscriptions.Remove(SubscriptionID, out _);
         }
     }
 
@@ -248,7 +248,7 @@ namespace RedipalCore.Objects
             {
                 Redipal.IFactory.RediPalInstance.Subscribe.ActiveRedisConnections.Remove(SubscriptionID);
             }
-            RediSubscriber.Subscriptions.Remove(SubscriptionID);
+            RediSubscriber.Subscriptions.Remove(SubscriptionID, out _);
         }
 
         internal bool InvokeReloadObject(object? obj)

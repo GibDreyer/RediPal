@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -30,7 +31,7 @@ namespace RedipalCore.Interfaces
 
     public interface IRediSubscriptions<TKey, TValue> : IDisposable where TKey : IConvertible where TValue : notnull
     {
-        public Dictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; }
+        public ConcurrentDictionary<TKey, IRediSubscription<TValue>> Subscriptions { get; }
 
         public string SubscriptionID { get; }
         public DateTime LastUpdated { get; }

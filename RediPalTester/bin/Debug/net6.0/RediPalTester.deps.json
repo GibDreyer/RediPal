@@ -9,7 +9,8 @@
       "RediPalTester/1.0.0": {
         "dependencies": {
           "AG.RocCore.Objects": "1.0.0",
-          "RediPal": "0.7.173"
+          "Pastel": "2.1.0",
+          "RediPal": "0.7.174"
         },
         "runtime": {
           "RediPalTester.dll": {}
@@ -49,7 +50,7 @@
           }
         }
       },
-      "Opc.UaFx.Client/2.14.0": {
+      "Opc.UaFx.Client/2.19.1": {
         "dependencies": {
           "Microsoft.Win32.Registry": "5.0.0",
           "Newtonsoft.Json": "12.0.3",
@@ -60,7 +61,15 @@
         "runtime": {
           "lib/netcoreapp3.1/Opc.UaFx.Client.dll": {
             "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.14.0.0"
+            "fileVersion": "2.19.1.0"
+          }
+        }
+      },
+      "Pastel/2.1.0": {
+        "runtime": {
+          "lib/net5.0/Pastel.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
           }
         }
       },
@@ -292,14 +301,14 @@
       },
       "AG.RocCore.Objects/1.0.0": {
         "dependencies": {
-          "Opc.UaFx.Client": "2.14.0",
-          "RediPal": "0.7.173"
+          "Opc.UaFx.Client": "2.19.1",
+          "RediPal": "0.7.174"
         },
         "runtime": {
           "AG.RocCore.Objects.dll": {}
         }
       },
-      "RediPal/0.7.173": {
+      "RediPal/0.7.174": {
         "dependencies": {
           "Pluralize.NET": "1.0.2",
           "StackExchange.Redis": "2.2.4",
@@ -345,12 +354,19 @@
       "path": "newtonsoft.json/12.0.3",
       "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
     },
-    "Opc.UaFx.Client/2.14.0": {
+    "Opc.UaFx.Client/2.19.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-lgvP7xVGX3p4mKHZRcfRVaWutdx8U0DVBvlGH6gXVlRsBEw4QyoKZx8vql14dIYPdr8wecPQElJQ6OY4Yd6yTQ==",
-      "path": "opc.uafx.client/2.14.0",
-      "hashPath": "opc.uafx.client.2.14.0.nupkg.sha512"
+      "sha512": "sha512-mdbSNzlx/IAdlWEibHNgqbQUgiiMd1n5SGUMRkxZVb2yyTO8AI3sqi48Y3TVb+2qdHcDNOszZDa8ccg+35dc6g==",
+      "path": "opc.uafx.client/2.19.1",
+      "hashPath": "opc.uafx.client.2.19.1.nupkg.sha512"
+    },
+    "Pastel/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CYPB5mCTGdmhaW7FyiYerq8S5S6Sz1pBJMC6XmmWvk/APiKjqmCc5vIn4XX++3E1w56LadBUDpicWBc2k84kmQ==",
+      "path": "pastel/2.1.0",
+      "hashPath": "pastel.2.1.0.nupkg.sha512"
     },
     "Pipelines.Sockets.Unofficial/2.2.0": {
       "type": "package",
@@ -483,7 +499,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "RediPal/0.7.173": {
+    "RediPal/0.7.174": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

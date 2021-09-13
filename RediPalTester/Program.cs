@@ -5,11 +5,11 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using StackExchange.Redis;
 using Newtonsoft.Json;
-using File = System.IO.File;
 using RediPal.Messages;
 using RocKer;
 using AG.ROC.Core;
 using AG.RocCore.Objects;
+using Pastel;
 
 namespace RediPalTester
 {
@@ -95,6 +95,74 @@ namespace RediPalTester
 
             var redi = new Lazy<Redipal>(new Redipal("roc-redis.ag:6379"));
 
+            _ = redi.Value.SetTypeDefaults<ServiceLog>(log =>
+            {
+                log.AddModifier((x, a) =>
+                {
+                    a.AppendToSet($"roccore:{x.Issuer.ToLower()}:logs", true);
+
+                    if (x.LogType is LogType.Error)
+                        a.AppendToSet($"roccore:{x.Issuer.ToLower()}:active-errors");
+                });
+
+                log.AddConditional(x => x.LogType is LogType.Error, x => x.Expiration = TimeSpan.FromDays(3));
+                log.AddConditional(x => x.LogType is LogType.Warning, x => x.Expiration = TimeSpan.FromDays(1));
+                log.AddConditional(x => x.LogType is not LogType.Error and not LogType.Warning, x => x.Expiration = TimeSpan.FromDays(1));
+                log.SetSearchScoreProperty(x => x.DateTime);
+                log.KeySpace = "roccore:log";
+            });
+
+
+            //var northErrorSub = redi.Value.Subscribe.ToDictionary<string, ServiceLog>($"roccore:north:active-errors");
+            //if (northErrorSub != null)
+            //{
+            //    var northErrors = await northErrorSub.Read().Task;
+
+            //    northErrorSub.OnAdded += (key, value) => Console.WriteLine("Key: {0}   Was Added. Message: {1}", key.Pastel("#00ff44"), value.Message.Pastel("#00ff44"));
+            //    northErrorSub.OnRemoved += (key) => Console.WriteLine("Key: {0}   Was Removed", key.Pastel("#ff0015"));
+            //}
+
+
+            // North Logs in the last 5 hours
+            // var logs = redi.Value.Search.AsDictionary<uint, ServiceLog>("roccore:service:logs", DateTime.Now.AddHours(-500), DateTime.Now)?.Where(x=> x.Value.LogType is LogType.Error);
+
+
+            var serviceLogs = redi.Value.Subscribe.ToDictionary<uint, ServiceLog>("roccore:north:logs", x => {
+                x.WatchForRemove = false;
+            });
+
+            serviceLogs.OnAdded += (_, value) => Console.WriteLine(DateTime.Now.ToLongTimeString() + "    : : :   " + value.Message);
+         
+
+            var services = redi.Value.Subscribe.ToObject<RocServices>("services");
+
+            services.OnChange += (value) => Console.WriteLine(DateTime.Now.ToLongTimeString() + "  :  " +  value.NorthBridge);
+          
+
+            while (true)
+            {
+                await Task.Delay(500);
+            }
+
+
+
+            var serviceSub = redi.Value.Subscribe.ToObject<RocServices>("services");
+            var state = serviceSub.Read();
+
+            serviceSub.OnChange += (value) => Console.WriteLine("Task: {0}   North: {1}   South: {2}", value.TaskService, value.NorthBridge, value.SouthBridge);
+
+
+
+
+
+
+         
+
+
+
+
+
+
             //var temp = "<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>";
             //var p = new[] { "A test", "Right now !", "here", "987654321" };
             //var test = string.Format(temp, p);
@@ -103,7 +171,7 @@ namespace RediPalTester
             {
                 x.KeySpace = "task";
             });
-          
+
             redi.Value.SetTypeDefaults<Cradle>(x =>
             {
                 x.DefaultSet = "cradles";
@@ -116,11 +184,8 @@ namespace RediPalTester
                 x.DefaultSet = "locations";
                 x.KeySpace = "location";
             });
-            var northPos = redi.Value.Read.Property<Location, double>("northbridge", x=> x.Position.X);
-            var southPos = redi.Value.Read.Property<Location, Position>("southbridge", x=> x.Position);
-
-
-
+            var northPos = redi.Value.Read.Property<Location, double>("northbridge", x => x.Position.X);
+            var southPos = redi.Value.Read.Property<Location, Position>("southbridge", x => x.Position);
 
 
             var bridges = redi.Value.Subscribe.ToDictionary<string, Location, Position>("location", x => x.Position, "bridges");
@@ -130,10 +195,26 @@ namespace RediPalTester
             };
 
 
+
+
+
+
+
+
+
+
+
+
             while (true)
             {
                 await Task.Delay(500);
             }
+
+
+
+
+
+
 
 
 
@@ -229,11 +310,6 @@ namespace RediPalTester
 
 
 
-
-
-
-
-
             Dictionary<string, TaskPlan>? runningTasks;
 
             var runningTasksSub = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("runningtasks");
@@ -286,32 +362,15 @@ namespace RediPalTester
 
 
 
-            while (true)
-            {
-                redi.Value.Read.Object<Location>("northbridge").Redi_Write(x => x.HMapped = !x.HMapped, x => x.HMapped);
-                await Task.Delay(500);
-            }
-
-
-
-            while (true)
-            {
-                await Task.Delay(500);
-            }
-
-
 
             //var activeTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
             //var dicardedTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("dicardedtasks");
             //var completedTasks = redi.Value.Subscribe.ToDictionary<string, TaskPlan>("completedtasks");
 
-
-
-
-
-
-
             // Console.WriteLine("Read: {0}    {1} Times", (await locationSubs.Read().Task).Count, count++);
+
+
+
 
 
             while (true)
@@ -452,11 +511,11 @@ namespace RediPalTester
 
             //await Task.Delay(150);
 
-            //var watch = Stopwatch.StartNew();
-            //var messagess = redi.Value.Read.Messages("operators");
-            //watch.Stop();
-            //Console.WriteLine(watch.Elapsed.TotalMilliseconds);
-            //new Task_Store_Message() { CradleID = "1120", OperatorID = "saw-1" }.Redi_Write("saw-1");
+            // var watch = Stopwatch.StartNew();
+            // var messagess = redi.Value.Read.Messages("operators");
+            // watch.Stop();
+            // Console.WriteLine(watch.Elapsed.TotalMilliseconds);
+            // new Task_Store_Message() { CradleID = "1120", OperatorID = "saw-1" }.Redi_Write("saw-1");
 
 
             //// Read all operator messages
@@ -531,24 +590,24 @@ namespace RediPalTester
             }
 
 
-            redi.Value.SetTypeDefaults<StatusMessage>(StatusMessage =>
-            {
-                StatusMessage.Expiration = TimeSpan.FromSeconds(45);
-                StatusMessage.AddConditional(x => x.Status.Contains("10"), x => x.Expiration = TimeSpan.FromSeconds(10));
-                StatusMessage.AddParameterModifier(x => x.Image, (instance, options) =>
-                {
-                    if (instance.ImagePath.Contains("png"))
-                    {
-                        options.CompressionLevel = 100;
-                        options.ImageFormat = ImageFormat.Png;
-                    }
-                    else if (instance.ImagePath.Contains("jpg"))
-                    {
-                        options.CompressionLevel = 70;
-                        options.ImageFormat = ImageFormat.Jpeg;
-                    }
-                });
-            });
+            _ = redi.Value.SetTypeDefaults<StatusMessage>(StatusMessage =>
+              {
+                  StatusMessage.Expiration = TimeSpan.FromSeconds(45);
+                  StatusMessage.AddConditional(x => x.Status.Contains("10"), x => x.Expiration = TimeSpan.FromSeconds(10));
+                  StatusMessage.AddParameterModifier(x => x.Image, (instance, options) =>
+                  {
+                      if (instance.ImagePath.Contains("png"))
+                      {
+                          options.CompressionLevel = 100;
+                          options.ImageFormat = ImageFormat.Png;
+                      }
+                      else if (instance.ImagePath.Contains("jpg"))
+                      {
+                          options.CompressionLevel = 70;
+                          options.ImageFormat = ImageFormat.Jpeg;
+                      }
+                  });
+              });
 
 
 

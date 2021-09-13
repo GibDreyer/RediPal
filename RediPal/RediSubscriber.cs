@@ -4,6 +4,7 @@ using RedipalCore.Objects;
 using StackExchange.Redis;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,7 +15,7 @@ namespace RedipalCore
     internal class RediSubscriber : IRediSubscriber
     {
         // Fields
-        internal static Dictionary<string, dynamic> Subscriptions { get; } = new Dictionary<string, dynamic>();
+        internal static ConcurrentDictionary<string, dynamic> Subscriptions { get; } = new();
         private readonly IDatabase db;
         private readonly IRediReader Reader;
         private readonly Pluralize.NET.Pluralizer Pluralizer = new();
@@ -120,7 +121,7 @@ namespace RedipalCore
                             {
                                 rediSubbed.InvokeReloadObject();
                             });
-                            Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                            Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
 
                             return rediSubbed;
                         }
@@ -404,7 +405,7 @@ namespace RedipalCore
                                                   rediSubbed.InvokeReloadObject();
                                               });
 
-                                            Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                            Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
 
                                             subList.Add(rediSubbed);
                                         }
@@ -413,7 +414,7 @@ namespace RedipalCore
                             }
                         }
                     }
-                    result.Subscriptions = new Dictionary<TKey, IRediSubscription<TValue>>();
+                    result.Subscriptions = new();
 
                     if (options.WatchForRemove || options.WatchForAdd)
                     {
@@ -459,7 +460,7 @@ namespace RedipalCore
                                                 if (subscription.Value != null)
                                                 {
                                                     result.InvokeOnRemoved(subscription.Key);
-                                                    result.Subscriptions.Remove(subscription.Key);
+                                                    result.Subscriptions.Remove(subscription.Key, out _);
                                                     try
                                                     {
                                                         result.SetKeys.Remove(key);
@@ -511,13 +512,13 @@ namespace RedipalCore
 
                                                         if (!Subscriptions.ContainsKey(rediSubbed.SubscriptionID))
                                                         {
-                                                            Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                                            Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
                                                         }
                                                     }
                                                 }
                                                 if (rediSubbed is not null && !result.Subscriptions.ContainsKey(keyConvert))
                                                 {
-                                                    result.Subscriptions.Add(keyConvert, rediSubbed);
+                                                    result.Subscriptions.TryAdd(keyConvert, rediSubbed);
                                                 }
                                             }
                                         }
@@ -529,7 +530,7 @@ namespace RedipalCore
                                 }
                             });
 
-                            Subscriptions.Add(result.SubscriptionID, result);
+                            Subscriptions.TryAdd(result.SubscriptionID, result);
                         }
                     }
 
@@ -540,7 +541,7 @@ namespace RedipalCore
                             var objKey = (TKey)Convert.ChangeType(x.Key, typeof(TKey));
                             if (!result.Subscriptions.ContainsKey(objKey))
                             {
-                                result.Subscriptions.Add(objKey, x);
+                                result.Subscriptions.TryAdd(objKey, x);
                                 x.OnChange += (v) =>
                                 {
                                     result.InvokeOnChanged(objKey, v);
@@ -566,8 +567,8 @@ namespace RedipalCore
                 }
             }
             return null;
-        }  
-        
+        }
+
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(Expression<Func<TValue, P>> property, string[] keys, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull
         {
             if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(TValue), out var proccessor))
@@ -650,7 +651,7 @@ namespace RedipalCore
                             }
                         }
                     }
-                    result.Subscriptions = new Dictionary<TKey, IRediSubscription<P>>();
+                    result.Subscriptions = new();
 
                     ActiveRedisConnections.Add(setSubscriptionID);
                     Subscriber.Subscribe(setSubscriptionID, (s, e) =>
@@ -682,7 +683,7 @@ namespace RedipalCore
                                         if (subscription.Value != null)
                                         {
                                             result.InvokeOnRemoved(subscription.Key);
-                                            result.Subscriptions.Remove(subscription.Key);
+                                            result.Subscriptions.Remove(subscription.Key, out _);
                                             try
                                             {
                                                 result.SetKeys.Remove(key);
@@ -727,7 +728,7 @@ namespace RedipalCore
                                                 };
                                                 //}
 
-                                                result.Subscriptions.Add(objKey, rediSubbed);
+                                                result.Subscriptions.TryAdd(objKey, rediSubbed);
                                             }
                                         }
                                     }
@@ -745,7 +746,7 @@ namespace RedipalCore
                         subList.ForEach(x =>
                         {
                             var objKey = (TKey)Convert.ChangeType(x.Name, typeof(TKey));
-                            result.Subscriptions.Add(objKey, x);
+                            result.Subscriptions.TryAdd(objKey, x);
                             x.OnChange += (v) =>
                             {
                                 result.InvokeOnChanged(objKey, v);
@@ -802,14 +803,14 @@ namespace RedipalCore
                                 });
 
                                 subList.Add(rediSubbed);
-                                Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
                             }
                         }
 
                         subList.ForEach(x =>
                         {
                             var objKey = (TKey)Convert.ChangeType(x.Key, typeof(TKey));
-                            result.Subscriptions.Add(objKey, x);
+                            result.Subscriptions.TryAdd(objKey, x);
                             x.OnChange += (v) =>
                             {
                                 result.InvokeOnChanged(objKey, v);
@@ -885,14 +886,14 @@ namespace RedipalCore
                                 });
 
                                 subList.Add(rediSubbed);
-                                Subscriptions.Add(rediSubbed.SubscriptionID, rediSubbed);
+                                Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
                             }
                         }
 
                         subList.ForEach(x =>
                         {
                             var objKey = (string)Convert.ChangeType(x.Key, typeof(string));
-                            result.Subscriptions.Add(objKey, x);
+                            result.Subscriptions.TryAdd(objKey, x);
                             x.OnChange += (v) =>
                             {
                                 result.InvokeOnChanged(objKey, v);
@@ -964,7 +965,7 @@ namespace RedipalCore
                                         rediSubbed.InvokeReloadObject(value);
                                     };
 
-                                    Subscriptions.Add(rediObjSubbed.SubscriptionID, rediObjSubbed);
+                                    Subscriptions.TryAdd(rediObjSubbed.SubscriptionID, rediObjSubbed);
                                     return rediSubbed;
                                 }
                             }

@@ -46,3 +46,5 @@ C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\Red
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\ref\RediPalTester.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.pdb
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.genruntimeconfig.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Pastel.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CopyComplete

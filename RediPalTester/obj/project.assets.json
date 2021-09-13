@@ -57,7 +57,7 @@
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
-      "Opc.UaFx.Client/2.14.0": {
+      "Opc.UaFx.Client/2.19.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Registry": "4.7.0",
@@ -71,6 +71,15 @@
         },
         "runtime": {
           "lib/netcoreapp3.1/Opc.UaFx.Client.dll": {}
+        }
+      },
+      "Pastel/2.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/Pastel.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Pastel.dll": {}
         }
       },
       "Pipelines.Sockets.Unofficial/2.2.0": {
@@ -342,7 +351,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Opc.UaFx.Client": "2.14.0",
+          "Opc.UaFx.Client": "2.19.1",
           "RediPal": "0.7.174"
         },
         "compile": {
@@ -491,10 +500,10 @@
         "packageIcon.png"
       ]
     },
-    "Opc.UaFx.Client/2.14.0": {
-      "sha512": "lgvP7xVGX3p4mKHZRcfRVaWutdx8U0DVBvlGH6gXVlRsBEw4QyoKZx8vql14dIYPdr8wecPQElJQ6OY4Yd6yTQ==",
+    "Opc.UaFx.Client/2.19.1": {
+      "sha512": "mdbSNzlx/IAdlWEibHNgqbQUgiiMd1n5SGUMRkxZVb2yyTO8AI3sqi48Y3TVb+2qdHcDNOszZDa8ccg+35dc6g==",
       "type": "package",
-      "path": "opc.uafx.client/2.14.0",
+      "path": "opc.uafx.client/2.19.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -510,8 +519,25 @@
         "lib/netstandard2.0/Opc.UaFx.Client.deps.json",
         "lib/netstandard2.0/Opc.UaFx.Client.dll",
         "lib/netstandard2.0/Opc.UaFx.Client.xml",
-        "opc.uafx.client.2.14.0.nupkg.sha512",
+        "opc.uafx.client.2.19.1.nupkg.sha512",
         "opc.uafx.client.nuspec"
+      ]
+    },
+    "Pastel/2.1.0": {
+      "sha512": "CYPB5mCTGdmhaW7FyiYerq8S5S6Sz1pBJMC6XmmWvk/APiKjqmCc5vIn4XX++3E1w56LadBUDpicWBc2k84kmQ==",
+      "type": "package",
+      "path": "pastel/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "icon.png",
+        "lib/net5.0/Pastel.dll",
+        "lib/net5.0/Pastel.xml",
+        "lib/netstandard2.0/Pastel.dll",
+        "lib/netstandard2.0/Pastel.xml",
+        "pastel.2.1.0.nupkg.sha512",
+        "pastel.nuspec"
       ]
     },
     "Pipelines.Sockets.Unofficial/2.2.0": {
@@ -1106,6 +1132,7 @@
   "projectFileDependencyGroups": {
     "net6.0": [
       "AG.RocCore.Objects >= 1.0.0",
+      "Pastel >= 2.1.0",
       "RediPal >= 0.7.174"
     ]
   },
@@ -1162,6 +1189,12 @@
     "frameworks": {
       "net6.0": {
         "targetAlias": "net6.0",
+        "dependencies": {
+          "Pastel": {
+            "target": "Package",
+            "version": "[2.1.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

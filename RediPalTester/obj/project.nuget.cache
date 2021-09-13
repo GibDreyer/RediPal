@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Dag83Mlca4HqPjmrkbK4xXJuoPhE0g77cLuOQDyBQGl1hSo0eQNpy2rTPyP9q35ZVnzTnhhdTnF/PCciWGHgJg==",
+  "dgSpecHash": "kfiIOxfYxjdv3s4kdIQ2m+QM2gEXvfH5EeLgutJq6NdqcxwK+aP8ZBa6+Ukn1DembgTTirZld0mKvtCnfGilAw==",
   "success": true,
   "projectFilePath": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPalTester\\RediPalTester.csproj",
   "expectedPackageFiles": [
@@ -8,7 +8,8 @@
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
-    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\opc.uafx.client\\2.14.0\\opc.uafx.client.2.14.0.nupkg.sha512",
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\opc.uafx.client\\2.19.1\\opc.uafx.client.2.19.1.nupkg.sha512",
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\pastel\\2.1.0\\pastel.2.1.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\pipelines.sockets.unofficial\\2.2.0\\pipelines.sockets.unofficial.2.2.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\pluralize.net\\1.0.2\\pluralize.net.1.0.2.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\portable.bouncycastle\\1.8.6\\portable.bouncycastle.1.8.6.nupkg.sha512",
@@ -26,7 +27,8 @@
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.permissions\\5.0.0\\system.security.permissions.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.servicemodel.primitives\\4.5.3\\system.servicemodel.primitives.4.5.3.nupkg.sha512",
-    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512"
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\redipal\\0.7.174\\redipal.0.7.174.nupkg.sha512"
   ],
   "logs": []
 }

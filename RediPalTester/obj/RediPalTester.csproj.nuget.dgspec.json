@@ -52,11 +52,7 @@
           "dependencies": {
             "Opc.UaFx.Client": {
               "target": "Package",
-              "version": "[2.14.0, )"
-            },
-            "RediPal": {
-              "target": "Package",
-              "version": "[0.7.160, )"
+              "version": "[2.19.1, )"
             }
           },
           "imports": [
@@ -126,6 +122,12 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "Pastel": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
