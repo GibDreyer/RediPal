@@ -62,6 +62,7 @@ namespace RedipalCore
         {
             try
             {
+
                 var keys = Factory.TypeDescriptor.GetKeys(typeof(T), id);
 
                 var batch = Factory.CreateBatch();
@@ -69,7 +70,25 @@ namespace RedipalCore
                 {
                     foreach (var key in keys)
                     {
-                        batch.AddAction(x => x.KeyDeleteAsync(key));
+                        _ = batch.AddAction(x => x.KeyDeleteAsync(key));
+                    }
+
+                    if (Factory.TypeDescriptor.TryGetDescriptor(typeof(T), out var rediType))
+                    {
+                        if (!string.IsNullOrEmpty(rediType.DefaultSet))
+                        {
+                            _ = batch.AddAction(x =>
+                              {
+                                  try
+                                  {
+                                      return x.SetRemoveAsync(rediType.DefaultSet, id);
+                                  }
+                                  catch
+                                  {
+                                      return Task.CompletedTask;
+                                  }
+                              });
+                        }
                     }
 
                     return batch.Execute();
