@@ -337,7 +337,7 @@ namespace RedipalCore
                     {
                         keys = db.SortedSetRangeByScore(set);
                     }
-
+                   
                     var singleized = Pluralizer.Singularize(subspace);
                     if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(TValue), out var discriptor))
                     {
@@ -431,7 +431,7 @@ namespace RedipalCore
                         else
                         {
                             ActiveRedisConnections.Add(setSubscriptionID);
-                            Subscriber.Subscribe(setSubscriptionID, (s, e) =>
+                            Subscriber.Subscribe(setSubscriptionID, (_, _) =>
                             {
                                 try
                                 {
@@ -447,15 +447,16 @@ namespace RedipalCore
 
                                     if (keys != null)
                                     {
-                                        var listOfKeys = keys.Select(x => x.ToString()).ToList();
+                                        var listOfKeys = keys.Select(x => x.ToString());
 
-                                        var needsAdded = listOfKeys.Where(x => !result.SetKeys.Contains(x)).ToList();
+                                        var needsAdded = listOfKeys.Where(x => !result.SetKeys.Contains(x));
                                         var removed = result.SetKeys.Where(x => x != null && !listOfKeys.Contains(x)).ToList();
-
-                                        if (removed.Any())
+                                       
+                                        if (false && removed.Any())
                                         {
-                                            foreach (var key in removed.ToList())
+                                            foreach (var key in removed)
                                             {
+                                                Console.WriteLine("Adding Key: " + key);
                                                 var subscription = result.Subscriptions.FirstOrDefault(x => x.Key.ToString() == key);
                                                 if (subscription.Value != null)
                                                 {
@@ -471,10 +472,11 @@ namespace RedipalCore
                                             }
                                         }
 
-                                        if (needsAdded.Any())
+                                        if (false && needsAdded.Any())
                                         {
-                                            foreach (var key in needsAdded.ToList())
+                                            foreach (var key in needsAdded)
                                             {
+                                                Console.WriteLine("Adding Key: " + key);
                                                 result.SetKeys.Add(key);
 
                                                 var keyConvert = (TKey)Convert.ChangeType(key, typeof(TKey));
@@ -515,14 +517,20 @@ namespace RedipalCore
                                                             Subscriptions.TryAdd(rediSubbed.SubscriptionID, rediSubbed);
                                                         }
                                                     }
-                                                }
-                                                if (rediSubbed is not null && !result.Subscriptions.ContainsKey(keyConvert))
-                                                {
-                                                    result.Subscriptions.TryAdd(keyConvert, rediSubbed);
+                                                    if (rediSubbed is not null && !result.Subscriptions.ContainsKey(keyConvert))
+                                                    {
+                                                        result.Subscriptions.TryAdd(keyConvert, rediSubbed);
+                                                    }
                                                 }
                                             }
                                         }
+
+                                        listOfKeys = null;
+                                        needsAdded = null;
+                                        removed = null;
                                     }
+
+                                    keys = null;
                                 }
                                 catch (Exception ea)
                                 {

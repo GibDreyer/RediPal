@@ -10,7 +10,7 @@
         "dependencies": {
           "AG.RocCore.Objects": "1.0.0",
           "Pastel": "2.1.0",
-          "RediPal": "0.7.174"
+          "RediPal": "0.7.175"
         },
         "runtime": {
           "RediPalTester.dll": {}
@@ -302,13 +302,13 @@
       "AG.RocCore.Objects/1.0.0": {
         "dependencies": {
           "Opc.UaFx.Client": "2.19.1",
-          "RediPal": "0.7.174"
+          "RediPal": "0.7.175"
         },
         "runtime": {
           "AG.RocCore.Objects.dll": {}
         }
       },
-      "RediPal/0.7.174": {
+      "RediPal/0.7.175": {
         "dependencies": {
           "Pluralize.NET": "1.0.2",
           "StackExchange.Redis": "2.2.4",
@@ -499,7 +499,7 @@
       "serviceable": false,
       "sha512": ""
     },
-    "RediPal/0.7.174": {
+    "RediPal/0.7.175": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

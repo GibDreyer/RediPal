@@ -1310,57 +1310,6 @@ namespace RedipalCore
                 return new RediResult { Success = false, Message = "DataBase was closed or not valid" };
             }
 
-            if (rediWrite.SetsToRemove != null)
-            {
-                foreach (var set in rediWrite.SetsToRemove)
-                {
-                    try
-                    {
-                        rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
-                    }
-                    catch { }
-                }
-            }
-
-            if (rediWrite.SearchableSetsToAppend != null && space.SearchScore.HasValue)
-            {
-                foreach (var set in rediWrite.SearchableSetsToAppend)
-                {
-                    try
-                    {
-                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
-                    }
-                    catch { }
-                }
-            }
-
-            if (space.AppendToSearchSets != null && space.SearchScore.HasValue)
-            {
-                foreach (var set in space.AppendToSearchSets)
-                {
-                    try
-                    {
-                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
-                    }
-                    catch { }
-                }
-            }
-
-            if (space.RemoveFromSets is not null)
-            {
-                foreach (var set in space.RemoveFromSets)
-                {
-                    rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
-                }
-            }
-            if (space.AppendToSets is not null)
-            {
-                foreach (var set in space.AppendToSets)
-                {
-                    rediWrite.RediBatch.AddAction(x => x.SetAddAsync(set.ToLower(), space.ID));
-                }
-            }
-
             if (space.Fields.Count > 0)
             {
                 if (space.RediWrite == RediWriteMethods.AsSet)
@@ -1450,6 +1399,57 @@ namespace RedipalCore
                 if (space.DeleteExisting)
                 {
                     rediWrite.RediBatch.AddAction(x => x.KeyDeleteAsync(space.KeySpace));
+                }
+            }
+
+            if (rediWrite.SetsToRemove != null)
+            {
+                foreach (var set in rediWrite.SetsToRemove)
+                {
+                    try
+                    {
+                        rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
+                    }
+                    catch { }
+                }
+            }
+
+            if (rediWrite.SearchableSetsToAppend != null && space.SearchScore.HasValue)
+            {
+                foreach (var set in rediWrite.SearchableSetsToAppend)
+                {
+                    try
+                    {
+                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
+                    }
+                    catch { }
+                }
+            }
+
+            if (space.AppendToSearchSets != null && space.SearchScore.HasValue)
+            {
+                foreach (var set in space.AppendToSearchSets)
+                {
+                    try
+                    {
+                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
+                    }
+                    catch { }
+                }
+            }
+
+            if (space.RemoveFromSets is not null)
+            {
+                foreach (var set in space.RemoveFromSets)
+                {
+                    rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
+                }
+            }
+            if (space.AppendToSets is not null)
+            {
+                foreach (var set in space.AppendToSets)
+                {
+                    rediWrite.RediBatch.AddAction(x => x.SetAddAsync(set.ToLower(), space.ID));
                 }
             }
 

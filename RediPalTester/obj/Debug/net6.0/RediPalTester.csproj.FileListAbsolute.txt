@@ -1,3 +1,8 @@
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.AssemblyReference.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfoInputs.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfo.cs
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CoreCompileInputs.cache
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\RediPalTester.exe
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\RediPalTester.deps.json
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\RediPalTester.runtimeconfig.json
@@ -7,6 +12,7 @@ C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Red
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Opc.UaFx.Client.dll
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Pastel.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Pipelines.Sockets.Unofficial.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Pluralize.NET.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\BouncyCastle.Crypto.dll
@@ -36,15 +42,8 @@ C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Red
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\AG.RocCore.Objects.pdb
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\RediPal.pdb
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\RediPal.xml
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.AssemblyReference.cache
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfoInputs.cache
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.AssemblyInfo.cs
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.ImplicitNamespaceImports.cs
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CoreCompileInputs.cache
+C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CopyComplete
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\ref\RediPalTester.dll
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.pdb
 C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.genruntimeconfig.cache
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\bin\Debug\net6.0\Pastel.dll
-C:\Users\gdreyer.PEERDOM\source\repos\RediPal\RediPalTester\obj\Debug\net6.0\RediPalTester.csproj.CopyComplete

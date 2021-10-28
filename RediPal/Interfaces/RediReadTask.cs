@@ -7,19 +7,19 @@ namespace RedipalCore.Interfaces
 {
     public class RediReadTask<TKey, TValue> where TKey : IConvertible where TValue : notnull
     {
-        private Stopwatch stopwatch = new();
+        private readonly Stopwatch _stopwatch = new();
 
         public RediReadTask(Task<Dictionary<TKey, TValue>?> task, Progress<int> progress)
         {
             Task = task;
-            stopwatch.Start();
+            _stopwatch.Start();
 
             Task.ContinueWith(x =>
             {
                 if (OnComplete is not null)
                 {
                     OnComplete.Invoke(x.Result);
-                    stopwatch.Stop();
+                    _stopwatch.Stop();
                 }
             });
 
@@ -28,9 +28,9 @@ namespace RedipalCore.Interfaces
                 if (TotalRead < amount)
                 {
                     TotalRead = amount;
-                    if (stopwatch.Elapsed.TotalMilliseconds > 50 && OnProggress != null)
+                    if (_stopwatch.Elapsed.TotalMilliseconds > 50 && OnProggress != null)
                     {
-                        stopwatch.Restart();
+                        _stopwatch.Restart();
                         OnProggress.Invoke(TotalRead, TotalItems);
                     }
                 }

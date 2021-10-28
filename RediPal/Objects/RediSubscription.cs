@@ -166,10 +166,11 @@ namespace RedipalCore.Objects
         {
             OnChange = null;
 
-            if (RediSubscriber.Subscriber != null)
+            if (RediSubscriber.Subscriber is not null)
             {
                 RediSubscriber.Subscriber.Unsubscribe(SubscriptionID);
             }
+
             if (Redipal.IFactory is not null)
             {
                 Redipal.IFactory.RediPalInstance.Subscribe.ActiveRedisConnections.Remove(SubscriptionID);

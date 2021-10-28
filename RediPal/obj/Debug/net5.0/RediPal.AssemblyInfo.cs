@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Writer / Reader   for dotnet objects in and out of a redis database")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.2.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.7.174")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.7.175")]
 [assembly: System.Reflection.AssemblyProductAttribute("RediPal")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RediPal")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.2.0")]
