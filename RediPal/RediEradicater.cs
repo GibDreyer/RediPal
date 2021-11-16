@@ -38,7 +38,7 @@ namespace RedipalCore
         {
             try
             {
-                return db.HashDelete(key.ToLower(), field);
+                return db.HashDelete(key: key.ToLower(), field);
             }
             catch
             {
@@ -50,7 +50,7 @@ namespace RedipalCore
         {
             try
             {
-                return db.KeyDelete(key.ToLower());
+                return db.KeyDelete(key: key.ToLower());
             }
             catch
             {
@@ -62,18 +62,17 @@ namespace RedipalCore
         {
             try
             {
+                List<string>? keys = Factory.TypeDescriptor.GetKeys(typeof(T), id);
 
-                var keys = Factory.TypeDescriptor.GetKeys(typeof(T), id);
-
-                var batch = Factory.CreateBatch();
+                RediBatch? batch = Factory.CreateBatch();
                 if (batch is not null)
                 {
-                    foreach (var key in keys)
+                    foreach (string key in keys)
                     {
                         _ = batch.AddAction(x => x.KeyDeleteAsync(key));
                     }
 
-                    if (Factory.TypeDescriptor.TryGetDescriptor(typeof(T), out var rediType))
+                    if (Factory.TypeDescriptor.TryGetDescriptor(typeof(T), out RediTypeProccessor? rediType))
                     {
                         if (!string.IsNullOrEmpty(rediType.DefaultSet))
                         {

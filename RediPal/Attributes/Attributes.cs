@@ -10,7 +10,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// When set on a property it will NOT be serialized
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct)]
     public class RediIgnore : Attribute
     {
     }
@@ -96,7 +96,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// Expires the Object After the specified amount of time. This applies to every nested object under the applied class
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Struct, Inherited = true, AllowMultiple = true)]
     public class RediExpire : Attribute
     {
         public TimeSpan Time { get; private set; }
@@ -113,7 +113,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// Sets the default KeySpace that the object will be wrote to
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
     public class RediKeySpace : Attribute
     {
         public string KeySpace { get; private set; }
@@ -132,7 +132,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// Sets the default KeySpace that the object will be wrote to
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
     public class RediSearchSet : Attribute
     {
         public string Set { get; private set; }
@@ -176,7 +176,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// Will Automatically add to this set when wrote
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
     public class RediDefaultSet : Attribute
     {
         public string SetKey { get; private set; }
@@ -214,7 +214,7 @@ namespace RedipalCore.Attributes
     /// <summary>
     /// allows an attribute to be aplied to a specific type
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     internal class PropertyType : Attribute
     {
         public Type[] Types { get; private set; }

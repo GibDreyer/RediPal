@@ -2,8 +2,8 @@
 using RedipalCore.Attributes;
 using RedipalCore.Interfaces;
 using RedipalCore.Objects;
+using StackExchange.Redis;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -86,16 +86,14 @@ namespace RedipalCore
 
         public List<string> GetKeys(Type type, string name, string keySpace = "")
         {
-            if (TryGetDescriptor(type, out var typeProccessor) && (typeProccessor.KeySpace != null || !string.IsNullOrEmpty(keySpace)))
-            {
-                return Get_Keys(type, (typeProccessor.KeySpace ?? keySpace) + ":" + name);
-            }
-            throw new ArgumentException("No keySpace was given or was applied to the object");
+            return TryGetDescriptor(type, out RediTypeProccessor? typeProccessor) && (typeProccessor.KeySpace != null || !string.IsNullOrEmpty(keySpace))
+                ? Get_Keys(type, (typeProccessor.KeySpace ?? keySpace) + ":" + name)
+                : throw new ArgumentException("No keySpace was given or was applied to the object");
         }
 
         private List<string> Get_Keys(Type type, string name)
         {
-            var keys = new List<string>();
+            List<string> keys = new();
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -103,15 +101,15 @@ namespace RedipalCore
 
                 keys.Add(name);
 
-                if (TryGetDescriptor(type, out var typeProccessor) && typeProccessor.Properties != null)
+                if (TryGetDescriptor(type, out RediTypeProccessor? typeProccessor) && typeProccessor.Properties != null)
                 {
                     if (!type.IsArray && !type.IsGenericType)
                     {
-                        foreach (var subType in typeProccessor.Properties.Where(x => !x.IsPrimitive))
+                        foreach (RediType? subType in typeProccessor.Properties.Where(x => !x.IsPrimitive))
                         {
                             if (subType.PropertyType != null)
                             {
-                                Get_Keys(subType.PropertyType, name + ":" + subType.Name.ToLower()).ForEach(x => keys.Add(x));
+                                keys.AddRange(Get_Keys(subType.PropertyType, name + ":" + subType.Name.ToLower()));
                             }
                         }
                     }
@@ -123,7 +121,7 @@ namespace RedipalCore
                             var db = Redipal.IFactory.GetDataBase();
                             if (db is not null)
                             {
-                                StackExchange.Redis.RedisValue[]? members = null;
+                                RedisValue[]? members = null;
                                 try
                                 {
                                     members = db.SetMembers(name);
@@ -142,9 +140,9 @@ namespace RedipalCore
 
                                 if (members is not null)
                                 {
-                                    foreach (var member in members)
+                                    foreach (RedisValue member in members)
                                     {
-                                        Get_Keys(listType, Pluralizer.Singularize(name) + ":" + member).ForEach(x => keys.Add(x));
+                                        keys.AddRange(Get_Keys(listType, Pluralizer.Singularize(name) + ":" + member));
                                     }
                                 }
                             }
@@ -277,13 +275,13 @@ namespace RedipalCore
 
                             if (properties is not null)
                             {
-                                foreach (var property in properties)
+                                foreach (PropertyInfo? property in properties)
                                 {
                                     if (property is not null)
                                     {
                                         if (IsPrimitive(property.PropertyType))
                                         {
-                                            var rediType = new RediType
+                                            RediType rediType = new()
                                             {
                                                 PropertyType = property.PropertyType,
                                                 PropertyInfo = property,
@@ -295,9 +293,8 @@ namespace RedipalCore
                                             if (Attribute.IsDefined(property, typeof(RediWriteAsImage), true))
                                             {
                                                 var attribute = Attribute.GetCustomAttribute(property, typeof(RediWriteAsImage), true);
-                                                if (attribute != null)
+                                                if (attribute is RediWriteAsImage att)
                                                 {
-                                                    var att = (RediWriteAsImage)attribute;
                                                     rediType.ImageFormat = att.ImageFormat;
                                                     rediType.CompressionLevel = att.CompressionLevel;
                                                 }
@@ -342,8 +339,8 @@ namespace RedipalCore
                                                     rediType.Name = property.Name;
                                                 }
                                             }
-                                            if (rediTypeProccessor.Properties == null)
-                                                rediTypeProccessor.Properties = new List<RediType> { rediType };
+                                            if (rediTypeProccessor.Properties is null)
+                                                rediTypeProccessor.Properties = new() { rediType };
                                             else
                                                 rediTypeProccessor.Properties.Add(rediType);
                                         }
@@ -384,7 +381,7 @@ namespace RedipalCore
                                                 {
                                                     if (inheretExpiration)
                                                     {
-                                                        if (TryGetDescriptor(property.PropertyType, out var subProccesor, rediTypeProccessor.Expiration))
+                                                        if (TryGetDescriptor(property.PropertyType, out RediTypeProccessor? subProccesor, rediTypeProccessor.Expiration))
                                                         {
                                                             if (subProccesor.AsJson)
                                                             {
@@ -405,16 +402,23 @@ namespace RedipalCore
                                                     TypeProccesssor(property.PropertyType);
                                                 }
 
-                                                if (rediTypeProccessor.SubTypes == null)
-                                                    rediTypeProccessor.SubTypes = new List<Type> { property.PropertyType };
+                                                if (rediTypeProccessor.SubTypes is null)
+                                                {
+                                                    rediTypeProccessor.SubTypes = new() { property.PropertyType };
+                                                }
                                                 else
+                                                {
                                                     rediTypeProccessor.SubTypes.Add(property.PropertyType);
+                                                }
 
-
-                                                if (rediTypeProccessor.Properties == null)
-                                                    rediTypeProccessor.Properties = new List<RediType> { rediType };
+                                                if (rediTypeProccessor.Properties is null)
+                                                {
+                                                    rediTypeProccessor.Properties = new() { rediType };
+                                                }
                                                 else
+                                                {
                                                     rediTypeProccessor.Properties.Add(rediType);
+                                                }
                                             }
                                         }
                                     }
@@ -424,7 +428,7 @@ namespace RedipalCore
                     }
                     else
                     {
-                        var rediType = new RediType
+                        RediType rediType = new()
                         {
                             PropertyType = objType,
                             IsPrimitive = true,
@@ -453,7 +457,7 @@ namespace RedipalCore
                             }
                         }
                         if (rediTypeProccessor.Properties == null)
-                            rediTypeProccessor.Properties = new List<RediType> { rediType };
+                            rediTypeProccessor.Properties = new() { rediType };
                         else
                             rediTypeProccessor.Properties.Add(rediType);
                     }
@@ -471,7 +475,7 @@ namespace RedipalCore
 
         private static bool IsPrimitive(object? obj)
         {
-            if (obj != null)
+            if (obj is not null)
             {
                 Type? type;
 
@@ -484,7 +488,15 @@ namespace RedipalCore
                 else
                     type = obj.GetType();
 
-                if (type.IsPrimitive || type.IsValueType || type == typeof(string) || type == typeof(decimal) || type == typeof(Bitmap) || type == typeof(DateTime) || type == typeof(TimeSpan) || type == typeof(DateTimeOffset) || type == typeof(Guid))
+                if (type.IsPrimitive 
+                    || type.IsValueType 
+                    || type == typeof(string) 
+                    || type == typeof(decimal) 
+                    || type == typeof(Bitmap) 
+                    || type == typeof(DateTime)
+                    || type == typeof(TimeSpan) 
+                    || type == typeof(DateTimeOffset) 
+                    || type == typeof(Guid))
                 {
                     return true;
                 }

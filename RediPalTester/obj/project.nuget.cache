@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "JXFiwlH0EeV0P04FUrfsDRgnS8gjJJr84O5ErnKICPTXcLfD9f72ylwHRmjQp5Z/OrHLRGxbndgQxQTriF5jlQ==",
+  "dgSpecHash": "40kVdtnzDcoeDWx+rnzz1u40BrGSWyMT2mzjcBGn9Qn0WwOIoKU0yQXFGMMEpnlw1qaRA417Vg3vk3qa8JQRAA==",
   "success": true,
   "projectFilePath": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPalTester\\RediPalTester.csproj",
   "expectedPackageFiles": [
@@ -27,8 +27,7 @@
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.permissions\\5.0.0\\system.security.permissions.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.servicemodel.primitives\\4.5.3\\system.servicemodel.primitives.4.5.3.nupkg.sha512",
-    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
-    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\redipal\\0.7.175\\redipal.0.7.175.nupkg.sha512"
+    "C:\\Users\\gdreyer.PEERDOM\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }

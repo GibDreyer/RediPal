@@ -18,7 +18,6 @@ using System.Threading;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using RedipalCore.TestObjects;
 
 namespace RediPalTester
 {
@@ -79,7 +78,7 @@ namespace RediPalTester
 
 
 
-
+              
             //var redisConfig = new ConfigurationOptions
             //{
             //    Password = "Itunes96",
@@ -88,7 +87,25 @@ namespace RediPalTester
             //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
             //var redi = new Redipal(redisConfig);
 
-            var redi = new Redipal("roc-redis.ag:6379", new() { UnThrottleCPU = true, Default_MaxDegreeOfParallelism = -1 });
+            var redi = new Redipal("roc-redis.ag:6379", new()
+            {
+                UnThrottleCPU = true,
+                Default_MaxDegreeOfParallelism = -1
+            });
+
+
+
+
+
+            redi.Read.List<string>("discardedtasks")
+                .ForEach(x => redi.Eradicate.Object<TaskPlan>(x));
+
+
+
+
+
+
+
 
 
 
@@ -626,7 +643,7 @@ namespace RediPalTester
             source.Read(lengthBytes, 0, 4);
 
             int length = BitConverter.ToInt32(lengthBytes, 0);
-            using GZipStream decompressionStream = new(source,CompressionMode.Decompress);
+            using GZipStream decompressionStream = new(source, CompressionMode.Decompress);
             byte[] result = new byte[length];
             decompressionStream.Read(result, 0, length);
             return result;
