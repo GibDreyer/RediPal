@@ -44,9 +44,14 @@
             Will Automatically add to this set when wrote
             </summary>
         </member>
+        <member name="T:RedipalCore.Attributes.RediDefaultID">
+            <summary>
+            Will Automatically write and read the Object with the given ID. This should not be used if unless the instance of the class or struct is singular
+            </summary>
+        </member>
         <member name="T:RedipalCore.Attributes.RediWriteName">
             <summary>
-            Sets the property as the name of the object when writen or read
+            Sets the property as the name of the object when written or read
             </summary>
         </member>
         <member name="T:RedipalCore.Attributes.RediReName">
@@ -56,7 +61,7 @@
         </member>
         <member name="T:RedipalCore.Attributes.PropertyType">
             <summary>
-            allows an attribute to be aplied to a specific type
+            allows an attribute to be applied to a specific type
             </summary>
         </member>
         <member name="M:RedipalCore.RediExtensions.Redi_LoadAs``1(``0,``0@,System.String)">

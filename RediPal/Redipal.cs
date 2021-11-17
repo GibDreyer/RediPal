@@ -122,7 +122,9 @@ namespace RedipalCore
             if (IFactory != null && IFactory.TypeDescriptor.TryGetDescriptor(typeof(T), out var proccessor, false))
             {
                 if (rediDefaults.Redi_WriteName is not null)
-                    proccessor.WriteNameProperty = rediDefaults.Redi_WriteName;
+                    proccessor.WriteNameProperty = rediDefaults.Redi_WriteName;           
+                if (rediDefaults.DefaultID is not null)
+                    proccessor.WriteName = rediDefaults.DefaultID;
                 if (rediDefaults.KeySpace is not null)
                     proccessor.keySpace = rediDefaults.KeySpace;
                 if (rediDefaults.Redi_Conditionals is not null)

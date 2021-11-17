@@ -18,6 +18,7 @@ using System.Threading;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using RedipalCore.Attributes;
 
 namespace RediPalTester
 {
@@ -78,7 +79,7 @@ namespace RediPalTester
 
 
 
-              
+
             //var redisConfig = new ConfigurationOptions
             //{
             //    Password = "Itunes96",
@@ -87,18 +88,37 @@ namespace RediPalTester
             //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
             //var redi = new Redipal(redisConfig);
 
-            var redi = new Redipal("roc-redis.ag:6379", new()
+            var redi = new Redipal("rocii.ag:6379", new()
             {
                 UnThrottleCPU = true,
                 Default_MaxDegreeOfParallelism = -1
             });
 
 
+            redi.SetTypeDefaults<CradlePosition>(x =>
+            {
+                x.DefaultID = "yep";
+                x.KeySpace = "test";
+            });
+
+            CradlePosition x = new();
+
+            new CradlePosition().Redi_Write();
+
+            //redi.Write.Object(x);
+
+            CradlePosition? y = redi.Read.Object<CradlePosition>();
 
 
 
-            redi.Read.List<string>("discardedtasks")
-                .ForEach(x => redi.Eradicate.Object<TaskPlan>(x));
+
+
+            Console.WriteLine();
+
+
+
+            //redi.Read.List<string>("discardedtasks")
+            //    .ForEach(x => redi.Eradicate.Object<TaskPlan>(x));
 
 
 
@@ -564,12 +584,15 @@ namespace RediPalTester
         InUse
     }
 
-    public class CradlePosition
+
+    //[RediKeySpace("test"),
+    //    RediDefaultID("Yoo")]
+    public class CradlePosition : RediBase
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int R { get; set; }
-        public double Z { get; set; }
+        public int X { get; set; } = 885;
+        public int Y { get; set; } = 534;
+        public int R { get; set; } = -1;
+        public double? Z { get; set; } = null;
     }
 
 

@@ -159,6 +159,7 @@ namespace RedipalCore.Objects
 
         public string? KeySpace { get; set; } = null;
         public string? SearchSet { get; set; } = null;
+        public string? DefaultID { get; set; } = null;
         public string? DefaultSet { get; set; } = null;
         public TimeSpan? Expiration { get; set; } = null;
         public bool? Ignore { get; set; } = null;

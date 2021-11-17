@@ -26,8 +26,9 @@ namespace RedipalCore.Interfaces
         /// Creates a list of the given object for the key space for each of the specified fields. If no Objects can be created null will be returned
         /// </summary>
         public T? Object<T>(string keySpace, string id) where T : notnull;
-
         public T? Object<T>(string id) where T : notnull;
+        public T? Object<T>() where T : notnull;
+
 
         public string? Message(string key);
         public string? Message(string keySpace, string id);

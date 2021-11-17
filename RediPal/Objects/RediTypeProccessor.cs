@@ -71,7 +71,8 @@ namespace RedipalCore.Objects
         public bool AsJson { get; set; }
 
         internal double? Score { get; set; } = null;
-        internal string Name { get; set; } = "";
+        internal string WriteName { get; set; } = string.Empty;
+        internal string Name { get; set; } = string.Empty;
         internal PropertyInfo? WriteNameProperty { get; set; }
         internal PropertyInfo? ScoreProperty { get; set; }
         internal List<string>? AppendToKey { get; set; }

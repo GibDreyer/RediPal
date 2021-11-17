@@ -11,9 +11,7 @@ namespace RedipalCore.Attributes
     /// When set on a property it will NOT be serialized
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Struct)]
-    public class RediIgnore : Attribute
-    {
-    }
+    public class RediIgnore : Attribute { }
 
 
 
@@ -79,7 +77,7 @@ namespace RedipalCore.Attributes
             Layers = layers;
         }
     }
-    
+
     [AttributeUsage(AttributeTargets.Property)]
     public class RediMessageIndex : Attribute
     {
@@ -187,9 +185,23 @@ namespace RedipalCore.Attributes
         }
     }
 
+    /// <summary>
+    /// Will Automatically write and read the Object with the given ID. This should not be used if unless the instance of the class or struct is singular
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+    public class RediDefaultID : Attribute
+    {
+        public string ID { get; private set; }
+
+        public RediDefaultID(string set)
+        {
+            ID = set;
+        }
+    }
+
 
     /// <summary>
-    /// Sets the property as the name of the object when writen or read
+    /// Sets the property as the name of the object when written or read
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
     public class RediWriteName : Attribute
@@ -212,7 +224,7 @@ namespace RedipalCore.Attributes
 
 
     /// <summary>
-    /// allows an attribute to be aplied to a specific type
+    /// allows an attribute to be applied to a specific type
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     internal class PropertyType : Attribute

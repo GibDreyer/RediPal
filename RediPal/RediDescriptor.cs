@@ -248,6 +248,14 @@ namespace RedipalCore
                             }
                         }
 
+                        if (Attribute.IsDefined(objType, typeof(RediDefaultID)))
+                        {
+                            if (Attribute.GetCustomAttribute(objType, typeof(RediDefaultID)) is RediDefaultID attribute)
+                            {
+                                rediTypeProccessor.WriteName = attribute.ID.ToLower();
+                            }
+                        }
+
                         if (Attribute.IsDefined(objType, typeof(RediWriteAsJson)))
                         {
                             rediTypeProccessor.AsJson = true;

@@ -209,9 +209,9 @@ namespace RedipalCore
             {
                 if (!string.IsNullOrEmpty(discriptor.KeySpace))
                 {
-                    if (discriptor.WriteNameProperty is not null)
+                    if (discriptor.WriteNameProperty is not null || !string.IsNullOrEmpty(discriptor.WriteName))
                     {
-                        var nameValue = discriptor.WriteNameProperty.GetValue(obj);
+                        var nameValue = discriptor.WriteNameProperty?.GetValue(obj) ?? discriptor.WriteName;
                         if (nameValue is not null && RediWriter.IsPrimitive(nameValue))
                         {
                             var redisName = RediWriter.GetStringValue(nameValue);

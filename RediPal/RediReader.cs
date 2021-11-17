@@ -96,6 +96,31 @@ namespace RedipalCore
             return default;
         }
 
+
+        public T? Object<T>() where T : notnull
+        {
+            if (Descriptor.TryGetDescriptor(typeof(T), out var discriptor))
+            {
+                if (!string.IsNullOrEmpty(discriptor.KeySpace) && !string.IsNullOrEmpty(discriptor.WriteName))
+                {
+                    if (discriptor.WriteName.Contains(discriptor.KeySpace))
+                    {
+                        return GetObject<T>(discriptor.WriteName);
+                    }
+                    else
+                    {
+                        return GetObject<T>(discriptor.KeySpace + ":" + discriptor.WriteName);
+                    }
+                }
+                else
+                {
+                    return GetObject<T>(discriptor.WriteName);
+                }
+            }
+            return default;
+        }
+
+
         private T? GetObject<T>(string keySpace) where T : notnull
         {
             var type = typeof(T);

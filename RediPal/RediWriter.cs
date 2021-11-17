@@ -371,6 +371,11 @@ namespace RedipalCore
                         {
                             writeOptions.ID = rediBase.Redi_WriteName;
                         }
+
+                        if (!string.IsNullOrEmpty(discriptor.WriteName))
+                        {
+                            writeOptions.ID = discriptor.WriteName;
+                        }
                         else
                         {
                             if (discriptor.WriteNameProperty is not null)
@@ -381,7 +386,7 @@ namespace RedipalCore
                                     var redisName = GetStringValue(value);
                                     if (string.IsNullOrEmpty(redisName))
                                     {
-                                        throw new ArgumentException("RediWriteName is applied to a property that is not convertable to a redis type");
+                                        throw new ArgumentException("RediWriteName is applied to a property that is not convertible to a redis type");
                                     }
                                     else
                                     {
@@ -390,7 +395,7 @@ namespace RedipalCore
                                 }
                                 else
                                 {
-                                    throw new ArgumentException("RediWriteName is applied to a property that is not convertable to a redis type");
+                                    throw new ArgumentException("RediWriteName is applied to a property that is not convertible to a redis type");
                                 }
                             }
                             else
@@ -1054,23 +1059,28 @@ namespace RedipalCore
                     options.AppendToSet(discriptor.DefaultSet);
                 }
 
-                if (string.IsNullOrEmpty(hash) && discriptor.WriteNameProperty is not null)
+                if (string.IsNullOrEmpty(hash))
                 {
-                    var value = discriptor.WriteNameProperty.GetValue(obj);
-                    if (value is not null && IsPrimitive(value))
+                    if (discriptor.WriteNameProperty is not null)
                     {
-                        var redisName = GetStringValue(value);
-                        if (!string.IsNullOrEmpty(redisName))
+                        var value = discriptor.WriteNameProperty.GetValue(obj);
+                        if (value is not null && IsPrimitive(value))
                         {
-                            hash = redisName.ToLower();
+                            var redisName = GetStringValue(value);
+                            if (!string.IsNullOrEmpty(redisName))
+                            {
+                                hash = redisName.ToLower();
+                            }
                         }
+                    }
+                    else if (!string.IsNullOrEmpty(discriptor.WriteName))
+                    {
+                        hash = discriptor.WriteName;
                     }
                 }
 
-                if (hash != null)
+                if (!string.IsNullOrEmpty(hash))
                 {
-
-
                     hash = hash.ToLower();
 
                     key = discriptor.KeySpace is not null && string.IsNullOrEmpty(key) ? discriptor.KeySpace : key;
@@ -1172,7 +1182,7 @@ namespace RedipalCore
                         {
                             if (obj is RediMessageBase redimessage)
                             {
-                               redimessage.Compile();
+                                redimessage.Compile();
                             }
 
                             foreach (var property in discriptor.Properties)
