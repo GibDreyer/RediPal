@@ -207,7 +207,7 @@ namespace RedipalCore
         {
             if (Redipal.IFactory != null && Redipal.IFactory.TypeDescriptor.TryGetDescriptor(typeof(T), out var discriptor))
             {
-                if (!string.IsNullOrEmpty(discriptor.KeySpace))
+                if (!string.IsNullOrEmpty(discriptor.KeySpace) || discriptor.DisableKeySpace)
                 {
                     if (discriptor.WriteNameProperty is not null || !string.IsNullOrEmpty(discriptor.WriteName))
                     {
@@ -218,7 +218,7 @@ namespace RedipalCore
                             if (!string.IsNullOrEmpty(redisName))
                             {
                                 var body = property.Body.ToString();
-                                var key = discriptor.KeySpace + ":" + redisName + body.Replace(body.Split(".").First() + ".", ":").Replace(".", ":").ToLower();
+                                var key = (!discriptor.DisableKeySpace ? discriptor.KeySpace + ":" : "") + redisName + body.Replace(body.Split(".").First() + ".", ":").Replace(".", ":").ToLower();
 
                                 var propName = key.Split(":").LastOrDefault();
 

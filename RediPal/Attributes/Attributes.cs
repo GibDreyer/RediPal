@@ -114,6 +114,7 @@ namespace RedipalCore.Attributes
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
     public class RediKeySpace : Attribute
     {
+        public bool DisableKeySpace { get; private set; }
         public string KeySpace { get; private set; }
         public string[] Append { get; private set; }
 
@@ -122,9 +123,14 @@ namespace RedipalCore.Attributes
             KeySpace = keySpace.ToLower();
             Append = append;
         }
+
+        public RediKeySpace(bool disable)
+        {
+            DisableKeySpace = !disable;
+            KeySpace = string.Empty;
+            Append = Array.Empty<string>();
+        }
     }
-
-
 
 
     /// <summary>

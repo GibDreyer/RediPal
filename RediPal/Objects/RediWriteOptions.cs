@@ -12,13 +12,13 @@ namespace RedipalCore.Objects
         }
 
         /// <summary>
-        /// This is the Key space the the object will be wrote under in redis
+        /// This is the Key space the object will be wrote under in redis
         /// this is not necessary to set if the attribute "RediKeySpace" is applied to the object class
         /// </summary>
         public string? KeySpace{ get; set; }
 
         /// <summary>
-        /// This is the id the the object will be wrote under in redis the will be located at   {KeySpace}:{ID}.
+        /// This is the id the object will be wrote under in redis the will be located at   {KeySpace}:{ID}.
         /// this is not necessary to set if the attribute "RediWriteName" is applied to a property on the object
         /// </summary>
         public string? ID{ get; set; }
@@ -52,7 +52,7 @@ namespace RedipalCore.Objects
         internal List<string>? Append_ToID { get; set; }
 
         /// <summary>
-        /// The batch that the redis calls will be added to, if not set it will be controlled interanlly
+        /// The batch that the redis calls will be added to, if not set it will be controlled internally
         /// </summary>
         internal RediBatch? RediBatch { get; set; }
 

@@ -23,7 +23,8 @@ namespace RedipalCore.Interfaces
         /// <summary>
         /// Create a subscription the as an object from the given key
         /// </summary>
-        public IRediSubscription<T>? ToObject<T>(string name, string key = null) where T : notnull;
+        public IRediSubscription<T>? ToObject<T>(string name, RediSubscriberOptions options, string? key = null) where T : notnull;
+        public IRediSubscription<T>? ToObject<T>(string name, string? key = null) where T : notnull;
 
        // public IRediSubscription<T>? ToObject<T>(string name) where T : notnull;
 

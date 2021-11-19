@@ -55,7 +55,9 @@ namespace RedipalCore.Objects
             };
         }
 
+        internal string? defaultID = null;
         internal string? defaultSet = null;
+        internal bool? disableKeySpace = null;
         internal string? keySpace = null;
         internal TimeSpan? expiration = null;
         internal bool? ignore = null;
@@ -63,8 +65,9 @@ namespace RedipalCore.Objects
 
 
 
-
+        public string? DefaultID { get; set; }
         public string? DefaultSet { get; set; }
+        public bool DisableKeySpace { get; set; }
         public string? KeySpace { get; set; }
         public TimeSpan? Expiration { get; set; }
         public bool Ignore { get; set; }
@@ -155,6 +158,14 @@ namespace RedipalCore.Objects
                 KeySpace = keySpace;
             else
                 keySpace = KeySpace;
+
+            if (defaultID is not null)
+                DefaultID = defaultID;
+            else
+                defaultID = DefaultID;
+
+            
+                disableKeySpace = DisableKeySpace;
 
             if (expiration is not null)
                 Expiration = expiration;

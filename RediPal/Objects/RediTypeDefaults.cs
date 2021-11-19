@@ -157,7 +157,8 @@ namespace RedipalCore.Objects
         }
 
 
-        public string? KeySpace { get; set; } = null;
+        public bool DisableKeySpace { get; set; } = false;
+        public string KeySpace { get; set; } = "";
         public string? SearchSet { get; set; } = null;
         public string? DefaultID { get; set; } = null;
         public string? DefaultSet { get; set; } = null;

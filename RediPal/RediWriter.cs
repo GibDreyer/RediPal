@@ -367,12 +367,11 @@ namespace RedipalCore
                 {
                     if (string.IsNullOrEmpty(writeOptions.ID))
                     {
-                        if (obj is RediBase rediBase && rediBase.Redi_WriteName != null)
+                        if (obj is RediBase rediBase && !string.IsNullOrEmpty(rediBase.Redi_WriteName))
                         {
                             writeOptions.ID = rediBase.Redi_WriteName;
                         }
-
-                        if (!string.IsNullOrEmpty(discriptor.WriteName))
+                        else if (!string.IsNullOrEmpty(discriptor.WriteName))
                         {
                             writeOptions.ID = discriptor.WriteName;
                         }
@@ -407,7 +406,7 @@ namespace RedipalCore
 
                     if (writeOptions.KeySpace == null || string.IsNullOrEmpty(writeOptions.KeySpace))
                     {
-                        if (string.IsNullOrEmpty(discriptor.KeySpace))
+                        if (!discriptor.DisableKeySpace && string.IsNullOrEmpty(discriptor.KeySpace))
                         {
                             throw new ArgumentException("RediKeySpace is not applied to a object class so an ID must be supplied or the attribute must be set");
                         }
@@ -603,7 +602,7 @@ namespace RedipalCore
         {
             if (Extensions.TypeDescriptor.TryGetDescriptor(typeof(T), out var discriptor))
             {
-                if (!string.IsNullOrEmpty(discriptor.KeySpace))
+                if (!string.IsNullOrEmpty(discriptor.KeySpace) || discriptor.DisableKeySpace)
                 {
                     if (discriptor.WriteNameProperty is not null)
                     {
@@ -614,7 +613,7 @@ namespace RedipalCore
                             if (!string.IsNullOrEmpty(redisName))
                             {
                                 var body = property.Body.ToString();
-                                var key = discriptor.KeySpace + ":" + redisName + body.Replace(body.Split(".").First(), "").Replace(".", ":").ToLower();
+                                var key = (discriptor.DisableKeySpace ? "" : discriptor.KeySpace + ":") + redisName + body.Replace(body.Split(".").First(), "").Replace(".", ":").ToLower();
 
                                 var propName = key.Split(":").LastOrDefault();
 
@@ -1047,12 +1046,25 @@ namespace RedipalCore
 
             if (obj is not null && Descriptor.TryGetDescriptor(obj.GetType(), out var discriptor))
             {
+
+                var tempName = discriptor.DefaultID;
+
                 discriptor.RunConditionals(obj);
 
                 if (discriptor.Ignore)
                 {
                     return null;
                 }
+
+                if (tempName != discriptor.DefaultID)
+                {
+                    hash = discriptor.DefaultID;
+                }
+
+
+
+
+
 
                 if (!string.IsNullOrEmpty(discriptor.DefaultSet))
                 {
@@ -1105,7 +1117,7 @@ namespace RedipalCore
 
                     var master = new RediWriteResult(options.Expiration)
                     {
-                        KeySpace = (key + ":" + hash).ToLower(),
+                        KeySpace = ((string.IsNullOrEmpty(key) ? "" : key + ":") + hash).ToLower(),
                         ID = hash,
                         DeleteExisting = options.DeleteExisting
                     };

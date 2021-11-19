@@ -187,7 +187,7 @@
             Creates a Dictionary of the given object for the key space for each of the specified ids or set. 
             </summary>
         </member>
-        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToObject``1(System.String,System.String)">
+        <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToObject``1(System.String,RedipalCore.Objects.RediSubscriberOptions,System.String)">
             <summary>
             Create a subscription the as an object from the given key
             </summary>
@@ -286,13 +286,13 @@
         </member>
         <member name="P:RedipalCore.Objects.RediWriteOptions.KeySpace">
             <summary>
-            This is the Key space the the object will be wrote under in redis
+            This is the Key space the object will be wrote under in redis
             this is not necessary to set if the attribute "RediKeySpace" is applied to the object class
             </summary>
         </member>
         <member name="P:RedipalCore.Objects.RediWriteOptions.ID">
             <summary>
-            This is the id the the object will be wrote under in redis the will be located at   {KeySpace}:{ID}.
+            This is the id the object will be wrote under in redis the will be located at   {KeySpace}:{ID}.
             this is not necessary to set if the attribute "RediWriteName" is applied to a property on the object
             </summary>
         </member>
@@ -323,7 +323,7 @@
         </member>
         <member name="P:RedipalCore.Objects.RediWriteOptions.RediBatch">
             <summary>
-            The batch that the redis calls will be added to, if not set it will be controlled interanlly
+            The batch that the redis calls will be added to, if not set it will be controlled internally
             </summary>
         </member>
         <member name="M:RedipalCore.Redipal.#ctor(StackExchange.Redis.ConnectionMultiplexer,RedipalCore.Objects.RediConfig)">

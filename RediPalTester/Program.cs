@@ -95,21 +95,40 @@ namespace RediPalTester
             });
 
 
-            redi.SetTypeDefaults<CradlePosition>(x =>
+            redi.SetTypeDefaults<ServiceLog2>(x=>
             {
-                x.DefaultID = "yep";
-                x.KeySpace = "test";
+                x.DisableKeySpace = false;
+                x.KeySpace = "roccore:log";
             });
 
-            CradlePosition x = new();
-
-            new CradlePosition().Redi_Write();
-
-            //redi.Write.Object(x);
-
-            CradlePosition? y = redi.Read.Object<CradlePosition>();
 
 
+            redi.SetTypeDefaults<CradlePosition>(pos =>
+            {
+                pos.DisableKeySpace = true;
+                pos.DefaultID = "not-given";
+
+                pos.AddConditional(a => a.User is User.TestCradlePos, x => x.DefaultID = "test-cradle-pos");
+                pos.AddConditional(a => a.User is User.DevCradlePos, x => x.DefaultID = "dev-cradle-pos");
+                pos.AddConditional(a => a.User is User.ProdCradlePos, x => x.DefaultID = "prod-cradle-pos");
+            });
+
+            _ = new CradlePosition().Redi_Write(); //  not-given
+            _ = new CradlePosition() { User = User.TestCradlePos }.Redi_Write(); //  test-cradle-pos
+            _ = new CradlePosition() { User = User.DevCradlePos }.Redi_Write(); //  dev-cradle-pos
+            _ = new CradlePosition() { User = User.ProdCradlePos }.Redi_Write(); //  prod-cradle-pos
+
+            var notSet = redi.Read.Object<CradlePosition>();
+            var test = redi.Read.Object<CradlePosition>("test-cradle-pos");
+            var dev = redi.Read.Object<CradlePosition>("dev-cradle-pos");
+            var prod = redi.Read.Object<CradlePosition>("prod-cradle-pos");
+
+
+
+            CradlePosition? y = redi.Read.Object<CradlePosition>("test-cradle-pos2");
+
+            _ = new CradlePosition().Redi_Write();
+            CradlePosition? xx = redi.Read.Object<CradlePosition>();
 
 
 
@@ -144,414 +163,6 @@ namespace RediPalTester
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-            //var sfdfdf = redi.Subscribe.ToDictionary<string, Location>();
-
-            //var locations = redi.Read.Dictionary<string, Location>();
-            //var cradles = redi.Read.Dictionary<string, Cradle>();
-
-            //var backup = new LocationData();
-
-            //backup.Set(locations, cradles);
-
-            //var data = backup.Zip();
-
-
-            //redi.SetTypeDefaults<Cradle>(x =>
-            //            {
-            //                x.DefaultSet = "cradles";
-            //                x.KeySpace = "cradle";
-            //            });
-
-            //redi.SetTypeDefaults<Location>(x =>
-            //{
-            //    x.DefaultSet = "locations";
-            //    x.KeySpace = "location";
-            //});
-
-            //var cradle = redi.Read.Dictionary<string, Cradle>();
-
-
-
-
-
-            //_ = redi.SetTypeDefaults<ServiceLog>(log =>
-            //{
-            //    log.AddModifier((x, a) =>
-            //    {
-            //        a.AppendToSet($"roccore:{x.Issuer.ToLower()}:logs", true);
-
-            //        if (x.LogType is LogType.Error)
-            //            a.AppendToSet($"roccore:{x.Issuer.ToLower()}:active-errors");
-            //    });
-
-            //    log.AddConditional(x => x.LogType is LogType.Error, x => x.Expiration = TimeSpan.FromDays(3));
-            //    log.AddConditional(x => x.LogType is LogType.Warning, x => x.Expiration = TimeSpan.FromDays(1));
-            //    log.AddConditional(x => x.LogType is not LogType.Error and not LogType.Warning, x => x.Expiration = TimeSpan.FromDays(1));
-            //    log.SetSearchScoreProperty(x => x.DateTime);
-            //    log.KeySpace = "roccore:log";
-            //});
-
-            //redi.SetTypeDefaults<TaskPlan>(x =>
-            //{
-            //    x.KeySpace = "task";
-            //});
-
-            //redi.SetTypeDefaults<Cradle>(x =>
-            //{
-            //    x.DefaultSet = "cradles";
-            //    x.KeySpace = "cradle";
-            //});
-
-
-            //redi.SetTypeDefaults<Location>(x =>
-            //{
-            //    x.DefaultSet = "locations";
-            //    x.KeySpace = "location";
-            //});
-
-
-
-
-
-
-            //var serviceLogSub = redi.Subscribe.ToDictionary<string, ServiceLog>("roccore:service:logs", x =>
-            //{
-            //    x.WatchForRemove = false;
-            //    x.SubscribeToSetMembers = false;
-            //    x.SubscribeToSubObjects = false;
-            //});
-
-            //if (serviceLogSub != null)
-            //{
-            //    serviceLogSub.OnAdded += (s, l) => Console.Write(l?.Message);
-            //}
-
-            ////var northBridgeLogSub = redi.Subscribe.ToDictionary<string, ServiceLog>("roccore:north:logs", x =>
-            ////{
-            ////    x.WatchForRemove = false;
-            ////    x.SubscribeToSetMembers = false;
-            ////    x.SubscribeToSubObjects = false;
-            ////});
-            ////if (northBridgeLogSub != null)
-            ////{
-            ////    northBridgeLogSub.OnAdded += (s, l) => Console.Write("n");
-            ////}
-
-            ////var southBridgeLogSub = redi.Subscribe.ToDictionary<string, ServiceLog>("roccore:south:logs", x =>
-            ////{
-            ////    x.WatchForRemove = false;
-            ////    x.SubscribeToSetMembers = false;
-            ////    x.SubscribeToSubObjects = false;
-            ////});
-
-            ////if (southBridgeLogSub != null)
-            ////{
-            ////    southBridgeLogSub.OnAdded += (s, l) => Console.Write("s");
-            ////}
-
-
-
-            //while (true)
-            //{
-            //    await Task.Delay(500);
-            //}
-
-
-
-
-
-
-
-
-            //var locationSubscription = redi.Subscribe.ToDictionary<string, Location>();
-
-
-            //for (int i = 0; i < 500; i++)
-            //{
-            //    var reader = locationSubscription.Read();
-
-            //    reader.OnProggress += (key, value) => Console.WriteLine("Read: " + key + "  -  Percent Complete: " + reader.TotalRead / reader.TotalItems);
-
-            //    var result = await reader.Task;
-
-            //}
-
-
-
-
-
-
-
-
-
-            //while (true)
-            //{
-            //    await Task.Delay(500);
-            //}
-
-
-
-
-
-
-
-            ////var temp = "<div><div>what is it? {0} </div><div>When do we want it?  {1} </div><div> Where? {2} </div><div> 123456789 0 {3}  </div></div>";
-            ////var p = new[] { "A test", "Right now !", "here", "987654321" };
-            ////var test = string.Format(temp, p);
-
-
-            //var northPos = redi.Read.Property<Location, double>("northbridge", x => x.Position.X);
-            //var southPos = redi.Read.Property<Location, Position>("southbridge", x => x.Position);
-
-
-            //var bridges = redi.Subscribe.ToDictionary<string, Location, Position>("location", x => x.Position, "bridges");
-            //bridges.OnValueUpdate += (key, value) =>
-            //{
-            //    Console.WriteLine(key + "   " + value.X);
-            //};
-
-
-
-
-
-
-
-
-
-
-
-
-            //while (true)
-            //{
-            //    await Task.Delay(500);
-            //}
-
-
-
-
-
-
-
-
-
-
-
-            //var readActive = Task.Run(() => redi.Read.Dictionary<string, TaskPlan>("activetasks"));
-            //Console.WriteLine("Reading ActiveTasks");
-            //var readrunning = Task.Run(() => redi.Read.Dictionary<string, TaskPlan>("runningtasks"));
-            //Console.WriteLine("Reading RunningTasks");
-            //var readcradles = Task.Run(() => redi.Read.Dictionary<string, Cradle>());
-            //Console.WriteLine("Reading Cradles");
-            //var readlocations = Task.Run(() => redi.Read.Dictionary<string, Location>());
-            //Console.WriteLine("Reading Locations");
-
-            //await Task.WhenAll(readActive, readrunning, readcradles, readlocations);
-            //Console.WriteLine($"Active: {readActive.Result.Count}  Running: {readrunning.Result.Count}  Cradles: {readcradles.Result.Count}  Locations: {readlocations.Result.Count}");
-
-            //Console.WriteLine();
-
-            //var updateCount = 0;
-
-            //void AddCount()
-            //{
-            //    Console.BackgroundColor = ConsoleColor.Red;
-            //    Console.WriteLine("Update Count: " + updateCount++);
-            //}
-
-            //var locationSub = redi.Subscribe.ToDictionary<string, Location>();
-            //if (locationSub is not null)
-            //{
-            //    locations = await locationSub.Read().Task ?? new();
-            //    locationSub.OnValueUpdate += (key, value) =>
-            //    {
-            //        if (value is not null && locations.ContainsKey(key))
-            //        {
-            //            Console.BackgroundColor = ConsoleColor.Blue;
-            //            Console.WriteLine("Location Updated: " + value.ID);
-            //            locations[key] = value;
-            //            AddCount();
-            //        }
-            //    };
-            //    locationSub.OnAdded += (key, value) =>
-            //    {
-            //        if (value is not null && !locations.ContainsKey(key))
-            //        {
-            //            locations.Add(key, value);
-            //            AddCount();
-            //        }
-            //    };
-            //    locationSub.OnRemoved += (key) => locations.Remove(key);
-            //}
-
-
-            //Dictionary<string, TaskPlan>? activeTasks;
-
-            //var activeTasksSub = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
-            //if (activeTasksSub is not null)
-            //{
-            //    activeTasks = await activeTasksSub.Read().Task ?? new();
-            //    activeTasksSub.OnValueUpdate += (key, value) =>
-            //    {
-            //        if (value is not null && activeTasks.ContainsKey(key))
-            //        {
-            //            Console.BackgroundColor = ConsoleColor.Green;
-            //            Console.WriteLine("Active Task Updated: " + value.Motion_ID);
-            //            activeTasks[key] = value;
-            //            AddCount();
-            //        }
-            //    };
-            //    activeTasksSub.OnAdded += (key, value) =>
-            //    {
-            //        Console.BackgroundColor = ConsoleColor.Green;
-            //        Console.WriteLine("Active Task Added: " + value.Motion_ID);
-            //        AddCount();
-            //        if (value is not null && !activeTasks.ContainsKey(key))
-            //        {
-            //            activeTasks.Add(key, value);
-            //        }
-            //    };
-            //    activeTasksSub.OnRemoved += (key) =>
-            //    {
-            //        Console.BackgroundColor = ConsoleColor.Green;
-            //        Console.WriteLine("Active Task Removed: " + key);
-            //        activeTasks.Remove(key);
-            //        AddCount();
-            //    };
-            //}
-
-
-
-
-
-
-            //Dictionary<string, TaskPlan>? runningTasks;
-
-            //var runningTasksSub = redi.Subscribe.ToDictionary<string, TaskPlan>("runningtasks");
-            //if (runningTasksSub is not null)
-            //{
-            //    runningTasks = await runningTasksSub.Read().Task ?? new();
-            //    runningTasksSub.OnValueUpdate += (key, value) =>
-            //    {
-            //        if (value is not null && runningTasks.ContainsKey(key))
-            //        {
-            //            Console.BackgroundColor = ConsoleColor.Black;
-            //            Console.WriteLine("Running Task Updated: " + value.Motion_ID);
-            //            runningTasks[key] = value;
-            //            AddCount();
-            //        }
-            //    };
-            //    runningTasksSub.OnAdded += (key, value) =>
-            //    {
-            //        if (value is not null && !runningTasks.ContainsKey(key))
-            //        {
-            //            Console.BackgroundColor = ConsoleColor.Black;
-            //            Console.WriteLine("Running Task Added: " + value.Motion_ID);
-            //            runningTasks.Add(key, value);
-            //            AddCount();
-            //        }
-            //    };
-            //    runningTasksSub.OnRemoved += (key) =>
-            //    {
-            //        runningTasks.Remove(key);
-            //        Console.BackgroundColor = ConsoleColor.Black;
-            //        Console.WriteLine("Running Task Running: " + key);
-            //        AddCount();
-            //    };
-            //}
-
-
-
-            //while (true)
-            //{
-            //    await Task.Delay(500);
-            //}
-
-
-
-            ////var json = new HttpClient().GetStringAsync("http://10.0.192.54:4264/api/server/locations");
-            ////var actualLocations = JsonConvert.DeserializeObject<List<Location>>(json.Result).ToDictionary(x=> x.ID, x=> x);
-            ////redi.Write.Dictionary(actualLocations, "locations");
-
-            ////var locationsddd = redi.Read.Dictionary<string, Location>();
-
-
-
-
-            ////var activeTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
-            ////var dicardedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("dicardedtasks");
-            ////var completedTasks = redi.Subscribe.ToDictionary<string, TaskPlan>("completedtasks");
-
-            //// Console.WriteLine("Read: {0}    {1} Times", (await locationSubs.Read().Task).Count, count++);
-
-
-
-
-
-            //while (true)
-            //{
-            //    Thread.Sleep(5000);
-            //}
-
-            //var subscription = redi.Subscribe.ToDictionary<string, OperatorConfig>("operators");
-            //if (subscription != null)
-            //{
-            //    subscription.OnValueUpdate += (key, value) =>
-            //    {
-            //        Console.WriteLine(key + "   " + value.AutoStore);
-            //    };
-            //}
-            //while (true)
-            //{
-            //    Thread.Sleep(5000);
-            //}
-
-
-
-            //var opConfig = redi.Read.Object<OperatorConfig>("saw-5");
-            //opConfig.Redi_Write(x => x.AutoStore = true, x => x.AutoStore);
-
-            ////var subscription = redi.Subscribe.ToObject<OperatorConfig>("saw-5");
-            ////if (subscription != null)
-            ////{
-            ////    subscription.OnChange += (s) =>
-            ////    {
-            ////        Console.WriteLine(s.AutoStore);
-            ////    };
-            ////}
-
-
-
-
-            //var subfgfgf = redi.Subscribe.ToMessages("operators");
-            //var readgfg = subfgfgf.Read().Task.Result;
-            //Console.WriteLine();
-
-
-            //var tasks = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
-
-            //tasks.OnValueUpdate += (key, value) =>
-            //{
-            //    Console.WriteLine("Task: " + key + "   Was updated");
-            //};
-
-
-            //while (true)
-            //{
-            //    Thread.Sleep(5000);
-            //}
-
         }
     }
 
@@ -585,14 +196,49 @@ namespace RediPalTester
     }
 
 
-    //[RediKeySpace("test"),
-    //    RediDefaultID("Yoo")]
+
+
+
+
+    public class ServiceLog2 : RediBase
+    {
+        public string Issuer = string.Empty; 
+        
+        public ServiceLog2()
+        {
+        }
+        public ServiceLog2(string issuer)
+        {
+            Issuer = issuer;
+        }
+        public DateTime DateTime { get; set; }
+        public long ID { get; set; }
+        public LogType LogType { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public int RetunCode { get; set; }
+    }
+
+
+
+
+    //[RediKeySpace(false),
+    //    RediDefaultID("Item1")]
     public class CradlePosition : RediBase
     {
         public int X { get; set; } = 885;
         public int Y { get; set; } = 534;
         public int R { get; set; } = -1;
         public double? Z { get; set; } = null;
+
+        internal User User = User.Unset;
+    }
+
+    public enum User
+    {
+        Unset,
+        TestCradlePos,
+        DevCradlePos,
+        ProdCradlePos,
     }
 
 

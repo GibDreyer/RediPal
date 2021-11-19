@@ -11,7 +11,9 @@ namespace RedipalCore.Interfaces
     public interface IRediTypeProccessor
     {
         public string? DefaultSet { get; set; }
+        public string? DefaultID { get; set; }
         public string? KeySpace { get; set; }
+        public bool DisableKeySpace { get; set; }
         public TimeSpan? Expiration { get; set; }
         public bool Ignore { get; set; }
         public bool AsJson { get; set; }

@@ -86,8 +86,8 @@ namespace RedipalCore
 
         public List<string> GetKeys(Type type, string name, string keySpace = "")
         {
-            return TryGetDescriptor(type, out RediTypeProccessor? typeProccessor) && (typeProccessor.KeySpace != null || !string.IsNullOrEmpty(keySpace))
-                ? Get_Keys(type, (typeProccessor.KeySpace ?? keySpace) + ":" + name)
+            return TryGetDescriptor(type, out RediTypeProccessor? typeProccessor) && (!string.IsNullOrEmpty(typeProccessor.KeySpace) || !string.IsNullOrEmpty(keySpace) || typeProccessor.DisableKeySpace)
+                ? Get_Keys(type, typeProccessor.DisableKeySpace ? "" : (typeProccessor.KeySpace ?? keySpace + ":") + name)
                 : throw new ArgumentException("No keySpace was given or was applied to the object");
         }
 
@@ -200,14 +200,27 @@ namespace RedipalCore
 
                         if (Attribute.IsDefined(objType, typeof(RediKeySpace), true))
                         {
-                            var attribute = Attribute.GetCustomAttribute(objType, typeof(RediKeySpace), true);
-                            if (attribute != null)
+                            if (Attribute.GetCustomAttribute(objType, typeof(RediKeySpace), true) is RediKeySpace attribute)
                             {
-                                var att = (RediKeySpace)attribute;
-                                rediTypeProccessor.KeySpace = att.KeySpace;
-                                if (att.Append.Length > 0)
+                                rediTypeProccessor.KeySpace = attribute.KeySpace;
+
+                                if (attribute.DisableKeySpace)
                                 {
-                                    rediTypeProccessor.AppendToKey = att.Append.ToList();
+                                    rediTypeProccessor.DisableKeySpace = true;
+                                }
+                                else
+                                {
+                                    if (string.IsNullOrEmpty(attribute.KeySpace))
+                                    {
+                                        throw new ArgumentException("No Key space was specified. A key space must be given or disable set to true") { Source = objType.Name };
+                                    }
+                                    else
+                                    {
+                                        if (attribute.Append.Length > 0)
+                                        {
+                                            rediTypeProccessor.AppendToKey = attribute.Append.ToList();
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -496,14 +509,14 @@ namespace RedipalCore
                 else
                     type = obj.GetType();
 
-                if (type.IsPrimitive 
-                    || type.IsValueType 
-                    || type == typeof(string) 
-                    || type == typeof(decimal) 
-                    || type == typeof(Bitmap) 
+                if (type.IsPrimitive
+                    || type.IsValueType
+                    || type == typeof(string)
+                    || type == typeof(decimal)
+                    || type == typeof(Bitmap)
                     || type == typeof(DateTime)
-                    || type == typeof(TimeSpan) 
-                    || type == typeof(DateTimeOffset) 
+                    || type == typeof(TimeSpan)
+                    || type == typeof(DateTimeOffset)
                     || type == typeof(Guid))
                 {
                     return true;

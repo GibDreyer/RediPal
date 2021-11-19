@@ -1,14 +1,12 @@
-﻿using RedipalCore.Attributes;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using RedipalCore.Interfaces;
 using RedipalCore.Objects;
 using StackExchange.Redis;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
+using System;
+
 
 namespace RedipalCore
 {
@@ -34,7 +32,6 @@ namespace RedipalCore
             this.Reader = deserializer;
             ActiveRedisConnections = new();
         }
-
 
 
 
@@ -79,7 +76,7 @@ namespace RedipalCore
 
 
 
-        public IRediSubscription<T>? ToObject<T>(string hash, string? key = null) where T : notnull
+        public IRediSubscription<T>? ToObject<T>(string hash, RediSubscriberOptions options, string? key = null) where T : notnull
         {
             if (db != null)
             {
@@ -113,7 +110,7 @@ namespace RedipalCore
                                 }
                             }
 
-                            var rediSubbed = new RediObjectSubscription<T>(Reader, (discriptor.KeySpace ?? key), hash, subscriptionID, new RediSubscriberOptions());
+                            RediObjectSubscription<T> rediSubbed = new(Reader, (discriptor.KeySpace ?? key ?? ""), hash, subscriptionID, options);
                             var createResult = rediSubbed.InvokeReloadObject();
 
                             ActiveRedisConnections.Add(subscriptionID);
@@ -129,6 +126,12 @@ namespace RedipalCore
                 }
             }
             return default;
+        }
+
+
+        public IRediSubscription<T>? ToObject<T>(string hash, string? key = null) where T : notnull
+        {
+            return ToObject<T>(hash, new(), key);
         }
 
 

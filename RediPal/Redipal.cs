@@ -125,8 +125,6 @@ namespace RedipalCore
                     proccessor.WriteNameProperty = rediDefaults.Redi_WriteName;           
                 if (rediDefaults.DefaultID is not null)
                     proccessor.WriteName = rediDefaults.DefaultID;
-                if (rediDefaults.KeySpace is not null)
-                    proccessor.keySpace = rediDefaults.KeySpace;
                 if (rediDefaults.Redi_Conditionals is not null)
                     proccessor.Conditionals = rediDefaults.Redi_Conditionals;
                 if (rediDefaults.Redi_Modifier is not null)
@@ -141,6 +139,19 @@ namespace RedipalCore
                     proccessor.asJson = rediDefaults.WriteAsJson;
                 if (rediDefaults.Ignore is not null)
                     proccessor.ignore = rediDefaults.Ignore;
+               
+                //if (rediDefaults.DisableKeySpace.HasValue)
+                    proccessor.disableKeySpace = rediDefaults.DisableKeySpace;
+                    proccessor.DisableKeySpace = rediDefaults.DisableKeySpace;
+
+                if (rediDefaults.KeySpace is not null)
+                    proccessor.keySpace = rediDefaults.KeySpace;
+                else
+                    proccessor.keySpace = string.Empty;
+                if (rediDefaults.DefaultID is not null)
+                    proccessor.defaultID = rediDefaults.DefaultID;
+
+
 
                 if (rediDefaults.Redi_ParameterModifier is not null && proccessor.Properties is not null)
                 {

@@ -101,9 +101,13 @@ namespace RedipalCore
         {
             if (Descriptor.TryGetDescriptor(typeof(T), out var discriptor))
             {
-                if (!string.IsNullOrEmpty(discriptor.KeySpace) && !string.IsNullOrEmpty(discriptor.WriteName))
+                if ((discriptor.DisableKeySpace || !string.IsNullOrEmpty(discriptor.KeySpace)) && !string.IsNullOrEmpty(discriptor.WriteName))
                 {
-                    if (discriptor.WriteName.Contains(discriptor.KeySpace))
+                    if (discriptor.DisableKeySpace)
+                    {
+                        return GetObject<T>(discriptor.WriteName);
+                    }
+                    else if (!string.IsNullOrEmpty(discriptor.KeySpace) && discriptor.WriteName.Contains(discriptor.KeySpace))
                     {
                         return GetObject<T>(discriptor.WriteName);
                     }
@@ -145,6 +149,11 @@ namespace RedipalCore
                             {
                                 //var result = Get_AsObject(instance, keySpace.ToLower(), "");
                                 var result = Get_AsObject(instance, keySpace.Substring(0, index).ToLower(), last.ToLower());
+                                return (T?)result;
+                            }
+                            else
+                            {
+                                var result = Get_AsObject(instance, "", last.ToLower());
                                 return (T?)result;
                             }
                         }
@@ -865,7 +874,7 @@ namespace RedipalCore
         {
             if (db != null && Descriptor.TryGetDescriptor(typeof(T), out var discriptor))
             {
-                if (!string.IsNullOrEmpty(discriptor.KeySpace))
+                if (!string.IsNullOrEmpty(discriptor.KeySpace) || discriptor.DisableKeySpace)
                 {
                     var test = property.Body.ToString();
                     key += test.Replace(test.Split(".").First(), "").Replace(".", ":").ToLower();
@@ -877,7 +886,7 @@ namespace RedipalCore
                         var propName = key.Split(":").LastOrDefault();
                         if (propName != null)
                         {
-                            var a = db.HashGet(discriptor.KeySpace + ":" + key.Replace(":" + propName, ""), propName);
+                            var a = db.HashGet((discriptor.DisableKeySpace ? "" : discriptor.KeySpace + ":") + key.Replace(":" + propName, ""), propName);
                             if (!a.IsNull)
                             {
                                 var redisString = ConvertFromRedisType(propType, a);
@@ -892,7 +901,7 @@ namespace RedipalCore
                     {
                         var instance = CreateInstance(propType);
 
-                        var result = Get_Instance(instance, discriptor.KeySpace + ":" + key);
+                        var result = Get_Instance(instance, (discriptor.DisableKeySpace ? "" : discriptor.KeySpace + ":") + key);
                         if (result is not null)
                         {
                             return (P)result;
@@ -901,7 +910,7 @@ namespace RedipalCore
                 }
                 else
                 {
-                    throw new ArgumentException("To use the read method without supplying a keyspace you must set the 'RediKeySpace('')' Attribute on the object class");
+                    throw new ArgumentException("To use the read method without supplying a key space you must set the 'RediKeySpace('')' Attribute on the object class");
                 }
             }
             return default;
@@ -910,7 +919,7 @@ namespace RedipalCore
 
 
 
-        // Interal Methods
+        // Internal Methods
 
         private object? Get_Instance(object? instance, string keySpace, params string[] hashIDs)
         {
@@ -1048,7 +1057,7 @@ namespace RedipalCore
                                                 array[i] = x[i].ToString();
                                             }
 
-                                            Parallel.ForEach(array, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, SetID);
+                                            Parallel.ForEach(array, new() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, SetID);
                                         }
                                         else
                                         {
@@ -1079,7 +1088,7 @@ namespace RedipalCore
                                 {
                                     if (hashIDs.Length > 3)
                                     {
-                                        Parallel.ForEach(hashIDs, new ParallelOptions() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
+                                        Parallel.ForEach(hashIDs, new() { MaxDegreeOfParallelism = Redipal.Default_MaxDegreeOfParallelism }, id =>
                                         {
                                             SetID(id.ToLower());
                                         });
@@ -1533,7 +1542,7 @@ namespace RedipalCore
                         {
                             try
                             {
-                                var x = db.HashGetAll(keySpace + ":" + id + appendToKey);
+                                var x = db.HashGetAll((string.IsNullOrEmpty(keySpace) ? "" : keySpace + ":") + id + appendToKey);
                                 if (x.Length > 0)
                                 {
                                     //var accessors = TypeAccessor.Create(typeProccessor.PropertyType);
@@ -1563,7 +1572,7 @@ namespace RedipalCore
                             }
                             catch
                             {
-                                var x = db.StringGet(keySpace + ":" + id);
+                                var x = db.StringGet((string.IsNullOrEmpty(keySpace) ? "" : keySpace + ":") + id);
                                 if (!string.IsNullOrEmpty(x) && typeProccessor.PropertyType is not null)
                                 {
                                     try
@@ -1599,7 +1608,7 @@ namespace RedipalCore
                                 {
                                     if (property.AsJson)
                                     {
-                                        var x = db.StringGet(keySpace + ":" + id + ":" + property.Name.ToLower());
+                                        var x = db.StringGet((string.IsNullOrEmpty(keySpace) ? "" : keySpace + ":") + id + ":" + property.Name.ToLower());
                                         if (!string.IsNullOrEmpty(x))
                                         {
                                             var jsonObj = JsonSerializer.Deserialize(x, property.PropertyType);
@@ -1629,7 +1638,7 @@ namespace RedipalCore
 
                                             if (nestedObject != null)
                                             {
-                                                var result = Get_Instance(nestedObject, keySpace + ":" + id + ":" + property.Name.ToLower());
+                                                var result = Get_Instance(nestedObject, (string.IsNullOrEmpty(keySpace) ? "" : keySpace + ":") + id + ":" + property.Name.ToLower());
 
                                                 results.Add(result != null);
 
