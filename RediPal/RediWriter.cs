@@ -1,22 +1,20 @@
-﻿using RedipalCore.Interfaces;
-using RedipalCore.Objects;
-using StackExchange.Redis;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.Json;
-using Pluralize.NET;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Drawing;
+using RedipalCore.Interfaces;
 using System.Drawing.Imaging;
 using System.IO.Compression;
-using System.IO;
-using System.Reflection.Emit;
+using RedipalCore.Objects;
+using StackExchange.Redis;
+using System.Collections;
+using System.Diagnostics;
+using System.Reflection;
 using RediPal.Messages;
+using System.Text.Json;
+using System.Drawing;
+using Pluralize.NET;
+using System.Linq;
+using System.IO;
+using System;
 
 namespace RedipalCore
 {
@@ -946,7 +944,7 @@ namespace RedipalCore
                                         var stringValue = GetStringValue(keys[i]);
                                         if (!string.IsNullOrEmpty(stringValue))
                                         {
-                                            dictionary.Add(stringValue, values[i]);
+                                            dictionary.Add(stringValue.ToLower(), values[i]);
                                         }
                                     }
                                 }
@@ -1424,57 +1422,60 @@ namespace RedipalCore
                 }
             }
 
-            if (rediWrite.SetsToRemove != null)
+            if (!string.IsNullOrEmpty(space.ID))
             {
-                foreach (var set in rediWrite.SetsToRemove)
+
+                if (rediWrite.SetsToRemove != null)
                 {
-                    try
+                    foreach (var set in rediWrite.SetsToRemove)
+                    {
+                        try
+                        {
+                            rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
+                        }
+                        catch { }
+                    }
+                }
+
+                if (rediWrite.SearchableSetsToAppend != null && space.SearchScore.HasValue)
+                {
+                    foreach (var set in rediWrite.SearchableSetsToAppend)
+                    {
+                        try
+                        {
+                            rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
+                        }
+                        catch { }
+                    }
+                }
+
+                if (space.AppendToSearchSets != null && space.SearchScore.HasValue)
+                {
+                    foreach (var set in space.AppendToSearchSets)
+                    {
+                        try
+                        {
+                            rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
+                        }
+                        catch { }
+                    }
+                }
+
+                if (space.RemoveFromSets is not null)
+                {
+                    foreach (var set in space.RemoveFromSets)
                     {
                         rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
                     }
-                    catch { }
                 }
-            }
-
-            if (rediWrite.SearchableSetsToAppend != null && space.SearchScore.HasValue)
-            {
-                foreach (var set in rediWrite.SearchableSetsToAppend)
+                if (space.AppendToSets is not null)
                 {
-                    try
+                    foreach (var set in space.AppendToSets)
                     {
-                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
+                        rediWrite.RediBatch.AddAction(x => x.SetAddAsync(set.ToLower(), space.ID));
                     }
-                    catch { }
                 }
             }
-
-            if (space.AppendToSearchSets != null && space.SearchScore.HasValue)
-            {
-                foreach (var set in space.AppendToSearchSets)
-                {
-                    try
-                    {
-                        rediWrite.RediBatch.AddAction(x => x.SortedSetAddAsync(set.ToLower(), space.ID, space.SearchScore.Value));
-                    }
-                    catch { }
-                }
-            }
-
-            if (space.RemoveFromSets is not null)
-            {
-                foreach (var set in space.RemoveFromSets)
-                {
-                    rediWrite.RediBatch.AddAction(x => x.SetRemoveAsync(set.ToLower(), space.ID));
-                }
-            }
-            if (space.AppendToSets is not null)
-            {
-                foreach (var set in space.AppendToSets)
-                {
-                    rediWrite.RediBatch.AddAction(x => x.SetAddAsync(set.ToLower(), space.ID));
-                }
-            }
-
 
             if (space.Nested != null)
             {

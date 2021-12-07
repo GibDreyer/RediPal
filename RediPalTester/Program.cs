@@ -1,24 +1,14 @@
-﻿using RedipalCore;
-using System.Diagnostics;
-using RediPal.TestObjects;
-using System.Drawing;
-using System.Drawing.Imaging;
-using StackExchange.Redis;
-using Newtonsoft.Json;
-using RediPal.Messages;
-using RocKer;
-using AG.ROC.Core;
-using AG.RocCore.Objects;
-using Pastel;
-using System;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
-using System.IO;
 using System.IO.Compression;
+using AG.RocCore.Objects;
+using System.Threading;
+using Newtonsoft.Json;
+using RedipalCore;
 using System.Text;
-using RedipalCore.Attributes;
+using System.IO;
+using System;
+using RedipalCore.Objects;
 
 namespace RediPalTester
 {
@@ -74,12 +64,28 @@ namespace RediPalTester
 
 
             Console.WriteLine();
+            var redi = new Redipal("roc-redis.ag:6379", new()
+            {
+                UnThrottleCPU = true,
+                Default_MaxDegreeOfParallelism = -1
+            });
 
 
+            redi.SetTypeDefaults<CradlePosition>(x =>
+            {
+                x.KeySpace = "config:cradle";
+                x.DefaultSet = "config:cradles";
+            });
 
+            Dictionary<string, CradlePosition> dict = new();
 
+            dict.Add("Test", new());
+            dict.Add("Test2", new());
+            dict.Add("Test3", new());
 
+            redi.Write.Dictionary(dict);
 
+            Console.WriteLine();
             //var redisConfig = new ConfigurationOptions
             //{
             //    Password = "Itunes96",
@@ -88,18 +94,28 @@ namespace RediPalTester
             //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
             //var redi = new Redipal(redisConfig);
 
-            var redi = new Redipal("rocii.ag:6379", new()
-            {
-                UnThrottleCPU = true,
-                Default_MaxDegreeOfParallelism = -1
-            });
 
 
-            redi.SetTypeDefaults<ServiceLog2>(x=>
+            redi.SetTypeDefaults<LightCurtainConfig>(x =>
             {
-                x.DisableKeySpace = false;
-                x.KeySpace = "roccore:log";
+                x.KeySpace = "config:wallsection";
+                x.DefaultSet = "config:wallsections";
             });
+
+            RediReadOptions readOptions = new();
+            readOptions.AppendPostKey("lightcurtainconfig");
+            //  readOptions.AppendPostSet("lightcurtainconfig");
+
+
+            var configs = redi.Read.Dictionary<string, LightCurtainConfig>(readOptions);
+
+            Console.WriteLine();
+
+
+
+
+
+
 
 
 
@@ -202,8 +218,8 @@ namespace RediPalTester
 
     public class ServiceLog2 : RediBase
     {
-        public string Issuer = string.Empty; 
-        
+        public string Issuer = string.Empty;
+
         public ServiceLog2()
         {
         }
@@ -338,6 +354,30 @@ namespace RediPalTester
         public string ID { get; set; }
         public string CradleID { get; set; }
     }
+
+
+
+
+
+
+
+    public class LightCurtainConfig
+    {
+        public string ID { get; set; } = string.Empty;
+        public string Armed { get; set; } = string.Empty;
+        public string Reset { get; set; } = string.Empty;
+        public string SoftBreak { get; set; } = string.Empty;
+        public string UserDisarm { get; set; } = string.Empty;
+        public string SensorState { get; set; } = string.Empty;
+        public string ResetBreakOk { get; set; } = string.Empty;
+        public string InputProcessData { get; set; } = string.Empty;
+        public string OutputProcessData { get; set; } = string.Empty;
+    }
+
+
+
+
+
 
     public class CradleHistory
     {

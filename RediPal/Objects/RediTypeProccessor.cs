@@ -1,10 +1,10 @@
-﻿using RedipalCore.Interfaces;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing.Imaging;
-using System.Linq;
+using RedipalCore.Interfaces;
+using System.Collections;
 using System.Reflection;
+using System.Linq;
+using System;
 
 namespace RedipalCore.Objects
 {

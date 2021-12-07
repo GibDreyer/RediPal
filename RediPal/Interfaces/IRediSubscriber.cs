@@ -1,7 +1,7 @@
-﻿using RedipalCore.Objects;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
+using RedipalCore.Objects;
+using System;
 
 namespace RedipalCore.Interfaces
 {
@@ -17,6 +17,7 @@ namespace RedipalCore.Interfaces
         // Property
         public IRediSubscription<P>? ToProperty<T, P>(string key, Expression<Func<T, P>> property, RediSubscriberOptions options) where T : notnull where P : notnull;
 
+        
 
         // Object
 
@@ -26,7 +27,7 @@ namespace RedipalCore.Interfaces
         public IRediSubscription<T>? ToObject<T>(string name, RediSubscriberOptions options, string? key = null) where T : notnull;
         public IRediSubscription<T>? ToObject<T>(string name, string? key = null) where T : notnull;
 
-       // public IRediSubscription<T>? ToObject<T>(string name) where T : notnull;
+        // public IRediSubscription<T>? ToObject<T>(string name) where T : notnull;
 
 
 
@@ -60,13 +61,13 @@ namespace RedipalCore.Interfaces
         public IRediSubscriptions<TKey, P>? ToDictionary<TKey, TValue, P>(string key, Expression<Func<TValue, P>> property, string set, RediSubscriberOptions? options = default) where TKey : IConvertible where TValue : notnull where P : notnull;
 
         /// <summary>
-        /// Create a subscription the as a dictionary to the given hash Ids
+        /// Create a subscription the as a dictionary to the given hash IDs
         /// </summary>
         public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(string key, RediSubscriberOptions options, params string[] names) where TKey : IConvertible where TValue : notnull;
         public IRediSubscriptions<TKey, TValue>? ToDictionary<TKey, TValue>(string key, params string[] names) where TKey : IConvertible where TValue : notnull;
 
         /// <summary>
-        /// Create a subscription the as a dictionary to the given hash Ids is the form of a message
+        /// Create a subscription the as a dictionary to the given hash IDs is the form of a message
         /// </summary>
         public IRediSubscriptions<string, string>? ToMessages(string key);
         public IRediSubscriptions<string, string>? ToMessages(string name, params string[] names);

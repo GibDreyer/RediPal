@@ -730,7 +730,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "0.7.181",
+    "version": "0.7.182",
     "restore": {
       "projectUniqueName": "C:\\Users\\gdreyer.PEERDOM\\source\\repos\\RediPal\\RediPal\\RediPal.csproj",
       "projectName": "RediPal",

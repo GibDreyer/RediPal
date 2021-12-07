@@ -1,11 +1,11 @@
-﻿using RedipalCore.Attributes;
+﻿using System.Collections.Generic;
+using RedipalCore.Attributes;
 using RedipalCore.Interfaces;
 using RedipalCore.Objects;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using System.Linq;
+using System;
 
 namespace RedipalCore
 {

@@ -199,12 +199,12 @@
         </member>
         <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToDictionary``2(System.String,RedipalCore.Objects.RediSubscriberOptions,System.String[])">
             <summary>
-            Create a subscription the as a dictionary to the given hash Ids
+            Create a subscription the as a dictionary to the given hash IDs
             </summary>
         </member>
         <member name="M:RedipalCore.Interfaces.IRediSubscriber.ToMessages(System.String)">
             <summary>
-            Create a subscription the as a dictionary to the given hash Ids is the form of a message
+            Create a subscription the as a dictionary to the given hash IDs is the form of a message
             </summary>
         </member>
         <member name="M:RedipalCore.Interfaces.IRediSubscription`1.Read">
