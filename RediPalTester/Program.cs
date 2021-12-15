@@ -9,6 +9,7 @@ using System.Text;
 using System.IO;
 using System;
 using RedipalCore.Objects;
+using System.Linq;
 
 namespace RediPalTester
 {
@@ -16,6 +17,10 @@ namespace RediPalTester
     {
         static async Task Main()
         {
+            // Zero width char test
+            //Console.WriteLine("Test");​
+
+
 
             //var newFile = new List<string>();
 
@@ -62,52 +67,43 @@ namespace RediPalTester
 
             //File.WriteAllLines("c:/Temp/three/src/Three.d.ts", newFile);
 
-
-            Console.WriteLine();
             var redi = new Redipal("roc-redis.ag:6379", new()
             {
                 UnThrottleCPU = true,
                 Default_MaxDegreeOfParallelism = -1
             });
 
-
-            redi.SetTypeDefaults<CradlePosition>(x =>
+            redi.SetTypeDefaults<TaskPlan>(x =>
             {
-                x.KeySpace = "config:cradle";
-                x.DefaultSet = "config:cradles";
+                x.KeySpace = "task";
             });
 
-            Dictionary<string, CradlePosition> dict = new();
-
-            dict.Add("Test", new());
-            dict.Add("Test2", new());
-            dict.Add("Test3", new());
-
-            redi.Write.Dictionary(dict);
-
-            Console.WriteLine();
-            //var redisConfig = new ConfigurationOptions
-            //{
-            //    Password = "Itunes96",
-            //    User = ""
-            //};
-            //redisConfig.EndPoints.Add("redis-19940.c100.us-east-1-4.ec2.cloud.redislabs.com:19940");
-            //var redi = new Redipal(redisConfig);
-
-
-
-            redi.SetTypeDefaults<LightCurtainConfig>(x =>
+            var tasksSubs = redi.Subscribe.ToDictionary<string, TaskPlan>("activetasks");
+            if (tasksSubs is not null)
             {
-                x.KeySpace = "config:wallsection";
-                x.DefaultSet = "config:wallsections";
-            });
+                var read = tasksSubs.Read();
+                if (read is not null && read.Task is not null)
+                {
+                    tasksSubs.OnValueUpdate += (key, value) => Console.WriteLine(key + ": was updated");
+                    tasksSubs.OnAdded += (key, value) => Console.WriteLine(key + ":             was Added");
+                    tasksSubs.OnRemoved += (key) => Console.WriteLine(key + ":                                 was Removed");
+                }
+            }
 
-            RediReadOptions readOptions = new();
-            readOptions.AppendPostKey("lightcurtainconfig");
-            //  readOptions.AppendPostSet("lightcurtainconfig");
+            Task.Delay(5000000).Wait();
 
 
-            var configs = redi.Read.Dictionary<string, LightCurtainConfig>(readOptions);
+
+
+
+
+
+
+
+
+
+
+
 
             Console.WriteLine();
 
@@ -130,9 +126,9 @@ namespace RediPalTester
             });
 
             _ = new CradlePosition().Redi_Write(); //  not-given
-            _ = new CradlePosition() { User = User.TestCradlePos }.Redi_Write(); //  test-cradle-pos
-            _ = new CradlePosition() { User = User.DevCradlePos }.Redi_Write(); //  dev-cradle-pos
-            _ = new CradlePosition() { User = User.ProdCradlePos }.Redi_Write(); //  prod-cradle-pos
+            _ = new CradlePosition() { User = User.TestCradlePos }.Redi_Write(); // test-cradle-pos
+            _ = new CradlePosition() { User = User.DevCradlePos }.Redi_Write(); // dev-cradle-pos
+            _ = new CradlePosition() { User = User.ProdCradlePos }.Redi_Write(); // prod-cradle-pos
 
             var notSet = redi.Read.Object<CradlePosition>();
             var test = redi.Read.Object<CradlePosition>("test-cradle-pos");

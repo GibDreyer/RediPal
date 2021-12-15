@@ -15,9 +15,9 @@ namespace RedipalCore.Objects
         internal RediObjectSubscription(IRediReader reader, string keySpace, string key, string subscriptionID, RediSubscriberOptions options)
         {
             _options = options;
-            this.Reader = reader;
-            this.Key = key.ToLower();
-            this.KeySpace = keySpace.ToLower();
+            Reader = reader;
+            Key = key.ToLower();
+            KeySpace = keySpace.ToLower();
             SubscriptionID = subscriptionID;
         }
 

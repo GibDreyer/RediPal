@@ -455,7 +455,7 @@ namespace RedipalCore
                                         var needsAdded = listOfKeys.Where(x => !result.SetKeys.Contains(x));
                                         var removed = result.SetKeys.Where(x => x != null && !listOfKeys.Contains(x)).ToList();
                                        
-                                        if (false && removed.Any())
+                                        if (removed.Any())
                                         {
                                             foreach (var key in removed)
                                             {
@@ -475,7 +475,7 @@ namespace RedipalCore
                                             }
                                         }
 
-                                        if (false && needsAdded.Any())
+                                        if (needsAdded.Any())
                                         {
                                             foreach (var key in needsAdded)
                                             {
