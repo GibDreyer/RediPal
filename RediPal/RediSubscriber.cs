@@ -459,7 +459,6 @@ namespace RedipalCore
                                         {
                                             foreach (var key in removed)
                                             {
-                                                Console.WriteLine("Adding Key: " + key);
                                                 var subscription = result.Subscriptions.FirstOrDefault(x => x.Key.ToString() == key);
                                                 if (subscription.Value != null)
                                                 {
@@ -479,7 +478,6 @@ namespace RedipalCore
                                         {
                                             foreach (var key in needsAdded)
                                             {
-                                                Console.WriteLine("Adding Key: " + key);
                                                 result.SetKeys.Add(key);
 
                                                 var keyConvert = (TKey)Convert.ChangeType(key, typeof(TKey));

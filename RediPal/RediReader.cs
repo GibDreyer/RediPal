@@ -1533,8 +1533,8 @@ namespace RedipalCore
 
                     if (typeProccessor.Properties != null)
                     {
-                        var primitiveProperties = typeProccessor.Properties.Where(x => x.IsPrimitive && !x.Ignore && x.CanSet);
-                        var nestedProperties = typeProccessor.Properties.Where(x => !x.IsPrimitive && !x.Ignore && x.CanSet);
+                        var primitiveProperties = typeProccessor.Properties.Where(x => (x.IsPrimitive || x.AsJson) && !x.Ignore && x.CanSet);
+                        var nestedProperties = typeProccessor.Properties.Where(x => !x.IsPrimitive && !x.AsJson && !x.Ignore && x.CanSet);
 
                         if (primitiveProperties.Any())
                         {
@@ -1550,15 +1550,22 @@ namespace RedipalCore
                                         var property = primitiveProperties.FirstOrDefault(x => x.Name.ToLower() == hash.Name.ToString().ToLower());
                                         if (property != null && property.PropertyInfo != null && property.PropertyType != null)
                                         {
-                                            var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value);
-                                            // accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
-                                            try
+                                            if (property.AsJson)
                                             {
-                                                property.PropertyInfo.SetValue(instance, Convert.ChangeType(redisConvert, property.PropertyType), null);
+                                                property.PropertyInfo.SetValue(instance, JsonSerializer.Deserialize(hash.Value, property.PropertyType), null);
                                             }
-                                            catch
+                                            else
                                             {
-                                                property.PropertyInfo.SetValue(instance, redisConvert, null);
+                                                var redisConvert = ConvertFromRedisType(property.PropertyType, hash.Value);
+                                                // accessors[instance, property.Name] = Convert.ChangeType(redisConvert, property.PropertyType);
+                                                try
+                                                {
+                                                    property.PropertyInfo.SetValue(instance, Convert.ChangeType(redisConvert, property.PropertyType), null);
+                                                }
+                                                catch
+                                                {
+                                                    property.PropertyInfo.SetValue(instance, redisConvert, null);
+                                                }
                                             }
                                         }
                                     }

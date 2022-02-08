@@ -8,8 +8,7 @@ using RedipalCore;
 using System.Text;
 using System.IO;
 using System;
-using RedipalCore.Objects;
-using System.Linq;
+using RedipalCore.Attributes;
 
 namespace RediPalTester
 {
@@ -18,10 +17,11 @@ namespace RediPalTester
         static async Task Main()
         {
             // Zero width char test
-            //Console.WriteLine("Test");​
+            //Console.WriteLine("Wont Compile");​
 
+            //Console.WriteLine("Wont Compile");
 
-
+            //Console.WriteLine("Wont Compile");​
             //var newFile = new List<string>();
 
 
@@ -67,11 +67,34 @@ namespace RediPalTester
 
             //File.WriteAllLines("c:/Temp/three/src/Three.d.ts", newFile);
 
-            var redi = new Redipal("roc-redis.ag:6379", new()
+            var redi = new Redipal("ag-redis.ag:6379", new()
             {
                 UnThrottleCPU = true,
                 Default_MaxDegreeOfParallelism = -1
             });
+
+            redi.SetTypeDefaults<Step>(step =>
+            {
+                step.Expiration = TimeSpan.FromDays(1);
+                step.WriteAsJson = true;
+            });
+
+
+            var zone = redi.Read.Object<BridgeConfig>("ag:rocii:config:bridge:east");
+
+
+
+
+            Console.WriteLine();
+
+
+
+
+
+
+
+
+
 
             redi.SetTypeDefaults<TaskPlan>(x =>
             {
@@ -386,5 +409,44 @@ namespace RediPalTester
 
         public List<string>? Tags { get; set; }
         public List<string>? Jobs { get; set; }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    [RediDefaultSet("ag:rocii:config:bridges"),
+        RediKeySpace("ag:rocii:config:bridge")]
+    public class BridgeConfig
+    {
+        public bool EnableBridge { get; set; } = true;
+        public bool? EnableMultiAxis { get; set; }
+#pragma warning disable CS8618
+        public string Name { get; set; }
+        public string LocationID { get; set; }
+#pragma warning restore CS8618
+        [RediWriteAsJson] public BridgeZone? DedicatedZone { get; set; }
+        public BridgeZone? SafeRotateZone { get; set; }
+
+    }
+
+    [RediWriteAsJson]
+    public class BridgeZone
+    {
+        public int MinZonePox { get; set; }
+        public int MaxZonePox { get; set; }
     }
 }

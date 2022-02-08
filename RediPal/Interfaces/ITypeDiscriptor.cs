@@ -1,7 +1,7 @@
-﻿using RedipalCore.Objects;
-using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using RedipalCore.Objects;
+using System;
 
 namespace RedipalCore.Interfaces
 {
